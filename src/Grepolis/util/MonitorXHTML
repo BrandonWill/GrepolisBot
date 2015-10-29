@@ -2,33 +2,6 @@ Monitor the XHTML Requests on a browser. This can be implemented in the bot to l
 
 Not sure if I'll ever use it though. This would make the bot be impossible to find since it would only read the data on login.
 
-function addXMLRequestCallback(callback){
-    var oldSend, i;
-    if( XMLHttpRequest.callbacks ) {
-        // we've already overridden send() so just add the callback
-        XMLHttpRequest.callbacks.push( callback );
-    } else {
-        // create a callback queue
-        XMLHttpRequest.callbacks = [callback];
-        // store the native send()
-        oldSend = XMLHttpRequest.prototype.send;
-        // override the native send()
-        XMLHttpRequest.prototype.send = function(){
-            // process the callback queue
-            // the xhr instance is passed into each callback but seems pretty useless
-            // you can't tell what its destination is or call abort() without an error
-            // so only really good for logging that a request has happened
-            // I could be wrong, I hope so...
-            // EDIT: I suppose you could override the onreadystatechange handler though
-            for( i = 0; i < XMLHttpRequest.callbacks.length; i++ ) {
-                XMLHttpRequest.callbacks[i]( this );
-            }
-            // call the native send()
-            oldSend.apply(this, arguments);
-        }
-    }
-}
-
 function readBody(xhr) {
     var data;
     if (!xhr.responseType || xhr.responseType === "text") {
@@ -41,10 +14,15 @@ function readBody(xhr) {
     return data;
 }
 
-// e.g.
-addXMLRequestCallback( function( xhr ) {
-    console.log( readBody(xhr));
-});
-addXMLRequestCallback( function( xhr ) {
-    console.dir( xhr ); // have a look if there is anything useful here
-});
+var oldXHR = window.XMLHttpRequest;
+
+function newXHR() {
+    var realXHR = new oldXHR();
+    realXHR.addEventListener("readystatechange", function() {
+        if(realXHR.readyState==4 && realXHR.status==200){
+            alert(readBody(realXHR));
+        }
+    }, false);
+    return realXHR;
+}
+window.XMLHttpRequest = newXHR;
