@@ -1,5 +1,5 @@
 #### Notice
-This is the source code and release for GrepolisBot. This is the ONLY location that I plan on hosting the source and releasing the bot. ALL features will be free. This bot is based on [Grepolis 2](https://github.com/josdemmers/Grepolis2Bot/), but it's written in Java. Feel free to contribute. If you would like to donate, you can do so here: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=78NSNHLQ38GRW
+This is the source code and release for GrepolisBot. This is the ONLY location that I plan on hosting the source and releasing the bot. ALL features will be free. This bot is based on [Grepolis 2 Bot](https://github.com/josdemmers/Grepolis2Bot/), but it's written in Java. Feel free to contribute. If you would like to donate, you can do so here: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=78NSNHLQ38GRW
 
 # License
 GrepolisBot is licensed under [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
