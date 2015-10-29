@@ -74,7 +74,7 @@ public class GrepolisBot extends JPanel {
                 frame.getContentPane().add(new GrepolisBot());
 
                 frame.setSize(new Dimension(1500, 800));
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setVisible(true);
             }
         });
@@ -163,7 +163,7 @@ public class GrepolisBot extends JPanel {
                                                     Platform.runLater(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            engine.load("http://" + server.substring(0, 2) + ".grepolis.com/start/index?world_id=" + server + "&action=login_on_new_world");
+                                                            engine.load("https://" + server.substring(0, 2) + ".grepolis.com/start/index?world_id=" + server + "&action=login_on_new_world");
                                                             loggedIn = true;
                                                         }
                                                     });
@@ -207,7 +207,7 @@ public class GrepolisBot extends JPanel {
                         if (notEmpty(fxPassword.getText()) && notEmpty(fxPassword.getText()) && notEmpty(serverField.getText())) {
                             loginAttempted.set(false);
                             server = serverField.getText();
-                            engine.load("http://en.grepolis.com");
+                            engine.load("https://" + server.substring(0, 2) + ".grepolis.com");
                             fxLoginButton.setDisable(true);
                         }
                     }
