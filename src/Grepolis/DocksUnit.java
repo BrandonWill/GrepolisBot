@@ -85,7 +85,7 @@ public class DocksUnit {
 
     public enum UnitType {
         big_transporter("Transport boat"),
-        bireme("birme"),
+        bireme("bireme"),
         attack_ship("Light ship"),
         demolition_ship("Fire ship"),
         small_transporter("Fast transport ship"),

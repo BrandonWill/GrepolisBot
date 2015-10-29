@@ -65,8 +65,8 @@ public class Docks {
             }
 
             //update the number of units in queue!
-            for (DocksUnit barracksUnit : this.docksUnits)  {
-                barracksUnit.setInQueue(0);
+            for (DocksUnit docksUnit : this.docksUnits)  {
+                docksUnit.setInQueue(0);
             }
 
             int queueCount = 0;
@@ -138,7 +138,7 @@ public class Docks {
                         "}\n" +
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/building_docks?town_id=" + town.getId() + "&action=build&h=" + town.getCsrftoken() + "&json=%7B%22unit_id%22%3A%22" + docksUnit.getUnitType().name() + "%22%2C%22amount%22%3A" + docksUnit.amountToBuild() + "%2C%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                        "xhr.send({\"unit_id\":\"" + docksUnit.getUnitType().name() + "\",\"amount\":" + docksUnit.amountToBuild() + ",\"town_id\":" + town.getId() + ",\"nl_init\":true});");
+                        "xhr.send(null);");
                 System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " added " + docksUnit.amountToBuild() + " " + docksUnit.getUnitType().name() + " to queue!");
             }
         });
@@ -146,7 +146,7 @@ public class Docks {
     }
 
     //get docks data
-    //https://xxxx.grepolis.com/game/building_docks?town_id=xxxxx&action=index&h=5672d6f41be&json=%7B%22town_id%22%3Axxxxx%2C%22nl_init%22%3Atrue%7D&_=1444763737982
+    //https://xxxx.grepolis.com/game/building_docks?town_id=xxxxx&action=index&h=xxxxxx&json=%7B%22town_id%22%3Axxxxx%2C%22nl_init%22%3Atrue%7D&_=1444763737982
     //build dock unit
     //      /game/building_docks?town_id=xxxxx&action=build&h=xxxxxxxx&json=json=%7B%22unit_id%22%3A%22bireme%22%2C%22amount%22%3A1%2C%22town_id%22%3Axxxxx%2C%22nl_init%22%3Atrue%7D
     //      {"unit_id":"bireme","amount":1,"town_id":32288,"nl_init":true}

@@ -154,7 +154,7 @@ public class Barracks {
                         "}\n" +
                         "xhr.open('POST', 'https://"+ town.getServer() +".grepolis.com/game/building_barracks?town_id="+ town.getId() +"&action=build&h=" + town.getCsrftoken() + "&json=%7B%22unit_id%22%3A%22" +barracksUnit.getUnitType().name() +"%22%2C%22amount%22%3A" +barracksUnit.amountToBuild() +"%2C%22town_id%22%3A" +town.getId() +"%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                        "xhr.send({\"unit_id\":\"" +barracksUnit.getUnitType().name() +"\",\"amount\":" +barracksUnit.amountToBuild() +",\"town_id\":" + town.getId() + ",\"nl_init\":true});");
+                        "xhr.send(null);");
                 System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " added " + barracksUnit.amountToBuild() + " " + barracksUnit.getUnitType().name() + " to queue!");
             }
         });
