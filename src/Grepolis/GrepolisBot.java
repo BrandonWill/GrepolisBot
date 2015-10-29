@@ -49,7 +49,6 @@ public class GrepolisBot extends JPanel {
 
     private static String server;
     private int defaultTown;
-    private static String gameURL;
 
     private static TextField fxUsername;
     private static TextField fxPassword;
@@ -220,7 +219,6 @@ public class GrepolisBot extends JPanel {
                     public void handle(javafx.event.ActionEvent t) {
                         addAlerts();
                         defaultTown = getDefaultTownID();
-                        gameURL = webView.getEngine().getLocation();
                         System.out.println(getTimeOnly(LocalDateTime.now().toString()) + " Bot enabled");
                         new Thread(new Startup()).start();
                         new Thread(new TitleUpdater()).start();
@@ -817,10 +815,6 @@ public class GrepolisBot extends JPanel {
         private String townSwitcherJSON() {
             return "{\"town_id\":" + town.getId() +",\"nl_init\":true}";
         }
-    }
-
-    public static String getGameURL() {
-        return gameURL;
     }
 
     private class PageLoaded extends Thread {
