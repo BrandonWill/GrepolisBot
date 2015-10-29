@@ -475,7 +475,7 @@ public class GrepolisBot extends JPanel {
                                 "}\n" +
                                 "xhr.open('GET', 'https://" + server +".grepolis.com/game/building_main?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "', true);\n" +
                                 "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
-                                "xhr.send();\n");
+                                "xhr.send(null);\n");
                     }
                 });
 
@@ -513,7 +513,7 @@ public class GrepolisBot extends JPanel {
                                 "}\n" +
                                 "xhr.open('GET', 'https://" + server +".grepolis.com/game/building_place?town_id=" + town.getId() + "&action=culture&h=" + csrfToken + "', true);\n" +
                                 "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
-                                "xhr.send();\n");
+                                "xhr.send(null);\n");
                     }
                 });
             } catch (InterruptedException e) {

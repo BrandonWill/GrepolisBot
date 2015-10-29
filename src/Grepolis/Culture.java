@@ -91,7 +91,7 @@ public class Culture {
                         "xhr.send({\"celebration_type\":\"" + cultureEvent.getCultureEventType().name() + "\",\"town_id\":62795,\"nl_init\":true});");
                         System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " started the culture event " +cultureEvent.getCultureEventType().inGameName +"!");
                 //https://####.grepolis.com/game/building_place?town_id=#####&action=start_celebration&h=###########
-                //{"celebration_type":"games","town_id":23917,"nl_init":true}
+                //{"celebration_type":"games","town_id":xxxxx,"nl_init":true}
             }
         });
     }

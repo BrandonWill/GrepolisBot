@@ -187,11 +187,7 @@ public class Farming {
                 }
             }
         }
-
     }
-
-    //{"farm_town_ids":[7848,7843,7842,7845,7846,7847,7844],"time_option":300,"claim_factor":"normal","current_town_id":23917,"town_id":32288,"nl_init":true}
-    //json=%7B%22farm_town_ids%22%3A%5B7848%2C7843%2C7842%2C7845%2C7846%2C7847%2C7844%5D%2C%22time_option%22%3A300%2C%22claim_factor%22%3A%22normal%22%2C%22current_town_id%22%3A23917%2C%22town_id%22%3A32288%2C%22nl_init%22%3Atrue%7D
 
     public boolean farmTheVillages() {
         if (hasAFarmerAvailable()) {
@@ -213,7 +209,7 @@ public class Farming {
                             "var xhr = new XMLHttpRequest();\n" +
                             "xhr.onreadystatechange = function() {\n" +
                             "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                            "        console.log(readBody(xhr));\n" +
+                            "        alert(readBody(xhr));\n" +
                             "    }\n" +
                             "}\n" +
                             "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_overviews?town_id=" + town.getId() + "&action=claim_loads&h=" + town.getCsrftoken() + "&json=' +encodeURIComponent(JSON.stringify(" + buildTheVillagesString() + ")), true);\n" +
