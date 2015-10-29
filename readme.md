@@ -5,7 +5,7 @@ This is the source code and release for GrepolisBot. This is the ONLY location t
 GrepolisBot is licensed under [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ### Warning
-The bot is currently in beta! It requires Captain to work! Without Captain, it won't be able to load your towns. This will be fixed later on. However, farming will ONLY be allowed for people with captain. The bot does not check if you have this or not currently. You'll probably get banned if you enable farmers without captain
+The bot is currently in beta! It requires Captain to work! Without Captain, it won't be able to load your towns. This will be fixed later on. However, farming will ONLY be allowed for people with captain. The bot does not check if you have this or not currently. You'll probably get banned if you use this without captain!
 
 # Preview
 ![preview screenshot](http://i.imgur.com/U53xnun.png)
