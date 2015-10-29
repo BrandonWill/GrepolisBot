@@ -5,7 +5,7 @@ This is the source code and release for GrepolisBot. This is the ONLY location t
 GrepolisBot is licensed under [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 # Setup
-The bot is currently in beta! It requires Captain to work! Without Captain, it won't be able to load your towns. This will be fixed later on. However, farming will ONLY be allowed for people with captain.
+
 1. Update your java [here](https://java.com/en/download/). There is a HUGE difference between earlier versions of java for the browser.
 2. Extract the zip file above.
 3. The bot actions aren't programmed yet in an easily viewable manner. For now, if you want a similar logging system as Grepolis2Bot, you can start the bot via batch file rather than the .jar file.
