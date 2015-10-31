@@ -676,9 +676,15 @@ public class GrepolisBot extends JPanel {
                 obtainedCultureData = true;
                 while (true) {
 
+                    //enables input in case it's time to update. Don't want to call it every 250 ms while waiting.
+                    webView.setDisable(false);
+
                     do {
                         Thread.sleep(250);
                     } while (System.currentTimeMillis() < updateTime);
+
+                    //disables input. Decreases chance of a ban
+                    webView.setDisable(true);
 
                     Thread.sleep(randInt(1000, 1500));
 
@@ -691,6 +697,9 @@ public class GrepolisBot extends JPanel {
                         checkForCaptcha();
 
                         while (captchaDetected) {
+                            if (webView.isDisable()) {
+                                webView.setDisable(false);
+                            }
                             Thread.sleep(300);
                         }
 
@@ -737,12 +746,9 @@ public class GrepolisBot extends JPanel {
 
                         if (i+1 < towns.size()) {
                             new Thread(new TownSwitcher(towns.get(i+1))).start();
-//                            townSwitcher[0];
                         } else {
-                            //ensures we always start at the town we're supposed to be in!
                             System.out.println();
                             new Thread(new TownSwitcher(towns.get(0))).start();
-
                         }
 
                         do {
