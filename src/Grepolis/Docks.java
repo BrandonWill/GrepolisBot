@@ -139,7 +139,7 @@ public class Docks {
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/building_docks?town_id=" + town.getId() + "&action=build&h=" + town.getCsrftoken() + "&json=%7B%22unit_id%22%3A%22" + docksUnit.getUnitType().name() + "%22%2C%22amount%22%3A" + docksUnit.amountToBuild() + "%2C%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
-                System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " added " + docksUnit.amountToBuild() + " " + docksUnit.getUnitType().name() + " to queue!");
+                System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " added " + docksUnit.amountToBuild() + " " + docksUnit.getUnitType().inGameName + " to queue!");
             }
         });
 
