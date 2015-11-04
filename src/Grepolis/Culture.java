@@ -24,7 +24,7 @@ public class Culture {
             String events[] = html.substring(html.indexOf("place_box")).split("place_box");
             for (String string : events) {
 //                System.out.println("Event: " +string);
-                if (string.contains("place_party")) {
+                if (string.contains("place_party") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.party);
                     cultureEvent.setEnabled(true);
                     cultureEvent.setCanStart(string.contains("data-enabled=\\\"1\\\""));
@@ -33,7 +33,7 @@ public class Culture {
                     if (!hasCultureEvent(CultureEvent.CultureEventType.party)) {
                         cultureEvents.add(cultureEvent);
                     }
-                } else if (string.contains("place_games")) {
+                } else if (string.contains("place_games") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.games);
                     cultureEvent.setEventRunning(string.contains("There is a celebration in the city right now!"));
                     //TODO grab the user's gold to check
@@ -41,9 +41,9 @@ public class Culture {
                     if (!hasCultureEvent(CultureEvent.CultureEventType.games)) {
                         cultureEvents.add(cultureEvent);
                     }
-                } else if (string.contains("place_triumph")) {
+                } else if (string.contains("place_triumph") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.triumph);
-                    cultureEvent.setEnabled(false);
+                    cultureEvent.setEnabled(true);
                     cultureEvent.setCanStart(string.contains("data-enabled=\\\"1\\\""));
                     cultureEvent.setEventRunning(string.contains("A victory procession is being held right now!"));
                     cultureEvent.setEnoughResources(false);
@@ -51,7 +51,7 @@ public class Culture {
                     if (!hasCultureEvent(CultureEvent.CultureEventType.triumph)) {
                         cultureEvents.add(cultureEvent);
                     }
-                } else if (string.contains("place_theater")) {
+                } else if (string.contains("place_theater") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.theater);
                     //TODO add theater here sometime
                     cultureEvent.setEventRunning(false);
