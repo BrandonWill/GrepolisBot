@@ -43,7 +43,7 @@ public class Culture {
                     }
                 } else if (string.contains("place_triumph") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.triumph);
-                    cultureEvent.setEnabled(true);
+                    cultureEvent.setEnabled(false);
                     cultureEvent.setCanStart(string.contains("data-enabled=\\\"1\\\""));
                     cultureEvent.setEventRunning(string.contains("A victory procession is being held right now!"));
                     cultureEvent.setEnoughResources(false);
