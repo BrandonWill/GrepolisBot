@@ -1,10 +1,12 @@
 package Grepolis;
 
 import Grepolis.IO.Loader;
+import Grepolis.util.BrowserExtension;
 import com.sun.javafx.application.PlatformImpl;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +32,10 @@ import org.w3c.dom.html.HTMLCollection;
 import org.w3c.dom.html.HTMLFormElement;
 import org.w3c.dom.html.HTMLInputElement;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
 import javax.swing.Timer;
 
@@ -102,6 +108,32 @@ public class GrepolisBot extends JPanel {
      *
      */
     private void createScene() {
+        /*
+         * This trusts ALL certificates. This isn't something one should do normally!
+         * Since our browser only uses Grepolis, it's alright as long as they're not compromised.
+         * This is done because Grepolis Report Converter isn't a trusted website. This allows the images to be loaded on the forums.
+         */
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (GeneralSecurityException ignored) {}
+
         PlatformImpl.startup(new Runnable() {
             @Override
             public void run() {
@@ -239,8 +271,25 @@ public class GrepolisBot extends JPanel {
 
                     }
                 });
-
                 inputGrid.addRow(0, botDebugger);
+
+                Button GRC = new Button("Add GRC");
+                GRC.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+                    @Override
+                    public void handle(javafx.event.ActionEvent t) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                String GRC = BrowserExtension.loadGRC();
+                                if (GRC != null) {
+                                    webView.getEngine().executeScript(GRC);
+                                }
+                            }
+                        });
+
+                    }
+                });
+                inputGrid.addRow(0, GRC);
 
                 Button queueButton = new Button("Queue");
                 queueButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
@@ -910,7 +959,6 @@ public class GrepolisBot extends JPanel {
         return towns;
     }
 
-
     public static TextField getFxUsername() {
         return fxUsername;
     }
@@ -1065,6 +1113,7 @@ public class GrepolisBot extends JPanel {
 
 
     private void loadTowns(String text) {
+        ArrayList<Town> townList = new ArrayList<>();
         String townData[] = text.split("\"id\"");
 
         for (String aTownData : townData) {
@@ -1076,6 +1125,7 @@ public class GrepolisBot extends JPanel {
                 town.setName(importantData[1].split(":")[1].replaceAll("\"", ""));
                 town.setServer(server);
                 town.setCsrftoken(csrfToken);
+                townList.add(town);
 
                 if (!townAlreadyAdded(town)) {
                     towns.add(town);
@@ -1084,6 +1134,28 @@ public class GrepolisBot extends JPanel {
                 }
             }
         }
+
+        //Check to remove towns that have been lost!
+        //Don't want to destroy every town if there's an error loading them!
+        if (townList.size() > 0) {
+            //Can't modify array lists while searching through them
+            ArrayList<Town> lostTowns = new ArrayList<>();
+            for (Town town : towns) {
+                if (!ownTheTown(town, townList)) {
+                    lostTowns.add(town);
+                }
+            }
+
+            for (Town lostTown : lostTowns) {
+                Town townToRemove = getLostTown(lostTown.getId());
+                if (townToRemove != null) {
+                    towns.remove(townToRemove);
+                    System.out.println(townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
+                }
+
+            }
+        }
+
         //alphabetize the towns
         Collections.sort(towns, new Comparator<Town>() {
             @Override
@@ -1093,6 +1165,24 @@ public class GrepolisBot extends JPanel {
         });
         System.out.println("Towns found: " + towns.size());
         new Thread(new ActualBot()).start();
+    }
+
+    private boolean ownTheTown(Town town, ArrayList<Town> townList) {
+        for (Town currentTown : townList) {
+            if (town.getId() == currentTown.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Town getLostTown(int townID) {
+        for (Town town : towns) {
+            if (town.getId() == townID) {
+                return town;
+            }
+        }
+        return null;
     }
 
     //TODO separate this stuff into towns!

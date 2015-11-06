@@ -1,0 +1,4 @@
+Version 0.12
+* Now removes cities that are no longer in your possession
+* Added support for adding GRC directly from their website!
+* Added support for reading converted reports in alliance forums by default.
