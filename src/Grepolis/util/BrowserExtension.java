@@ -21,7 +21,7 @@ public class BrowserExtension {
     public static String loadGRC() {
         String GCRData = null;
         try {
-            URL GCR = new URL("http://www.grcrt.net/scripts/GrepolisReportConverterV2.user.js");
+            URL GCR = new URL("https://www.grcrt.net/scripts/GrepolisReportConverterV2.user.js");
             URLConnection connection = GCR.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;

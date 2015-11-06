@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.Reversed.reversed;
 
 /**
@@ -36,7 +37,7 @@ public class Docks {
                 if (string.contains("name:")) {
                     String data[] = string.split(",");
                     DocksUnit docksUnit = new DocksUnit();
-//                    System.out.println(Arrays.toString(data));
+//                    log(Arrays.toString(data));
                     docksUnit.setUnitType(DocksUnit.UnitType.valueOf(data[0]));
 
                     for (String actualData : data) {
@@ -83,11 +84,11 @@ public class Docks {
                         }
                         if (currentDocksUnit != null && data.contains("units_left:")) {
                             currentDocksUnit.setInQueue(currentDocksUnit.getInQueue() + Integer.parseInt(data.split(":")[1]));
-//                            System.out.println("Found a total of " +currentUnit.getInQueue() + " " +currentUnit.getUnitType().inGameName + " in queue");
+//                            log("Found a total of " +currentUnit.getInQueue() + " " +currentUnit.getUnitType().inGameName + " in queue");
                             queueCount++;
                         }
                     }
-//                    System.out.println("Queue data: " +queueData);
+//                    log("Queue data: " +queueData);
 
                 }
             }
@@ -139,7 +140,7 @@ public class Docks {
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/building_docks?town_id=" + town.getId() + "&action=build&h=" + town.getCsrftoken() + "&json=%7B%22unit_id%22%3A%22" + docksUnit.getUnitType().name() + "%22%2C%22amount%22%3A" + docksUnit.amountToBuild() + "%2C%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
-                System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " added " + docksUnit.amountToBuild() + " " + docksUnit.getUnitType().inGameName + " to queue!");
+                log(town.getName() + " added " + docksUnit.amountToBuild() + " " + docksUnit.getUnitType().inGameName + " to queue!");
             }
         });
 
@@ -166,10 +167,6 @@ public class Docks {
                 docksUnits.add(docksUnit);
             }
         }
-    }
-
-    public String getTimeOnly(String time) {
-        return time.split("T")[1] + " ";
     }
 
     public boolean hasUnit(DocksUnit.UnitType unitType) {

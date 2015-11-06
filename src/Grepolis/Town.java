@@ -11,6 +11,8 @@ import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.log;
+
 /**
  * @Author Brandon
  * Created by Brandon on 9/21/2015.
@@ -27,7 +29,6 @@ public class Town {
     private boolean isBuildingQueueFull;
     private boolean fullStorage = false;
     private Long timeToFarm = (long) 0;
-    private FarmAmount farmAmount = FarmAmount.MINUTES_FIVE;
     private String server;
     private String csrftoken;
 
@@ -37,15 +38,15 @@ public class Town {
         if (html.contains("BuildingMain.full_queue")) {
             isBuildingQueueFull = !html.contains("BuildingMain.full_queue = false");
         }
-//        System.out.println("Parsing html: ");
+//        log("Parsing html: ");
 
         if (html.contains("\"id")) {
 //            buildingList.clear();
-//            System.out.println("HTML contains id: ");
+//            log("HTML contains id: ");
             String[] buildings = html.split("\"id");
             for (int i =0; i < buildings.length; i++) {
                 if (buildings[i].contains("description")) {
-//                    System.out.println("Adding building" + i + ": " + buildings[i] + "\"id:\"");
+//                    log("Adding building" + i + ": " + buildings[i] + "\"id:\"");
 //                    String buildingID = buildings[i].substring(0, buildings[i].charAt('}')+1);
 //                    if (buildingsFixed.size() > 1) {
 //                        buildingsFixed.set(buildingsFixed.size() - 1, buildingsFixed.get(buildingsFixed.size() -1)+buildingID);
@@ -59,8 +60,8 @@ public class Town {
                                 building.setBuildingType(buildingType);
                                 building.setName(buildingType.name());
                                 building.setDescription(buildingType.description);
-//                            System.out.println("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
-//                            System.out.println("Building name: " +building.getName());
+//                            log("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
+//                            log("Building name: " +building.getName());
 //                            String buildingData[] = buildings[i].substring(0, buildings[i].indexOf("controller")).replaceAll("\\\\\"", "").split(",");
 
                                 String buildingData[] = buildings[i].replaceAll("\"", "").replaceAll("\\\\", "").split(",");
@@ -71,44 +72,44 @@ public class Town {
                                 // iron:1542},needed_resources_reduced:{wood:2250,stone:2249,iron:1157},enough_resources:true,enough_storage:true,pop:6,pop_tear_down:6,
                                 // build_time:2:28:46,tear_down_time:2:14:13,
                                 for (String data : buildingData) {
-//                                System.out.println("Data: " +data);
+//                                log("Data: " +data);
                                     if (data.startsWith("level:")) {
                                         if (!data.contains("null")) {
                                             building.setLevel(Integer.parseInt(data.split(":")[1]));
-//                                        System.out.println("level: " + building.getLevel());
+//                                        log("level: " + building.getLevel());
                                         }
                                     }
                                     if (data.startsWith("current_level")) {
                                         building.setCurrentLevel(Integer.parseInt(data.split(":")[1]));
-//                                    System.out.println("Current level: " +building.getCurrentLevel());
+//                                    log("Current level: " +building.getCurrentLevel());
                                     }
                                     if (data.startsWith("next_level")) {
                                         building.setNextLevel(Integer.parseInt(data.split(":")[1]));
-//                                    System.out.println("Next level: " +building.getNextLevel());
+//                                    log("Next level: " +building.getNextLevel());
                                     }
                                     if (data.startsWith("can_upgrade:")) {
                                         building.setCan_upgrade(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Can upgrade: " +building.canUpgrade());
+//                                    log("Can upgrade: " +building.canUpgrade());
                                     }
                                     if (data.startsWith("enough_population")) {
                                         building.setEnough_population(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough population: " +building.hasEnoughPopulation());
+//                                    log("Enough population: " +building.hasEnoughPopulation());
                                     }
                                     if (data.startsWith("max_level")) {
                                         building.setMax_level(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Max level: " +building.isMaxLevel());
+//                                    log("Max level: " +building.isMaxLevel());
                                     }
                                     if (data.startsWith("can_tear_down")) {
                                         building.setCan_tear_down(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Can tear down: " +building.canTearDown());
+//                                    log("Can tear down: " +building.canTearDown());
                                     }
                                     if (data.startsWith("enough_resources")) {
                                         building.setEnough_resources(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough resources: " +building.hasEnoughResources());
+//                                    log("Enough resources: " +building.hasEnoughResources());
                                     }
                                     if (data.startsWith("enough_storage")) {
                                         building.setEnough_storage(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough storage: " +building.hasEnoughStorage());
+//                                    log("Enough storage: " +building.hasEnoughStorage());
                                     }
                                 }
                                 buildingList.add(building);
@@ -117,8 +118,8 @@ public class Town {
                                 Building building = getBuilding(buildingType);
                                 building.setName(buildingType.name());
                                 building.setDescription(buildingType.description);
-//                            System.out.println("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
-//                            System.out.println("Building name: " +building.getName());
+//                            log("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
+//                            log("Building name: " +building.getName());
 //                            String buildingData[] = buildings[i].substring(0, buildings[i].indexOf("controller")).replaceAll("\\\\\"", "").split(",");
 
                                 String buildingData[] = buildings[i].replaceAll("\"", "").replaceAll("\\\\", "").split(",");
@@ -129,44 +130,44 @@ public class Town {
                                 // iron:1542},needed_resources_reduced:{wood:2250,stone:2249,iron:1157},enough_resources:true,enough_storage:true,pop:6,pop_tear_down:6,
                                 // build_time:2:28:46,tear_down_time:2:14:13,
                                 for (String data : buildingData) {
-//                                System.out.println("Data: " +data);
+//                                log("Data: " +data);
                                     if (data.startsWith("level:")) {
                                         if (!data.contains("null")) {
                                             building.setLevel(Integer.parseInt(data.split(":")[1]));
-//                                        System.out.println("level: " + building.getLevel());
+//                                        log("level: " + building.getLevel());
                                         }
                                     }
                                     if (data.startsWith("current_level")) {
                                         building.setCurrentLevel(Integer.parseInt(data.split(":")[1]));
-//                                    System.out.println("Current level: " +building.getCurrentLevel());
+//                                    log("Current level: " +building.getCurrentLevel());
                                     }
                                     if (data.startsWith("next_level")) {
                                         building.setNextLevel(Integer.parseInt(data.split(":")[1]));
-//                                    System.out.println("Next level: " +building.getNextLevel());
+//                                    log("Next level: " +building.getNextLevel());
                                     }
                                     if (data.startsWith("can_upgrade:")) {
                                         building.setCan_upgrade(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Can upgrade: " +building.canUpgrade());
+//                                    log("Can upgrade: " +building.canUpgrade());
                                     }
                                     if (data.startsWith("enough_population")) {
                                         building.setEnough_population(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough population: " +building.hasEnoughPopulation());
+//                                    log("Enough population: " +building.hasEnoughPopulation());
                                     }
                                     if (data.startsWith("max_level")) {
                                         building.setMax_level(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Max level: " +building.isMaxLevel());
+//                                    log("Max level: " +building.isMaxLevel());
                                     }
                                     if (data.startsWith("can_tear_down")) {
                                         building.setCan_tear_down(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Can tear down: " +building.canTearDown());
+//                                    log("Can tear down: " +building.canTearDown());
                                     }
                                     if (data.startsWith("enough_resources")) {
                                         building.setEnough_resources(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough resources: " +building.hasEnoughResources());
+//                                    log("Enough resources: " +building.hasEnoughResources());
                                     }
                                     if (data.startsWith("enough_storage")) {
                                         building.setEnough_storage(Boolean.parseBoolean(data.split(":")[1]));
-//                                    System.out.println("Enough storage: " +building.hasEnoughStorage());
+//                                    log("Enough storage: " +building.hasEnoughStorage());
                                     }
                                 }
                             }
@@ -175,13 +176,13 @@ public class Town {
                 }
             }
 //            for (Building building : buildingList) {
-//                System.out.println("Found " +building.getName());
+//                log("Found " +building.getName());
 //            }
 //            if (buildingList.size() == 22) {
-//                System.out.println("All buildings found");
+//                log("All buildings found");
 //            }
 //            for (String buildingParsed : buildingsFixed) {
-//                System.out.println("Parsed: " +buildingParsed);
+//                log("Parsed: " +buildingParsed);
 //            }
         }
         return true;
@@ -209,42 +210,6 @@ public class Town {
         this.fullStorage = value;
     }
 
-    public void setFullStorage(String townData) {
-//                                System.out.println("Town ID: " +getId() + "... Resource[0] string: " +resources[0]);
-//                        System.out.println("town id found: " +resources[0].substring(resources[0].indexOf(getId() + "")));
-        System.out.println("Current town: " + getId());
-        System.out.println("Data: " +townData);
-        String resourceString = townData.substring(townData.indexOf(getId() + ""));
-//                        System.out.println("resource string original: " + resourceString);
-        String storageString = resourceString.substring(resourceString.indexOf("\"storage_volume\":"));
-        resourceString = resourceString.substring(resourceString.indexOf("resources_last_update"), resourceString.indexOf("island_id"));
-        resourceString = resourceString.replaceAll("\"", "");
-        //.substring(resources[0].indexOf("resources_last_update"), resources[0].indexOf("island_id"))
-//                        System.out.println("Resource string: " +resourceString);
-        int wood = 0;
-        int stone = 0;
-        int iron = 0;
-        for (String resource : resourceString.split(",")) {
-
-            if (resource.contains("wood")) {
-                wood = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Wood: " + wood);
-            }
-            if (resource.contains("stone")) {
-                stone = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Stone: " + stone);
-            }
-            if (resource.contains("iron")) {
-                iron = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Iron: " + iron);
-            }
-        }
-//                        System.out.println("Storage string: " +storageString);
-        storageString = storageString.substring(0, storageString.indexOf(","));
-        int storage = Integer.parseInt(storageString.split(":")[1]);
-        fullStorage = (wood == storage) && (stone == storage) && (iron == storage);
-    }
-
     public boolean hasFullStorage() {
         return fullStorage;
     }
@@ -259,14 +224,6 @@ public class Town {
 
     public void setTimeToFarm(Long timeToFarm) {
         this.timeToFarm = timeToFarm;
-    }
-
-    public FarmAmount getFarmAmount() {
-        return farmAmount;
-    }
-
-    public void setFarmAmount(FarmAmount farmAmount) {
-        this.farmAmount = farmAmount;
     }
 
     public boolean buildABuilding() {
@@ -337,7 +294,7 @@ public class Town {
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send({\"model_url\":\"BuildingOrder\",\"action_name\":\"buildUp\",\"arguments\":{\"building_id\":\"" + building.getName() + "\"},\"town_id\":" +getId()+ ",\"nl_init\":true});");
 //                GrepolisBot.webView.getEngine().executeScript("BuildingMain.buildBuilding('" + building.getName() + "'," + buildingLevel + ")");
-                System.out.println(getTimeOnly(LocalDateTime.now().toString()) + " " + name + " " +building.getBuildingType().inGameName + " has been added to the building queue!");
+                log(name + " " + building.getBuildingType().inGameName + " has been added to the building queue!");
             }
         });
         return true;
@@ -365,10 +322,6 @@ public class Town {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getTimeOnly(String time) {
-        return time.split("T")[1];
     }
 
     public ArrayList<Building> getBuildingList() {
@@ -415,19 +368,5 @@ public class Town {
         this.farming = farming;
     }
 
-    public enum FarmAmount {
-        MINUTES_FIVE("fto_time_checkbox fto_300"),
-        MINUTES_TEN("fto_time_checkbox fto_600"),
-        MINUTES_TWENTY("fto_time_checkbox fto_1200"),
-        MINUTES_FORTY("fto_time_checkbox fto_2400"),
-        MINUTES_NINETY("fto_time_checkbox fto_5400"),
-        MINUTES_ONE_HUNDRED_EIGHTY("fto_time_checkbox fto_10800"),
-        MINUTES_TWO_HUNDRED_FORTY("fto_time_checkbox fto_14400"),
-        MINUTES_FOUR_HUNDRED_EIGHTY("fto_time_checkbox fto_28800");
 
-        String javascriptVariable;
-        FarmAmount(String javascriptVariable) {
-            this.javascriptVariable = javascriptVariable;
-        }
-    }
 }

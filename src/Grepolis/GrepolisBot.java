@@ -2,6 +2,7 @@ package Grepolis;
 
 import Grepolis.IO.Loader;
 import Grepolis.util.BrowserExtension;
+import Grepolis.util.MyLogger;
 import com.sun.javafx.application.PlatformImpl;
 
 import java.awt.*;
@@ -10,6 +11,7 @@ import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -40,6 +42,8 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 import static Grepolis.IO.Saver.*;
+import static Grepolis.util.MyLogger.log;
+import static Grepolis.util.MyLogger.logError;
 
 public class GrepolisBot extends JPanel {
 
@@ -71,6 +75,7 @@ public class GrepolisBot extends JPanel {
 
     public static void main(String ...args){
         // Run this later:
+        new MyLogger();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -145,7 +150,7 @@ public class GrepolisBot extends JPanel {
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
                 webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
-                System.out.println("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
+                log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
                 final BooleanProperty ran = new SimpleBooleanProperty(false);
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
@@ -176,7 +181,7 @@ public class GrepolisBot extends JPanel {
                                         username.setValue(fxUsername.getText());
                                         password.setValue(fxPassword.getText());
 
-                                        System.out.println("Logging in");
+                                        log("Logging in");
                                         Platform.runLater(new Runnable() {
                                             @Override
                                             public void run() {
@@ -185,7 +190,7 @@ public class GrepolisBot extends JPanel {
                                         });
 
 
-                                        System.out.println("Selecting world");
+                                        log("Selecting world");
                                         int delay = 2000;
 
                                         ActionListener taskPerformer = new ActionListener() {
@@ -211,7 +216,7 @@ public class GrepolisBot extends JPanel {
                 engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
                     @Override
                     public void changed(ObservableValue<? extends Throwable> ov, Throwable oldException, Throwable exception) {
-                        System.out.println("Load Exception: " + exception);
+                        logError(exception);
                     }
                 });
 
@@ -251,7 +256,7 @@ public class GrepolisBot extends JPanel {
                     public void handle(javafx.event.ActionEvent t) {
                         addAlerts();
                         defaultTown = getDefaultTownID();
-                        System.out.println(getTimeOnly(LocalDateTime.now().toString()) + " Bot enabled");
+                        log("Bot enabled");
                         new Thread(new Startup()).start();
                         new Thread(new TitleUpdater()).start();
                         startBot.setDisable(true);
@@ -376,10 +381,6 @@ public class GrepolisBot extends JPanel {
         return word;
     }
 
-    public String getTimeOnly(String time) {
-        return time.split("T")[1] + " ";
-    }
-
     private boolean builtBarracksTroops = false;
 
     public class BuildBarracksTroops implements Runnable {
@@ -430,7 +431,7 @@ public class GrepolisBot extends JPanel {
 
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -486,7 +487,7 @@ public class GrepolisBot extends JPanel {
 
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -527,7 +528,7 @@ public class GrepolisBot extends JPanel {
                 });
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -564,7 +565,7 @@ public class GrepolisBot extends JPanel {
                     }
                 });
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -616,13 +617,13 @@ public class GrepolisBot extends JPanel {
                         }
                     });
                 } else {
-                    System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " Farmers aren't ready!");
+                    log(town.getName() + " Farmers aren't ready!");
                     farmedTheTown = true;
                 }
 
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -684,7 +685,7 @@ public class GrepolisBot extends JPanel {
             town1.setServer(server);
             town1.setCsrftoken(csrfToken);
             if (town1.getId() == townID && !town1.getName().equals(name)) {
-                System.out.println("Updating town name from " +town1.getName() + " to " +name);
+                log("Updating town name from " + town1.getName() + " to " +name);
                 town1.setName(name);
                 return true;
             }
@@ -702,11 +703,11 @@ public class GrepolisBot extends JPanel {
                 for (String string : html[0].split(",")) {
                     if (string.contains("csrfToken") && csrfToken == null) {
                         csrfToken = string.split(":")[1].replaceAll("\"", "");
-                        System.out.println("csrftoken: " +csrfToken);
+                        log("csrftoken: " +csrfToken);
                     }
                     if (string.contains("\"townId\":")) {
                         townID[0] = Integer.parseInt(string.split(":")[1].replaceAll("\"", ""));
-                        System.out.println("Default town: " +townID[0]);
+                        log("Default town: " +townID[0]);
                     }
                 }
             }
@@ -796,7 +797,7 @@ public class GrepolisBot extends JPanel {
                         if (i+1 < towns.size()) {
                             new Thread(new TownSwitcher(towns.get(i+1))).start();
                         } else {
-                            System.out.println();
+                            log("\n");
                             new Thread(new TownSwitcher(towns.get(0))).start();
                         }
 
@@ -808,7 +809,7 @@ public class GrepolisBot extends JPanel {
                     updateTime = getUpdateTime();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logError(e);
             }
         }
     }
@@ -859,7 +860,7 @@ public class GrepolisBot extends JPanel {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logError(e);
                     }
                     canContinue = true;
                 }
@@ -944,7 +945,7 @@ public class GrepolisBot extends JPanel {
             public void run() {
                 String html = (String) webView.getEngine().executeScript("document.documentElement.innerHTML");
                 if (html.contains("id=\"captcha_curtain\"")) {
-                    System.out.println("Captcha detected! Pausing bot shortly");
+                    log(Level.SEVERE, "Captcha detected! Pausing bot shortly");
                     captchaDetected = true;
                 }
             }
@@ -1021,7 +1022,7 @@ public class GrepolisBot extends JPanel {
                             if (data.contains("TownLoaderData:200")) {
                                 loadTowns(data);
                             } else {
-                                System.out.println("Error! Can't find the towns! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the towns! Error log: " + event.getData());
                             }
                         }
                         //builds the buildings
@@ -1031,13 +1032,13 @@ public class GrepolisBot extends JPanel {
                                 if (currentTown.buildABuilding()) {
                                     builtTheBuildings = true;
                                 } else {
-                                    System.out.println(getTimeOnly(LocalDateTime.now().toString()) + currentTown.getName() + " Nothing to build or building queue is full!");
+                                    log(currentTown.getName() + " Nothing to build or building queue is full!");
                                     builtTheBuildings = true;
                                 }
 
                             } else {
                                 builtTheBuildings = true;
-                                System.out.println("Error! Can't find the Buildings! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the Buildings! Error log: " + event.getData());
                             }
                         }
                         //Starts a culture event
@@ -1048,7 +1049,7 @@ public class GrepolisBot extends JPanel {
                                 obtainedCultureData = true;
                             } else {
                                 obtainedCultureData = true;
-                                System.out.println("Error! Can't find the culture data! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the culture data! Error log: " + event.getData());
                             }
                         }
                         //reads the docks data and builds a unit
@@ -1059,7 +1060,7 @@ public class GrepolisBot extends JPanel {
                                 builtDocksTroops = true;
                             } else {
                                 builtDocksTroops = true;
-                                System.out.println("Error! Can't find the docks data! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the docks data! Error log: " + event.getData());
                             }
                         }
                         //reads the barracks data and builds a unit
@@ -1070,7 +1071,7 @@ public class GrepolisBot extends JPanel {
                                 builtBarracksTroops = true;
                             } else {
                                 builtBarracksTroops = true;
-                                System.out.println("Error! Can't find the barracks data! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the barracks data! Error log: " + event.getData());
                             }
                         }
                         //Update the farm data
@@ -1078,7 +1079,7 @@ public class GrepolisBot extends JPanel {
                             if (data.contains("FarmData:200")) {
                                 currentTown.getFarming().parseHTML(data);
                             } else {
-                                System.out.println("Error! Can't find the farm data! Error log: " +event.getData());
+                                log(Level.SEVERE, "Error! Can't find the farm data! Error log: " + event.getData());
                             }
                         }
                         //loads the farming villages and farms them
@@ -1090,18 +1091,18 @@ public class GrepolisBot extends JPanel {
                                     currentTown.setTimeToFarm(currentTime + TimeUnit.MINUTES.toMillis(5) + TimeUnit.SECONDS.toMillis(15));
 
                                     if (currentTown.getFarming().farmTheVillages()) {
-                                        System.out.println(getTimeOnly(LocalDateTime.now().toString()) + currentTown.getName() + " has successfully farmed the villages!");
+                                        log(currentTown.getName() + " has successfully farmed the villages!");
                                     } else {
-                                        System.out.println(getTimeOnly(LocalDateTime.now().toString()) + currentTown.getName() + " No farmers available!");
+                                        log(currentTown.getName() + " No farmers available!");
                                     }
                                     farmedTheTown = true;
                                 } else {
-                                    System.out.println(getTimeOnly(LocalDateTime.now().toString()) + currentTown.getName() + " Farmers disabled. Warehouse is full.");
+                                    log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
                                     farmedTheTown = true;
                                 }
 
                             } else {
-                                System.out.println("Error! Can't find the farming villages data! Error log: " + event.getData());
+                                log(Level.SEVERE, "Error! Can't find the farming villages data! Error log: " + event.getData());
                             }
                         }
                     }
@@ -1150,7 +1151,7 @@ public class GrepolisBot extends JPanel {
                 Town townToRemove = getLostTown(lostTown.getId());
                 if (townToRemove != null) {
                     towns.remove(townToRemove);
-                    System.out.println(townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
+                    log(Level.WARNING, townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
                 }
 
             }
@@ -1163,7 +1164,7 @@ public class GrepolisBot extends JPanel {
                 return (town1.getName().compareTo(town2.getName()));
             }
         });
-        System.out.println("Towns found: " + towns.size());
+        log("Towns found: " + towns.size());
         new Thread(new ActualBot()).start();
     }
 

@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.log;
+
 /**
  * @Author Brandon
  * Created by Brandon on 10/11/2015.
@@ -14,7 +16,6 @@ public class Culture {
     private Town town;
     private ArrayList<CultureEvent> cultureEvents = new ArrayList<>();
 
-
     public Culture(Town town) {
         this.town = town;
     }
@@ -23,7 +24,7 @@ public class Culture {
         if (html.contains("place_box")) {
             String events[] = html.substring(html.indexOf("place_box")).split("place_box");
             for (String string : events) {
-//                System.out.println("Event: " +string);
+//                log("Event: " +string);
                 if (string.contains("place_party") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.party);
                     cultureEvent.setEnabled(true);
@@ -89,7 +90,7 @@ public class Culture {
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/building_place?town_id=" + town.getId() +"&action=start_celebration&h=" + town.getCsrftoken() + "&json=%7B%22celebration_type%22%3A%22" + cultureEvent.getCultureEventType().name() +"%22%2C%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send({\"celebration_type\":\"" + cultureEvent.getCultureEventType().name() + "\",\"town_id\":62795,\"nl_init\":true});");
-                        System.out.println(getTimeOnly(LocalDateTime.now().toString()) + town.getName() + " started the culture event " +cultureEvent.getCultureEventType().inGameName +"!");
+                        log(town.getName() + " started the culture event " + cultureEvent.getCultureEventType().inGameName + "!");
                 //https://####.grepolis.com/game/building_place?town_id=#####&action=start_celebration&h=###########
                 //{"celebration_type":"games","town_id":xxxxx,"nl_init":true}
             }

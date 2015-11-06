@@ -16,6 +16,8 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.logError;
+
 /**
  *
  * @author Brandon
@@ -1988,7 +1990,7 @@ public class QueueGUI extends javax.swing.JFrame {
         try {
             jarFile = new File(codeSource.getLocation().toURI().getPath());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logError(e);
         }
         String jarDir = null;
         if (jarFile != null) {

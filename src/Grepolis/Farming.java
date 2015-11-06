@@ -4,6 +4,9 @@ import javafx.application.Platform;
 
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.log;
+import static Grepolis.util.MyLogger.logError;
+
 /**
  * @Author Brandon
  * Created by Brandon on 10/16/2015.
@@ -27,13 +30,13 @@ public class Farming {
     }
 
     public void parseHTML(String townData) {
-//                                System.out.println("Town ID: " +getId() + "... Resource[0] string: " +resources[0]);
-//                        System.out.println("town id found: " +resources[0].substring(resources[0].indexOf(getId() + "")));
+//                                log("Town ID: " +getId() + "... Resource[0] string: " +resources[0]);
+//                        log("town id found: " +resources[0].substring(resources[0].indexOf(getId() + "")));
         String townString = townData.substring(townData.indexOf(town.getId() + ""));
         String storageString = townString.substring(townString.indexOf("\"storage_volume\":"));
 
         String currentTownData = null;
-//        System.out.println("Town string: " +townString);
+//        log("Town string: " +townString);
         for (String data : townString.split("\"id\"")) {
             if (data.contains(String.valueOf(town.getId()))) {
                 currentTownData = data;
@@ -42,27 +45,27 @@ public class Farming {
         }
 
         if (currentTownData != null) {
-//            System.out.println("Current town data: " +currentTownData);
+//            log("Current town data: " +currentTownData);
             for (String data : currentTownData.split(",")) {
                 if (data.contains("\"island_x\":")) {
                     island_x = Integer.parseInt(data.split(":")[1]);
-//                    System.out.println("island_x:" +island_x);
+//                    log("island_x:" +island_x);
                 }
                 if (data.contains("\"island_y\":")) {
                     island_y = Integer.parseInt(data.split(":")[1]);
-//                    System.out.println("island_y:" +island_y);
+//                    log("island_y:" +island_y);
                 }
                 if (data.contains("\"booty\":")) {
                     booty = Boolean.parseBoolean(data.split(":")[1]);
-//                    System.out.println("booty researched: " +booty);
+//                    log("booty researched: " +booty);
                 }
                 if (data.contains("\"diplomacy_researched\":")) {
                     diplomacy = Boolean.parseBoolean(data.split(":")[1]);
-//                    System.out.println("diplomacy researched: " +diplomacy);
+//                    log("diplomacy researched: " +diplomacy);
                 }
                 if (data.contains("\"trade_office\":") ) {
                     trade_office = Integer.parseInt(data.split(":")[1]);
-//                    System.out.println("trade_office level: " +trade_office);
+//                    log("trade_office level: " +trade_office);
                 }
             }
         }
@@ -75,28 +78,28 @@ public class Farming {
             String resourceString = townString.substring(townString.indexOf("resources_last_update"), townString.indexOf("island_id"));
             resourceString = resourceString.replaceAll("\"", "");
             //.substring(resources[0].indexOf("resources_last_update"), resources[0].indexOf("island_id"))
-//                        System.out.println("Resource string: " +resourceString);
+//                        log("Resource string: " +resourceString);
 
             for (String resource : resourceString.split(",")) {
 
                 if (resource.contains("wood")) {
                     wood = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Wood: " + wood);
+//                                log("Wood: " + wood);
                 }
                 if (resource.contains("stone")) {
                     stone = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Stone: " + stone);
+//                                log("Stone: " + stone);
                 }
                 if (resource.contains("iron")) {
                     iron = Integer.parseInt(resource.split(":")[1]);
-//                                System.out.println("Iron: " + iron);
+//                                log("Iron: " + iron);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Can't load town resources");
+            logError(e);
+            log("Can't load town resources");
         }
-//                        System.out.println("Storage string: " +storageString);
+//                        log("Storage string: " +storageString);
 
 
 
@@ -105,8 +108,8 @@ public class Farming {
             int storage = Integer.parseInt(storageString.split(":")[1]);
             town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
         } catch (Exception e) {
-            System.out.println("Can't load town storage");
-            e.printStackTrace();
+            logError(e);
+            log("Can't load town storage");
         }
         loadFarmingVillages();
     }
@@ -136,7 +139,7 @@ public class Farming {
                         "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_overviews?town_id=" + town.getId() + "&action=get_farm_towns_for_town&h=" + town.getCsrftoken() + "d&json=%7B%22island_x%22%3A" + island_x + "%2C%22island_y%22%3A" + island_y + "%2C%22booty_researched%22%3A" + boolToString(booty) +"%2C%22trade_office%22%3A" + trade_office + "%2C%22diplomacy_researched%22%3A" + boolToString(diplomacy) +"%2C%22town_id%22%3A" + town.getId() +"%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
-//                System.out.println("Loading farming villages!");
+//                log("Loading farming villages!");
             }
         });
     }
@@ -146,27 +149,27 @@ public class Farming {
     }
 
     public void parseVillageData(String villagesData) {
-//        System.out.println("In village data! " +villagesData);
+//        log("In village data! " +villagesData);
         if (villagesData.contains("[{")) {
             String allData = villagesData;
             farmingVillages.clear();
             villagesData = villagesData.substring(villagesData.indexOf("[{"), villagesData.indexOf("}]"));
             String villages[] = villagesData.split("\\{");
             for (String village : villages) {
-//                System.out.println("found village data: " +village);
+//                log("found village data: " +village);
                 FarmingVillage farmingVillage = new FarmingVillage();
                 for (String data : village.split(",")) {
                     if (data.contains("\"id\"")) {
                         farmingVillage.setId(Integer.parseInt(data.split(":")[1]));
                         farmingVillage.setCanFarm(allData.contains("farm_town_" + farmingVillage.getId() +" checked"));
-//                        System.out.println("id:" +farmingVillage.getId());
+//                        log("id:" +farmingVillage.getId());
                     }
                     if (data.contains("name")) {
                         farmingVillage.setName(data.split(":")[1]);
                     }
                     if (data.contains("mood")) {
                         farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
-//                        System.out.println("mood:" +farmingVillage.getMood());
+//                        log("mood:" +farmingVillage.getMood());
                     }
                     if (data.contains("lootable_human")) {
                         //saves if it's been looted or not.
@@ -174,11 +177,11 @@ public class Farming {
                     }
                     if (data.contains("\"loot\"")) {
                         farmingVillage.setLoot(data.contains("null"));
-//                        System.out.println("loot: " +farmingVillage.isLoot());
+//                        log("loot: " +farmingVillage.isLoot());
                     }
                     if (data.contains("\"rel\":")) {
                         farmingVillage.setRel(data.contains("\"rel\":1"));
-//                        System.out.println("loot: " +farmingVillage.isLoot());
+//                        log("loot: " +farmingVillage.isLoot());
                     }
 
                 }
@@ -249,7 +252,7 @@ public class Farming {
 
         sb.append(",\"nl_init\":true}");
 
-//        System.out.println("sb.toString(): " +sb.toString());
+//        log("sb.toString(): " +sb.toString());
 
         return sb.toString();
     }
