@@ -77,10 +77,4 @@ public class MyLogger {
         }
     }
 
-    public static void main(String args[]) {
-        new MyLogger();
-        log("Testing 1");
-        log("\n");
-        log(Level.WARNING, "Testing 2");
-    }
 }
