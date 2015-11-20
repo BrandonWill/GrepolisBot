@@ -1,5 +1,6 @@
 Version 0.13
 * Updating the logging system so that it's centralized. Timestamps everywhere! (also easily to add to GUI later on)
+* Queue will now remember your previously selected town
 
 Version 0.12
 * Now removes cities that are no longer in your possession

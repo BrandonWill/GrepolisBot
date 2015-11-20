@@ -107,6 +107,7 @@ public class Farming {
             storageString = storageString.substring(0, storageString.indexOf(","));
             int storage = Integer.parseInt(storageString.split(":")[1]);
             town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
+//            log("Storage: " + storage + " full: " + ((wood == storage) && (stone == storage) && (iron == storage)));
         } catch (Exception e) {
             logError(e);
             log("Can't load town storage");

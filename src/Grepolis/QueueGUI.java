@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
+import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
 
 /**
@@ -24,6 +25,7 @@ import static Grepolis.util.MyLogger.logError;
  */
 public class QueueGUI extends javax.swing.JFrame {
     private ArrayList<Town> towns;
+    private static int currentTownIndex = -1;
 
     public QueueGUI(ArrayList<Town> townList) {
         this.towns = townList;
@@ -34,11 +36,15 @@ public class QueueGUI extends javax.swing.JFrame {
         jComboBox1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                currentTownIndex = jComboBox1.getSelectedIndex();
                 changeTown(towns.get(jComboBox1.getSelectedIndex()));
             }
         });
         initComponents();
-        if (townList.size() > 0) {
+        if (currentTownIndex != -1) {
+            jComboBox1.setSelectedIndex(currentTownIndex);
+            changeTown(townList.get(currentTownIndex));
+        }else if (townList.size() > 0) {
             changeTown(townList.get(0));
         }
     }
@@ -1913,6 +1919,7 @@ public class QueueGUI extends javax.swing.JFrame {
         int currentIndex = jComboBox1.getSelectedIndex();
         if (currentIndex+1 < size) {
             jComboBox1.setSelectedIndex(currentIndex+1);
+            currentTownIndex = currentIndex+1;
             changeTown(towns.get(currentIndex+1));
         }
     }
@@ -1921,6 +1928,7 @@ public class QueueGUI extends javax.swing.JFrame {
         int currentIndex = jComboBox1.getSelectedIndex();
         if (currentIndex-1 >= 0) {
             jComboBox1.setSelectedIndex(currentIndex-1);
+            currentTownIndex = currentIndex-1;
             changeTown(towns.get(currentIndex-1));
         }
     }
