@@ -1,13 +1,7 @@
 package Grepolis.util;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Objects;
 import java.util.logging.*;
 
@@ -59,12 +53,11 @@ public class MyLogger {
         if (time < 10) {
             currentTime = "0" + time;
         }
-        return  currentTime;
+        return currentTime;
     }
 
     public static void log(Level level, String msg){
         logger.log(level, msg);
-//        System.out.println(msg);
     }
 
     public static void log(String msg) {

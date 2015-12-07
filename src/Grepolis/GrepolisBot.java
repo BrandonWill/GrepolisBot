@@ -33,6 +33,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.html.HTMLCollection;
 import org.w3c.dom.html.HTMLFormElement;
 import org.w3c.dom.html.HTMLInputElement;
+import sun.plugin.dom.html.HTMLButtonElement;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -149,70 +150,79 @@ public class GrepolisBot extends JPanel {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36");
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
                 final BooleanProperty ran = new SimpleBooleanProperty(false);
-                engine.documentProperty().addListener(new ChangeListener<Document>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Document> ov, Document oldDoc, Document doc) {
-                        if (doc != null && !loginAttempted.get()) {
-                            if (doc.getElementsByTagName("form").getLength() > 0) {
-                                HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
-                                if ("/start?action=login_to_game_world".equals(form.getAttribute("action"))) {
-                                    HTMLInputElement username = null;
-                                    HTMLInputElement password = null;
-                                    HTMLCollection nodes = form.getElements();
-                                    for (int i = 0; i < nodes.getLength(); i++) {
-                                        HTMLInputElement input = (HTMLInputElement) nodes.item(i);
-                                        switch (input.getName()) {
-                                            case "name":
-                                                username = input;
-                                                break;
-                                            case "password":
-                                                password = input;
-                                                break;
-                                        }
-                                    }
-
-                                    if (username != null && password != null && !ran.getValue()) {
-                                        ran.set(true);
-                                        loginAttempted.set(true);
-                                        username.setValue(fxUsername.getText());
-                                        password.setValue(fxPassword.getText());
-
-                                        log("Logging in");
-                                        Platform.runLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                engine.executeScript("document.getElementsByClassName('button')[0].click()");
-                                            }
-                                        });
-
-
-                                        log("Selecting world");
-                                        int delay = 2000;
-
-                                        ActionListener taskPerformer = new ActionListener() {
-                                            public void actionPerformed(ActionEvent evt) {
-                                                if (!loggedIn) {
-                                                    Platform.runLater(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            engine.load("https://" + server.substring(0, 2) + ".grepolis.com/start/index?world_id=" + server + "&action=login_on_new_world");
-                                                            loggedIn = true;
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        };
-                                        new Timer(delay, taskPerformer).start();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+//                engine.documentProperty().addListener(new ChangeListener<Document>() {
+//                    @Override
+//                    public void changed(ObservableValue<? extends Document> ov, Document oldDoc, Document doc) {
+//                        if (doc != null && !loginAttempted.get()) {
+//                            if (doc.getElementsByTagName("form").getLength() > 0) {
+//                                HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
+//                                if ("/glps/login_check".equals(form.getAttribute("action"))) {
+//                                    HTMLInputElement username = null;
+//                                    HTMLInputElement password = null;
+//                                    com.sun.webkit.dom.HTMLInputElementImpl button = null;
+//                                    HTMLCollection nodes = form.getElements();
+//                                    for (int i = 0; i < nodes.getLength(); i++) {
+//                                        System.out.println("node name: " + nodes.item(i).getNodeName());
+//                                        button = (com.sun.webkit.dom.HTMLInputElementImpl) nodes.item(i);
+//                                        if (nodes.item(i).getNodeName().equals("INPUT")) {
+//                                            HTMLInputElement input = (HTMLInputElement) nodes.item(i);
+//                                            switch (input.getName()) {
+//                                                case "login[userid]":
+//                                                    username = input;
+//                                                    break;
+//                                                case "login[password]":
+//                                                    password = input;
+//                                                    break;
+//                                            }
+//                                        }
+//                                        if (nodes.item(i).getNodeName().equals("BUTTON")) {
+//                                            button = (com.sun.webkit.dom.HTMLInputElementImpl) nodes.item(i);
+//                                        }
+//                                    }
+//
+//                                    if (username != null && password != null && !ran.getValue()) {
+//                                        ran.set(true);
+//                                        loginAttempted.set(true);
+//                                        username.setValue(fxUsername.getText());
+//                                        password.setValue(fxPassword.getText());
+////                                        button.select();
+//
+////                                        log("Logging in");
+////                                        Platform.runLater(new Runnable() {
+////                                            @Override
+////                                            public void run() {
+////                                                engine.executeScript("document.getElementById('login_Login').click()");
+////                                            }
+////                                        });
+//
+//
+//                                        log("Selecting world");
+//                                        int delay = 5000;
+//
+//                                        ActionListener taskPerformer = new ActionListener() {
+//                                            public void actionPerformed(ActionEvent evt) {
+//                                                if (!loggedIn) {
+//                                                    Platform.runLater(new Runnable() {
+//                                                        @Override
+//                                                        public void run() {
+//                                                            engine.load("https://" + server.substring(0, 2) + ".grepolis.com/start/index?world_id=" + server + "&action=login_on_new_world");
+//                                                            loggedIn = true;
+//                                                        }
+//                                                    });
+//                                                }
+//                                            }
+//                                        };
+//                                        new Timer(delay, taskPerformer).start();
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
                 engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
                     @Override
                     public void changed(ObservableValue<? extends Throwable> ov, Throwable oldException, Throwable exception) {
@@ -270,7 +280,7 @@ public class GrepolisBot extends JPanel {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                webView.getEngine().executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}");
+                                webView.getEngine().executeScript("var firebug=document.createElement('script');firebug.setAttribute('src','https://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js');document.body.appendChild(firebug);(function(){if(window.firebug.version){firebug.init();}else{setTimeout(arguments.callee);}})();void(firebug);");
                             }
                         });
 

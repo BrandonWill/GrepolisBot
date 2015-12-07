@@ -150,7 +150,7 @@ public class Docks {
     //https://xxxx.grepolis.com/game/building_docks?town_id=xxxxx&action=index&h=xxxxxx&json=%7B%22town_id%22%3Axxxxx%2C%22nl_init%22%3Atrue%7D&_=1444763737982
     //build dock unit
     //      /game/building_docks?town_id=xxxxx&action=build&h=xxxxxxxx&json=json=%7B%22unit_id%22%3A%22bireme%22%2C%22amount%22%3A1%2C%22town_id%22%3Axxxxx%2C%22nl_init%22%3Atrue%7D
-    //      {"unit_id":"bireme","amount":1,"town_id":32288,"nl_init":true}
+    //      {"unit_id":"bireme","amount":1,"town_id":xxxxx,"nl_init":true}
 
 
     private void fillTroops() {

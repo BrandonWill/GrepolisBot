@@ -89,7 +89,7 @@ public class Culture {
                         "}\n" +
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/building_place?town_id=" + town.getId() +"&action=start_celebration&h=" + town.getCsrftoken() + "&json=%7B%22celebration_type%22%3A%22" + cultureEvent.getCultureEventType().name() +"%22%2C%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                        "xhr.send({\"celebration_type\":\"" + cultureEvent.getCultureEventType().name() + "\",\"town_id\":62795,\"nl_init\":true});");
+                        "xhr.send(null);");
                         log(town.getName() + " started the culture event " + cultureEvent.getCultureEventType().inGameName + "!");
                 //https://####.grepolis.com/game/building_place?town_id=#####&action=start_celebration&h=###########
                 //{"celebration_type":"games","town_id":xxxxx,"nl_init":true}

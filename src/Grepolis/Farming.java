@@ -32,6 +32,7 @@ public class Farming {
     public void parseHTML(String townData) {
 //                                log("Town ID: " +getId() + "... Resource[0] string: " +resources[0]);
 //                        log("town id found: " +resources[0].substring(resources[0].indexOf(getId() + "")));
+//        System.out.println("Town Data: " + townData);
         String townString = townData.substring(townData.indexOf(town.getId() + ""));
         String storageString = townString.substring(townString.indexOf("\"storage_volume\":"));
 

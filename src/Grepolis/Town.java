@@ -292,7 +292,7 @@ public class Town {
                         "}\n" +
                         "xhr.open('POST', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + getId() + "&action=execute&h=" +csrftoken + "&json=%7B%22model_url%22%3A%22BuildingOrder%22%2C%22action_name%22%3A%22buildUp%22%2C%22arguments%22%3A%7B%22building_id%22%3A%22" + building.getName() + "%22%7D%2C%22town_id%22%3A" + getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                        "xhr.send({\"model_url\":\"BuildingOrder\",\"action_name\":\"buildUp\",\"arguments\":{\"building_id\":\"" + building.getName() + "\"},\"town_id\":" +getId()+ ",\"nl_init\":true});");
+                        "xhr.send(null);");
 //                GrepolisBot.webView.getEngine().executeScript("BuildingMain.buildBuilding('" + building.getName() + "'," + buildingLevel + ")");
                 log(name + " " + building.getBuildingType().inGameName + " has been added to the building queue!");
             }

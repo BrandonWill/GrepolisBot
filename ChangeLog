@@ -1,4 +1,5 @@
 Version 0.13
+* New login system broke the current one. I'll have to figure it out later. Finals start this week!
 * Updating the logging system so that it's centralized. Timestamps everywhere! (also easily to add to GUI later on)
 * Queue will now remember your previously selected town
 
