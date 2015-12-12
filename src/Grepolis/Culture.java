@@ -76,6 +76,12 @@ public class Culture {
         }
     }
 
+    public boolean canStartParty() {
+        Farming farmData = town.getFarming();
+        return farmData.getStorage() >= 18000 && town.getBuilding(Building.BuildingType.academy).getCurrentLevel() >= 30 &&
+                farmData.getWood() >= 15000 && farmData.getStone() >= 18000 && farmData.getIron() >= 15000;
+    }
+
     private void startCultureEvent(final CultureEvent cultureEvent) {
         Platform.runLater(new Runnable() {
             @Override

@@ -114,6 +114,15 @@ public class Docks {
         }
     }
 
+    public boolean canBuildUnit() {
+        for (DocksUnit dockssUnit : reversed(docksUnits)) {
+            if (dockssUnit.shouldBuild()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void build(final DocksUnit docksUnit) {
         //builds the troop!
         Platform.runLater(new Runnable() {

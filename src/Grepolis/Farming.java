@@ -21,8 +21,13 @@ public class Farming {
     private boolean booty;
     private boolean diplomacy;
     private int trade_office;
+    private int storage;
+    private int wood = 0;
+    private int stone = 0;
+    private int iron = 0;
     private static int moodToLootTo = 80;
     private static TimeToFarm timeToFarm = TimeToFarm.MINUTES_FIVE;
+
 
 
     public Farming(Town town) {
@@ -31,7 +36,6 @@ public class Farming {
 
     public void parseHTML(String townData) {
 //                                log("Town ID: " +getId() + "... Resource[0] string: " +resources[0]);
-//                        log("town id found: " +resources[0].substring(resources[0].indexOf(getId() + "")));
 //        System.out.println("Town Data: " + townData);
         String townString = townData.substring(townData.indexOf(town.getId() + ""));
         String storageString = townString.substring(townString.indexOf("\"storage_volume\":"));
@@ -71,13 +75,14 @@ public class Farming {
             }
         }
 
-        int wood = 0;
-        int stone = 0;
-        int iron = 0;
+        wood = 0;
+        stone = 0;
+        iron = 0;
         try {
 
-            String resourceString = townString.substring(townString.indexOf("resources_last_update"), townString.indexOf("island_id"));
-            resourceString = resourceString.replaceAll("\"", "");
+            String resourceString = townString.substring(townString.indexOf("\"resources\":{"), townString.indexOf(",\"production\""));
+            resourceString = resourceString.substring(resourceString.indexOf(":")+1);
+            resourceString = resourceString.replaceAll("\"", "").replaceAll("}", "").replaceAll("\\{", "");
             //.substring(resources[0].indexOf("resources_last_update"), resources[0].indexOf("island_id"))
 //                        log("Resource string: " +resourceString);
 
@@ -106,7 +111,7 @@ public class Farming {
 
         try {
             storageString = storageString.substring(0, storageString.indexOf(","));
-            int storage = Integer.parseInt(storageString.split(":")[1]);
+            storage = Integer.parseInt(storageString.split(":")[1]);
             town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
 //            log("Storage: " + storage + " full: " + ((wood == storage) && (stone == storage) && (iron == storage)));
         } catch (Exception e) {
@@ -138,7 +143,7 @@ public class Farming {
                         "        alert(\"VillagesData:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
-                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_overviews?town_id=" + town.getId() + "&action=get_farm_towns_for_town&h=" + town.getCsrftoken() + "d&json=%7B%22island_x%22%3A" + island_x + "%2C%22island_y%22%3A" + island_y + "%2C%22booty_researched%22%3A" + boolToString(booty) +"%2C%22trade_office%22%3A" + trade_office + "%2C%22diplomacy_researched%22%3A" + boolToString(diplomacy) +"%2C%22town_id%22%3A" + town.getId() +"%2C%22nl_init%22%3Atrue%7D', true);\n" +
+                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_overviews" + stringForLoadingVillages() +", true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
 //                log("Loading farming villages!");
@@ -146,8 +151,34 @@ public class Farming {
         });
     }
 
+    private String stringForLoadingVillages() {
+        StringBuilder sb = new StringBuilder();
+        String town_id = "?town_id=" + town.getId();
+        String action = "&action=get_farm_towns_for_town";
+        String h = "&h=" +town.getCsrftoken();
+        sb.append(town_id);
+        sb.append(action);
+        sb.append(h);
+
+        //JSON starts here!
+        sb.append("&json=' +encodeURIComponent(JSON.stringify(");
+
+        sb.append("{\"island_x\":").append(island_x);
+        sb.append(",\"island_y\":").append(island_y);
+        sb.append(",\"current_town_id\":").append(town.getId());
+        sb.append(",\"booty_researched\":").append(boolToString(booty));
+        sb.append(",\"diplomacy_researched\":").append(boolToString(diplomacy));
+        sb.append(",\"trade_office\":").append(trade_office);
+        sb.append(",\"town_id\":").append(town.getId());
+        sb.append(",\"nl_init\":true}");
+        sb.append("))");
+
+//        log("JSON data: " +sb.toString());
+        return sb.toString();
+    }
+
     private String boolToString(boolean value) {
-        return value ? "1" : "%22%22";
+        return value ? "1" : "\"\"";
     }
 
     public void parseVillageData(String villagesData) {
@@ -295,6 +326,38 @@ public class Farming {
 
     public int getMoodToLootTo() {
         return moodToLootTo;
+    }
+
+    public int getStorage() {
+        return storage;
+    }
+
+    public void setStorage(int storage) {
+        this.storage = storage;
+    }
+
+    public int getWood() {
+        return wood;
+    }
+
+    public void setWood(int wood) {
+        this.wood = wood;
+    }
+
+    public int getStone() {
+        return stone;
+    }
+
+    public void setStone(int stone) {
+        this.stone = stone;
+    }
+
+    public int getIron() {
+        return iron;
+    }
+
+    public void setIron(int iron) {
+        this.iron = iron;
     }
 
     public enum TimeToFarm {

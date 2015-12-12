@@ -131,6 +131,15 @@ public class Barracks {
         }
     }
 
+    public boolean canBuildUnit() {
+        for (BarracksUnit barracksUnit : reversed(barracksUnits)) {
+            if (barracksUnit.shouldBuild()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void build(final BarracksUnit barracksUnit) {
         //builds the troop!
         Platform.runLater(new Runnable() {

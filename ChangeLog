@@ -1,3 +1,14 @@
+Version 0.14
+* Login system has been updated and fixed! I had to learn some Angular JS to figure this one out!
+* Added a delay between requests. Before it was perfect. It's a bit slower now, but it's more human-like
+* Fixed farming. Some people were banned by other bots because they're unstable! Mine will stop the second anything goes wrong.
+* Constructing buildings now comes before culture checking for culture events.
+* Culture now checks to see if it can even be done before attempting.
+* Constructing buildings now checks to see if there's any reason to load the senate (there's a random chance of force updating)
+* Constructing barrack units now checks to see if there's any reason to load the barracks (there's a random chance of force updating)
+* Constructing dock units now checks to see if there's any reason to load the docks (there's a random chance of force updating)
+* You can now pause the bot!
+
 Version 0.13
 * New login system broke the current one. I'll have to figure it out later. Finals start this week!
 * Updating the logging system so that it's centralized. Timestamps everywhere! (also easily to add to GUI later on)

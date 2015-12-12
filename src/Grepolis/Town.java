@@ -270,7 +270,15 @@ public class Town {
         }else if (canBuild(Building.BuildingType.ironer)) {
             return build(Building.BuildingType.ironer, getBuilding(Building.BuildingType.ironer).getBuildTo());
         }
+        return false;
+    }
 
+    public boolean canBuildAnything() {
+        for (Building building : buildingList) {
+            if (canBuild(building.getBuildingType())) {
+                return true;
+            }
+        }
         return false;
     }
 
