@@ -147,7 +147,7 @@ public class GrepolisBot extends JPanel {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36");
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
@@ -186,7 +186,7 @@ public class GrepolisBot extends JPanel {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        engine.load("https://" + server.substring(0, 2) + "0.grepolis.com/start/index?world_id=" + server + "&action=login_on_new_world");
+                                        engine.load("https://" + server.substring(0, 2) + "0.grepolis.com//start?action=login_to_game_world&world=" + server);
                                     }
                                 });
                             }
@@ -523,6 +523,7 @@ public class GrepolisBot extends JPanel {
                         }
                     });
                 } else {
+                    log(currentTown.getName() + " Nothing to build or building queue is full!");
                     builtTheBuildings = true;
                 }
 

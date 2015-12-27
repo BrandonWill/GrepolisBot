@@ -1,3 +1,6 @@
+Version 0.14 - fix
+* Login is fixed... again
+
 Version 0.14
 * Login system has been updated and fixed! I had to learn some Angular JS to figure this one out!
 * Added a delay between requests. Before it was perfect. It's a bit slower now, but it's more human-like
