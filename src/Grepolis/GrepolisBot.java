@@ -61,6 +61,7 @@ public class GrepolisBot extends JPanel {
     private static TextField fxPassword;
     private static TextField serverField;
     private static TextField timeToRefresh;
+    private static Button startBot;
 
     private static boolean farmersEnabled = false;
     private static boolean startedBot = false;
@@ -186,7 +187,7 @@ public class GrepolisBot extends JPanel {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        engine.load("https://" + server.substring(0, 2) + "0.grepolis.com//start?action=login_to_game_world&world=" + server);
+                                        engine.load("https://" + server.substring(0, 2) + "0.grepolis.com/start?action=login_to_game_world&world=" + server);
                                     }
                                 });
                             }
@@ -230,7 +231,7 @@ public class GrepolisBot extends JPanel {
                 });
                 fxLoginButton.setDefaultButton(true);
 
-                final Button startBot = new Button("Start bot");
+                startBot = new Button("Start bot");
                 startBot.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
                     @Override
                     public void handle(javafx.event.ActionEvent t) {
@@ -244,8 +245,7 @@ public class GrepolisBot extends JPanel {
                             startBot.setText("Pause bot");
                             startedBot = true;
                         } else {
-                            botIsPaused = !botIsPaused;
-                            startBot.setText(startBot.getText().equals("Pause bot") ? "Resume bot" : "Pause bot");
+                            pauseBot();
                         }
                     }
                 });
@@ -339,6 +339,16 @@ public class GrepolisBot extends JPanel {
 
 
 
+            }
+        });
+    }
+
+    private void pauseBot() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                botIsPaused = !botIsPaused;
+                startBot.setText(startBot.getText().equals("Pause bot") ? "Resume bot" : "Pause bot");
             }
         });
     }
@@ -699,7 +709,7 @@ public class GrepolisBot extends JPanel {
         return false;
     }
 
-    public int getDefaultTownID() {
+    private int getDefaultTownID() {
         final String[] html = new String[1];
         final int[] townID = {0};
         Platform.runLater(new Runnable() {
@@ -908,17 +918,6 @@ public class GrepolisBot extends JPanel {
 
     public class TitleUpdater implements Runnable {
 
-        /**
-         * When an object implementing interface <code>Runnable</code> is used
-         * to create a thread, starting the thread causes the object's
-         * <code>run</code> method to be called in that separately executing
-         * thread.
-         * <p/>
-         * The general contract of the method <code>run</code> is that it may
-         * take any action whatsoever.
-         *
-         * @see Thread#run()
-         */
         @Override
         public void run() {
             while (botIsRunning) {
@@ -1032,6 +1031,7 @@ public class GrepolisBot extends JPanel {
                                 loadTowns(data);
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the towns! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //builds the buildings
@@ -1048,6 +1048,7 @@ public class GrepolisBot extends JPanel {
                             } else {
                                 builtTheBuildings = true;
                                 log(Level.SEVERE, "Error! Can't find the Buildings! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //Starts a culture event
@@ -1059,6 +1060,7 @@ public class GrepolisBot extends JPanel {
                             } else {
                                 obtainedCultureData = true;
                                 log(Level.SEVERE, "Error! Can't find the culture data! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //reads the docks data and builds a unit
@@ -1070,6 +1072,7 @@ public class GrepolisBot extends JPanel {
                             } else {
                                 builtDocksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the docks data! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //reads the barracks data and builds a unit
@@ -1081,6 +1084,7 @@ public class GrepolisBot extends JPanel {
                             } else {
                                 builtBarracksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the barracks data! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //Update the farm data
@@ -1089,6 +1093,7 @@ public class GrepolisBot extends JPanel {
                                 currentTown.getFarming().parseHTML(data);
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the farm data! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                         //loads the farming villages and farms them
@@ -1112,6 +1117,7 @@ public class GrepolisBot extends JPanel {
 
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the farming villages data! Error log: " + event.getData());
+                                pauseBot();
                             }
                         }
                     }

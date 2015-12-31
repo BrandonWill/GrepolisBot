@@ -1,3 +1,6 @@
+Version 0.15
+* Bot will now pause if the server doesn't send a response
+
 Version 0.14 - fix
 * Login is fixed... again
 
