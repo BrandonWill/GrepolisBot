@@ -54,7 +54,7 @@ public class Town {
 //                    }
 //                    buildings[i] = buildings[i].substring(buildings[i].charAt('}')+1);
                     for (Building.BuildingType buildingType : Building.BuildingType.values()) {
-                        if (buildings[i].contains(buildingType.description)) {
+                        if (buildings[i].contains("building_" +buildingType.name())) {
                             //Create the building here if it isn't loaded already
                             if (!hasBuilding(buildingType)) {
                                 Building building = new Building();
