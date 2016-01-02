@@ -397,10 +397,8 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!obtainedCultureData);
-                boolean forceUpdate = randInt(0, 2) == 1 || town.getBarracks().canBuildUnit();
 
-
-                if (town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0 && forceUpdate) {
+                if (town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
                         @Override
@@ -454,9 +452,8 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!builtBarracksTroops);
-                boolean forceUpdate = randInt(0, 2) == 1 || town.getDocks().canBuildUnit();
 
-                if (town.getBuilding(Building.BuildingType.docks) != null && town.getBuilding(Building.BuildingType.docks).getCurrentLevel() > 0 && forceUpdate) {
+                if (town.getBuilding(Building.BuildingType.docks) != null && town.getBuilding(Building.BuildingType.docks).getCurrentLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
                         @Override
@@ -512,13 +509,7 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!farmedTheTown);
-                boolean forceContinue;
-                if (town.getBuilding(Building.BuildingType.main) != null) {
-                    forceContinue = randInt(0, 2) == 1  || town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0;
-                } else {
-                    forceContinue = true;
-                }
-                boolean getBuildingData = forceContinue || town.canBuildAnything();
+                boolean getBuildingData = town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0 || town.canBuildAnything();
 
                 if (getBuildingData) {
 
