@@ -509,7 +509,12 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!farmedTheTown);
-                boolean getBuildingData = town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0 || town.canBuildAnything();
+                boolean getBuildingData;
+                if (town.getBuilding(Building.BuildingType.main) != null) {
+                    getBuildingData = town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0 || town.canBuildAnything();
+                } else {
+                    getBuildingData = true;
+                }
 
                 if (getBuildingData) {
 
