@@ -1,5 +1,7 @@
 Version 0.15
 * Bot will now pause if the server doesn't send a response
+* Bot will now pause if all buildings aren't found
+* Updated so the bot now finds all the buildings
 
 Version 0.14 - fix
 * Login is fixed... again

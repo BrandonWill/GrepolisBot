@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static Grepolis.util.MyLogger.log;
 
@@ -65,6 +66,7 @@ public class Town {
 //                            String buildingData[] = buildings[i].substring(0, buildings[i].indexOf("controller")).replaceAll("\\\\\"", "").split(",");
 
                                 String buildingData[] = buildings[i].replaceAll("\"", "").replaceAll("\\\\", "").split(",");
+//                                System.out.println(Arrays.toString(buildingData));
                                 //Example data: :trade_office}}});\n\tBuildingMain.buildings =
                                 // {main:{name:Senate,description:In the Senate you can have new buildings erected or existing buildings upgraded.
                                 // The higher the Senate level, the more quickly the construction work is done.,level:17,current_level:17,next_level:18,get_dependencies:[],
@@ -178,9 +180,12 @@ public class Town {
 //            for (Building building : buildingList) {
 //                log("Found " +building.getName());
 //            }
-//            if (buildingList.size() == 22) {
+            if (buildingList.size() == 22) {
 //                log("All buildings found");
-//            }
+            } else {
+                log("Not all buildings found. Please create an issue on Github! Pausing...");
+                GrepolisBot.pauseBot();
+            }
 //            for (String buildingParsed : buildingsFixed) {
 //                log("Parsed: " +buildingParsed);
 //            }
@@ -284,7 +289,7 @@ public class Town {
 
     private boolean canBuild(Building.BuildingType building) {
         Building actualBuilding = getBuilding(building);
-        return (!isBuildingQueueFull && actualBuilding.canUpgrade() && actualBuilding.getLevel() < actualBuilding.getBuildTo());
+        return actualBuilding != null && (!isBuildingQueueFull && actualBuilding.canUpgrade() && actualBuilding.getLevel() < actualBuilding.getBuildTo());
     }
 
     public boolean build(Building.BuildingType buildingType, final int buildingLevel) {

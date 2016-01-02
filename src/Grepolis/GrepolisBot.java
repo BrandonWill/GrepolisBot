@@ -7,6 +7,8 @@ import com.sun.javafx.application.PlatformImpl;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -149,6 +151,7 @@ public class GrepolisBot extends JPanel {
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
                 webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36");
+
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
@@ -257,7 +260,7 @@ public class GrepolisBot extends JPanel {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                webView.getEngine().executeScript("var firebug=document.createElement('script');firebug.setAttribute('src','https://getfirebug.com/firebug-lite.js');document.body.appendChild(firebug);(function(){if(window.firebug.version){firebug.init();}else{setTimeout(arguments.callee);}})();void(firebug);");
+                                webView.getEngine().executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}");
                             }
                         });
 
@@ -343,12 +346,13 @@ public class GrepolisBot extends JPanel {
         });
     }
 
-    private void pauseBot() {
+    public static void pauseBot() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 botIsPaused = !botIsPaused;
                 startBot.setText(startBot.getText().equals("Pause bot") ? "Resume bot" : "Pause bot");
+                webView.setDisable(false);
             }
         });
     }
@@ -396,7 +400,7 @@ public class GrepolisBot extends JPanel {
                 boolean forceUpdate = randInt(0, 2) == 1 || town.getBarracks().canBuildUnit();
 
 
-                if (town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0 && forceUpdate) {
+                if (town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0 && forceUpdate) {
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
                         @Override
@@ -452,7 +456,7 @@ public class GrepolisBot extends JPanel {
                 } while (!builtBarracksTroops);
                 boolean forceUpdate = randInt(0, 2) == 1 || town.getDocks().canBuildUnit();
 
-                if (town.getBuilding(Building.BuildingType.docks).getCurrentLevel() > 0 && forceUpdate) {
+                if (town.getBuilding(Building.BuildingType.docks) != null && town.getBuilding(Building.BuildingType.docks).getCurrentLevel() > 0 && forceUpdate) {
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
                         @Override
@@ -508,7 +512,12 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!farmedTheTown);
-                boolean forceContinue = randInt(0, 2) == 1  || town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0;
+                boolean forceContinue;
+                if (town.getBuilding(Building.BuildingType.main) != null) {
+                    forceContinue = randInt(0, 2) == 1  || town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0;
+                } else {
+                    forceContinue = true;
+                }
                 boolean getBuildingData = forceContinue || town.canBuildAnything();
 
                 if (getBuildingData) {
