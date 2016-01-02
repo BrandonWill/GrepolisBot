@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
@@ -1979,6 +1980,8 @@ public class QueueGUI extends javax.swing.JFrame {
             town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).setBuildTo((Integer) griffinToBuild.getValue());
             town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).setBuildTo((Integer) calydonian_boarToBuild.getValue());
             town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).setBuildTo((Integer) godsentToBuild.getValue());
+        } else {
+            log(Level.WARNING, "Barracks not loaded for the town! Can't save the troops.");
         }
         //docks troops
         if (town.getBuilding(Building.BuildingType.docks).getLevel() > 0 || town.getDocks().getUnit(DocksUnit.UnitType.big_transporter) != null) {
@@ -1989,6 +1992,8 @@ public class QueueGUI extends javax.swing.JFrame {
             town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).setBuildTo((Integer) small_transporterToBuild.getValue());
             town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).setBuildTo((Integer) colonize_shipToBuild.getValue());
             town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).setBuildTo((Integer) sea_monsterToBuild.getValue());
+        } else {
+            log(Level.WARNING, "Docks not loaded for the town! Can't save the troops.");
         }
     }
 
