@@ -4,6 +4,7 @@ import javafx.application.Platform;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static Grepolis.util.MyLogger.log;
@@ -38,7 +39,7 @@ public class Barracks {
                 if (string.contains("name:")) {
                     String data[] = string.split(",");
                     BarracksUnit barracksUnit = new BarracksUnit();
-//                    log(Arrays.toString(data));
+//                    log("Unit data: " +Arrays.toString(data));
                     barracksUnit.setUnitType(BarracksUnit.UnitType.valueOf(data[0]));
 
                     for (String actualData : data) {
