@@ -32,6 +32,7 @@ public class Town {
     private Long timeToFarm = (long) 0;
     private String server;
     private String csrftoken;
+    private boolean hasConqueror;
 
 
     public boolean parseHTML(String html) {
@@ -191,6 +192,11 @@ public class Town {
 //            }
         }
         return true;
+    }
+
+    public void parseTownSwitchData(String data) {
+        hasConqueror = !data.contains("\\\"conqueror_units\\\":[]");
+//        log("Has a conqueror: " +hasConqueror);
     }
 
     public boolean hasBuilding(Building.BuildingType buildingType) {
@@ -382,4 +388,11 @@ public class Town {
     }
 
 
+    public boolean hasConqueror() {
+        return hasConqueror;
+    }
+
+    public void setHasConqueror(boolean hasConqueror) {
+        this.hasConqueror = hasConqueror;
+    }
 }

@@ -105,7 +105,7 @@ public class Barracks {
         return false;
     }
 
-    private void fillTroops() {
+    public void fillTroops() {
         for (BarracksUnit.UnitType unitType : BarracksUnit.UnitType.values()) {
             if (getUnit(unitType) == null) {
                 BarracksUnit barracksUnit = new BarracksUnit();

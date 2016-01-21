@@ -71,6 +71,8 @@ public class GrepolisBot extends JPanel {
     private static volatile boolean botIsPaused = false;
     private static volatile boolean botIsRunning = true;
 
+    private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
+
     public GrepolisBot(){
         initComponents();
     }
@@ -143,6 +145,7 @@ public class GrepolisBot extends JPanel {
         PlatformImpl.startup(new Runnable() {
             @Override
             public void run() {
+                //adds in the XHRHTMLRequest listener
                 final BooleanProperty loginAttempted = new SimpleBooleanProperty(false);
 
                 webView = new WebView();
@@ -150,13 +153,38 @@ public class GrepolisBot extends JPanel {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");
 
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
+                addAlerts();
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
                     @Override
                     public void changed(ObservableValue<? extends Document> ov, Document oldDoc, Document doc) {
+                        engine.executeScript("function readBody(xhr) {\n" +
+                                "    var data;\n" +
+                                "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                                "        data = xhr.responseText;\n" +
+                                "    } else if (xhr.responseType === \"document\") {\n" +
+                                "        data = xhr.responseXML;\n" +
+                                "    } else {\n" +
+                                "        data = xhr.response;\n" +
+                                "    }\n" +
+                                "    return data;\n" +
+                                "}\n" +
+                                "\n" +
+                                "var oldXHR = window.XMLHttpRequest;\n" +
+                                "\n" +
+                                "function newXHR() {\n" +
+                                "    var realXHR = new oldXHR();\n" +
+                                "    realXHR.addEventListener(\"readystatechange\", function() {\n" +
+                                "        if(realXHR.readyState==4){\n" +
+                                "            alert(\"XHR Reader:\" +realXHR.status +readBody(realXHR));\n" +
+                                "        }\n" +
+                                "    }, false);\n" +
+                                "    return realXHR;\n" +
+                                "}\n" +
+                                "window.XMLHttpRequest = newXHR;");
                         if (doc != null && !loginAttempted.get()) {
                             if (doc.getElementsByTagName("form").getLength() > 0) {
                                 HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
@@ -168,13 +196,13 @@ public class GrepolisBot extends JPanel {
                                             //enter in username
                                             engine.executeScript("var loginElement = document.getElementById(\"login_userid\");\n" +
                                                     "var element = angular.element(loginElement);\n" +
-                                                    "element.val('" + fxUsername.getText() +"');\n" +
+                                                    "element.val('" + fxUsername.getText() + "');\n" +
                                                     "element.triggerHandler('input');");
 
                                             //enter in password
                                             engine.executeScript("var passwordElement = document.getElementById(\"login_password\");\n" +
                                                     "var element = angular.element(passwordElement);\n" +
-                                                    "element.val('" + fxPassword.getText() +"');\n" +
+                                                    "element.val('" + fxPassword.getText() + "');\n" +
                                                     "element.triggerHandler('input');");
 
                                             //click the login button
@@ -216,7 +244,7 @@ public class GrepolisBot extends JPanel {
                 inputGrid.setHgap(10);
                 inputGrid.setVgap(10);
                 inputGrid.addRow(0, new Label("Username: "), fxUsername);
-                inputGrid.addRow(0, new Label("Password: " ), fxPassword);
+                inputGrid.addRow(0, new Label("Password: "), fxPassword);
                 inputGrid.addRow(0, new Label("World: "), serverField);
                 inputGrid.addRow(0, new Label("Update time: "), timeToRefresh);
 
@@ -239,8 +267,6 @@ public class GrepolisBot extends JPanel {
                     @Override
                     public void handle(javafx.event.ActionEvent t) {
                         if (!startedBot) {
-                            addAlerts();
-                            defaultTown = getDefaultTownID();
                             log("Bot enabled");
                             new Thread(new Startup()).start();
                             new Thread(new TitleUpdater()).start();
@@ -383,6 +409,14 @@ public class GrepolisBot extends JPanel {
     }
 
     private boolean builtBarracksTroops = false;
+
+    public HashMap<Integer, Boolean> getTownHasFarms() {
+        return townHasFarms;
+    }
+
+    public void setTownHasFarms(HashMap<Integer, Boolean> townHasFarms) {
+        this.townHasFarms = townHasFarms;
+    }
 
     public class BuildBarracksTroops implements Runnable {
         Town town;
@@ -678,7 +712,7 @@ public class GrepolisBot extends JPanel {
                             "xhr.onreadystatechange = function() {\n" +
                             "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
                             "        htmlData = readBody(xhr);\n" +
-                            "        alert(\"TownLoaderData:\" +xhr.status +readBody(xhr));\n" +
+                            "        alert(\"TownFarmingData:\" +xhr.status +readBody(xhr));\n" +
                             "    }\n" +
                             "}\n" +
                             "\n" +
@@ -712,28 +746,6 @@ public class GrepolisBot extends JPanel {
             }
         }
         return false;
-    }
-
-    private int getDefaultTownID() {
-        final String[] html = new String[1];
-        final int[] townID = {0};
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                html[0] = (String) webView.getEngine().executeScript("document.documentElement.outerHTML");
-                for (String string : html[0].split(",")) {
-                    if (string.contains("csrfToken") && csrfToken == null) {
-                        csrfToken = string.split(":")[1].replaceAll("\"", "");
-                        log("csrftoken: " +csrfToken);
-                    }
-                    if (string.contains("\"townId\":")) {
-                        townID[0] = Integer.parseInt(string.split(":")[1].replaceAll("\"", ""));
-                        log("Default town: " +townID[0]);
-                    }
-                }
-            }
-        });
-        return townID[0];
     }
 
     private long updateTime = 0;
@@ -776,43 +788,47 @@ public class GrepolisBot extends JPanel {
 
                         currentTown = towns.get(i);
 
-                        obtainedCultureData = false;
-                        builtTheBuildings = false;
-                        farmedTheTown = false;
-                        builtBarracksTroops = false;
-                        builtDocksTroops = false;
-                        if (farmer[0] != null && farmer[0].isAlive() && !farmer[0].isInterrupted()) {
-                            farmer[0].interrupt();
-                        }
-                        if (builder[0] != null && builder[0].isAlive() && !builder[0].isInterrupted()) {
-                            builder[0].interrupt();
-                        }
-                        if (culture[0] != null && culture[0].isAlive() && !culture[0].isInterrupted()) {
-                            culture[0].interrupt();
-                        }
-                        if (barrackQueue[0] != null && barrackQueue[0].isAlive() && !barrackQueue[0].isInterrupted()) {
-                            barrackQueue[0].interrupt();
-                        }
-                        if (docksQueue[0] != null && docksQueue[0].isAlive() && !docksQueue[0].isInterrupted()) {
-                            docksQueue[0].interrupt();
-                        }
+                        if (!currentTown.hasConqueror()) {
+                            obtainedCultureData = false;
+                            builtTheBuildings = false;
+                            farmedTheTown = false;
+                            builtBarracksTroops = false;
+                            builtDocksTroops = false;
+                            if (farmer[0] != null && farmer[0].isAlive() && !farmer[0].isInterrupted()) {
+                                farmer[0].interrupt();
+                            }
+                            if (builder[0] != null && builder[0].isAlive() && !builder[0].isInterrupted()) {
+                                builder[0].interrupt();
+                            }
+                            if (culture[0] != null && culture[0].isAlive() && !culture[0].isInterrupted()) {
+                                culture[0].interrupt();
+                            }
+                            if (barrackQueue[0] != null && barrackQueue[0].isAlive() && !barrackQueue[0].isInterrupted()) {
+                                barrackQueue[0].interrupt();
+                            }
+                            if (docksQueue[0] != null && docksQueue[0].isAlive() && !docksQueue[0].isInterrupted()) {
+                                docksQueue[0].interrupt();
+                            }
 
-                        if (farmersEnabled) {
-                            farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
-                            farmer[0].start();
+                            if (farmersEnabled && townHasFarms.get(towns.get(i).getId()) != null) {
+                                farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
+                                farmer[0].start();
+                            } else {
+                                farmedTheTown = true;
+                            }
+                            culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
+                            culture[0].start();
+                            builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
+                            builder[0].start();
+                            barrackQueue[0] = (new Thread(new BuildBarracksTroops(towns.get(i))));
+                            barrackQueue[0].start();
+                            docksQueue[0] = (new Thread(new BuildDocksTroops(towns.get(i))));
+                            docksQueue[0].start();
+                            while (!farmedTheTown || !obtainedCultureData || !builtTheBuildings || !builtBarracksTroops || !builtDocksTroops) {
+                                Thread.sleep(200);
+                            }
                         } else {
-                            farmedTheTown = true;
-                        }
-                        culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
-                        culture[0].start();
-                        builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
-                        builder[0].start();
-                        barrackQueue[0] = (new Thread(new BuildBarracksTroops(towns.get(i))));
-                        barrackQueue[0].start();
-                        docksQueue[0] = (new Thread(new BuildDocksTroops(towns.get(i))));
-                        docksQueue[0].start();
-                        while (!farmedTheTown || !obtainedCultureData || !builtTheBuildings || !builtBarracksTroops || !builtDocksTroops) {
-                            Thread.sleep(200);
+                            log(currentTown.getName() + " has a conqueror! Skipping town!");
                         }
 
                         if (i+1 < towns.size()) {
@@ -875,6 +891,7 @@ public class GrepolisBot extends JPanel {
                             "xhr.onreadystatechange = function() {\n" +
                             "    if (xhr.readyState == 4) {\n" +
                             "        console.log(readBody(xhr));\n" +
+                            "        alert(\"TownSwitchData:\" +xhr.status +readBody(xhr));\n" +
                             "    }\n" +
                             "}\n" +
                             "\n" +
@@ -1021,6 +1038,55 @@ public class GrepolisBot extends JPanel {
         return timeToRefresh;
     }
 
+    private void getAllTownData() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                        //Accesses the towns!
+                        webView.getEngine().executeScript("function readBody(xhr) {\n" +
+                                "    var data;\n" +
+                                "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                                "        data = xhr.responseText;\n" +
+                                "    } else if (xhr.responseType === \"document\") {\n" +
+                                "        data = xhr.responseXML;\n" +
+                                "    } else {\n" +
+                                "        data = xhr.response;\n" +
+                                "    }\n" +
+                                "    return data;\n" +
+                                "}\n" +
+                                "\n" +
+                                "var xhr = new XMLHttpRequest();\n" +
+                                "xhr.onreadystatechange = function() {\n" +
+                                "    if (xhr.readyState == 4) {\n" +
+                                "        console.log(readBody(xhr));\n" +
+                                "    }\n" +
+                                "}\n" +
+                                "\n" +
+                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + defaultTown + "&action=refetch&h=" + csrfToken + "&json=%7B%22collections%22%3A%7B%22Towns%22%3A%5B%5D%7D%2C%22town_id%22%3A" + defaultTown + "%2C%22nl_init%22%3Afalse%7D', true);\n" +
+                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                                "xhr.send(null);");
+
+
+            }
+        });
+    }
+
+    private void addTownsWithFarms(String text) {
+            String townData[] = text.split("\"id\"");
+
+            for (String aTownData : townData) {
+                if (aTownData.contains("\"name\"")) {
+//                System.out.println("Town data: " +aTownData);
+
+                    String importantData[] = aTownData.split(",");
+//                System.out.println("Important data: " + Arrays.toString(importantData));
+                    int townID = Integer.parseInt(importantData[0].replaceAll(":", ""));
+                    townHasFarms.put(townID, true);
+                }
+            }
+            log("Towns with farms found: " +townHasFarms.size());
+            new Thread(new ActualBot()).start();
+    }
 
     private void addAlerts() {
         Platform.runLater(new Runnable() {
@@ -1030,12 +1096,47 @@ public class GrepolisBot extends JPanel {
                     @Override
                     public void handle(WebEvent<String> event) {
                         String data = event.getData();
-                        //Loads the towns
-                        if (data.contains("TownLoaderData:")) {
-                            if (data.contains("TownLoaderData:200")) {
+                        //Reads all XHR events
+                        if (data.contains("XHR Reader:")) {
+                            if (data.contains("\"TownGroupTowns\":{\"data\":")) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String html = (String) webView.getEngine().executeScript("document.documentElement.outerHTML");
+                                        for (String string : html.split(",")) {
+                                            if (string.contains("csrfToken") && csrfToken == null) {
+                                                csrfToken = string.split(":")[1].replaceAll("\"", "");
+                                                log("csrftoken: " +csrfToken);
+                                            }
+                                            if (string.contains("\"townId\":")) {
+                                                defaultTown = Integer.parseInt(string.split(":")[1].replaceAll("\"", ""));
+                                                log("Default town: " +defaultTown);
+                                            }
+                                        }
+                                        getAllTownData();
+                                    }
+                                });
+                            }
+                            if (data.contains("\"Towns\":{\"data\":")) {
                                 loadTowns(data);
+                            }
+//                            log("XHR event detected: " +data);
+                        }
+//                      Adds a check for towns with farmers
+                        if (data.contains("TownFarmingData:")) {
+                            if (data.contains("TownFarmingData:200")) {
+                                addTownsWithFarms(data);
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the towns! Error log: " + event.getData());
+                                pauseBot();
+                            }
+                        }
+                        //Checks for conqueror in the town
+                        if (data.contains("TownSwitchData:")) {
+                            if (data.contains("TownSwitchData:200")) {
+                                currentTown.parseTownSwitchData(data);
+                            } else {
+                                log(Level.SEVERE, "Error! Can't find the town switcher data! Error log: " + event.getData());
                                 pauseBot();
                             }
                         }
@@ -1135,17 +1236,28 @@ public class GrepolisBot extends JPanel {
 
     private void loadTowns(String text) {
         ArrayList<Town> townList = new ArrayList<>();
-        String townData[] = text.split("\"id\"");
+        String townData[] = text.split("\"player_id\":");
 
         for (String aTownData : townData) {
             if (aTownData.contains("\"name\"")) {
+                aTownData = aTownData.replaceAll("\"", "");
 //                System.out.println("Town data: " +aTownData);
                 Town town = new Town();
 
                 String importantData[] = aTownData.split(",");
-//                System.out.println("Important data: " + Arrays.toString(importantData));
-                town.setId(Integer.parseInt(importantData[0].replaceAll(":", "")));
-                town.setName(importantData[1].split(":")[1].replaceAll("\"", ""));
+                for (String data : importantData) {
+                    if (data.startsWith("name:")) {
+                        town.setName(data.split(":")[1]);
+                    }
+                    if (data.startsWith("id:")) {
+                        town.setId(Integer.parseInt(data.split(":")[1]));
+                    }
+                }
+
+//                String importantData[] = aTownData.split(",");
+////                System.out.println("Important data: " + Arrays.toString(importantData));
+//                town.setId(Integer.parseInt(importantData[0].replaceAll(":", "")));
+//                town.setName(importantData[1].split(":")[1].replaceAll("\"", ""));
                 town.setServer(server);
                 town.setCsrftoken(csrfToken);
 //                System.out.println("Town id: " +town.getId());
@@ -1191,7 +1303,8 @@ public class GrepolisBot extends JPanel {
         });
         log("Towns found: " + towns.size());
 //        log("Town[0] id and name: " + towns.get(0).getId() + " : " + towns.get(0).getName());
-        new Thread(new ActualBot()).start();
+        //TODO NEEDS THIS TO ACTUALLY START LOL
+//        new Thread(new ActualBot()).start();
     }
 
     private boolean ownTheTown(Town town, ArrayList<Town> townList) {

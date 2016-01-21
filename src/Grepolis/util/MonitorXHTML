@@ -19,8 +19,8 @@ var oldXHR = window.XMLHttpRequest;
 function newXHR() {
     var realXHR = new oldXHR();
     realXHR.addEventListener("readystatechange", function() {
-        if(realXHR.readyState==4 && realXHR.status==200){
-            alert(readBody(realXHR));
+        if(realXHR.readyState==4){
+            alert("XHR Reader:" +realXHR.status +readBody(realXHR));
         }
     }, false);
     return realXHR;

@@ -162,7 +162,7 @@ public class Docks {
     //      {"unit_id":"bireme","amount":1,"town_id":xxxxx,"nl_init":true}
 
 
-    private void fillTroops() {
+    public void fillTroops() {
         for (DocksUnit.UnitType unitType : DocksUnit.UnitType.values()) {
             if (getUnit(unitType) == null) {
                 DocksUnit docksUnit = new DocksUnit();

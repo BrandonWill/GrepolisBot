@@ -1981,7 +1981,27 @@ public class QueueGUI extends javax.swing.JFrame {
             town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).setBuildTo((Integer) calydonian_boarToBuild.getValue());
             town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).setBuildTo((Integer) godsentToBuild.getValue());
         } else {
-            log(Level.WARNING, "Barracks not loaded for the town! Can't save the troops.");
+            town.getBarracks().fillTroops();
+            town.getBarracks().getUnit(BarracksUnit.UnitType.sword).setBuildTo((Integer) swordToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).setBuildTo((Integer) slingerToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.archer).setBuildTo((Integer) archerToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).setBuildTo((Integer) hopliteToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.rider).setBuildTo((Integer) riderToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).setBuildTo((Integer) chariotToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).setBuildTo((Integer) catapultToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).setBuildTo((Integer) minotaurToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).setBuildTo((Integer) manticoreToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).setBuildTo((Integer) centaurToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).setBuildTo((Integer) pegasusToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).setBuildTo((Integer) harpyToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).setBuildTo((Integer) medusaToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).setBuildTo((Integer) zyklopToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).setBuildTo((Integer) cerberusToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.fury).setBuildTo((Integer) furyToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).setBuildTo((Integer) griffinToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).setBuildTo((Integer) calydonian_boarToBuild.getValue());
+            town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).setBuildTo((Integer) godsentToBuild.getValue());
+//            log(Level.WARNING, "Barracks not loaded for the town! Can't save the troops.");
         }
         //docks troops
         if (town.getBuilding(Building.BuildingType.docks).getLevel() > 0 || town.getDocks().getUnit(DocksUnit.UnitType.big_transporter) != null) {
@@ -1993,7 +2013,15 @@ public class QueueGUI extends javax.swing.JFrame {
             town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).setBuildTo((Integer) colonize_shipToBuild.getValue());
             town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).setBuildTo((Integer) sea_monsterToBuild.getValue());
         } else {
-            log(Level.WARNING, "Docks not loaded for the town! Can't save the troops.");
+//            log(Level.WARNING, "Docks not loaded for the town! Can't save the troops.");
+            town.getDocks().fillTroops();
+            town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).setBuildTo((Integer) big_transporterToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.bireme).setBuildTo((Integer) biremeToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).setBuildTo((Integer) demolition_shipToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).setBuildTo((Integer) attack_shipToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).setBuildTo((Integer) small_transporterToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).setBuildTo((Integer) colonize_shipToBuild.getValue());
+            town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).setBuildTo((Integer) sea_monsterToBuild.getValue());
         }
     }
 

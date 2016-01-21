@@ -1,3 +1,7 @@
+Version 0.16
+* Bot should now skip the town if there's a conqueror!
+* Bot can now read all towns, including the ones without farming villages!
+
 Version 0.15
 * Bot will now pause if the server doesn't send a response
 * Bot will now pause if all buildings aren't found
