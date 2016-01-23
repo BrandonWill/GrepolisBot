@@ -374,4 +374,21 @@ public class Farming {
             this.seconds = seconds;
         }
     }
+
+    public int getIsland_x() {
+        return island_x;
+    }
+
+    public void setIsland_x(int island_x) {
+        this.island_x = island_x;
+    }
+
+    public int getIsland_y() {
+        return island_y;
+    }
+
+    public void setIsland_y(int island_y) {
+        this.island_y = island_y;
+    }
+
 }

@@ -543,14 +543,7 @@ public class GrepolisBot extends JPanel {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!farmedTheTown);
-                boolean getBuildingData;
-                if (town.getBuilding(Building.BuildingType.main) != null) {
-                    getBuildingData = town.getBuilding(Building.BuildingType.main).getCurrentLevel() == 0 || town.canBuildAnything();
-                } else {
-                    getBuildingData = true;
-                }
 
-                if (getBuildingData) {
 
                     Thread.sleep(randInt(1250, 2500));
 
@@ -571,10 +564,6 @@ public class GrepolisBot extends JPanel {
                                     "xhr.send(null);\n");
                         }
                     });
-                } else {
-                    log(currentTown.getName() + " Nothing to build or building queue is full!");
-                    builtTheBuildings = true;
-                }
 
             } catch (InterruptedException e) {
                 logError(e);
@@ -1207,7 +1196,6 @@ public class GrepolisBot extends JPanel {
                             if (data.contains("VillagesData:200")) {
                                 currentTown.getFarming().parseVillageData(data);
                                 if (!currentTown.hasFullStorage()) {
-                                    //TODO update this time to reflect the farming time!
                                     currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(Farming.getTimeToFarm().seconds));
 
                                     if (currentTown.getFarming().farmTheVillages()) {
@@ -1251,6 +1239,12 @@ public class GrepolisBot extends JPanel {
                     }
                     if (data.startsWith("id:")) {
                         town.setId(Integer.parseInt(data.split(":")[1]));
+                    }
+                    if (data.startsWith("island_x")) {
+                        town.getFarming().setIsland_x(Integer.parseInt(data.split(":")[1]));
+                    }
+                    if (data.startsWith("island_y")) {
+                        town.getFarming().setIsland_y(Integer.parseInt(data.split(":")[1]));
                     }
                 }
 

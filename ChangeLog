@@ -1,3 +1,6 @@
+Version 0.16 - fix
+* Building queue no longer stops building after it hits max queue
+
 Version 0.16
 * Bot should now skip the town if there's a conqueror!
 * Bot can now read all towns, including the ones without farming villages!
