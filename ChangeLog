@@ -1,5 +1,6 @@
 Version 0.16 - fix
 * Building queue no longer stops building after it hits max queue
+* Bot will now only demand when mood is set to 100.
 
 Version 0.16
 * Bot should now skip the town if there's a conqueror!
