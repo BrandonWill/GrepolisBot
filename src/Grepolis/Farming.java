@@ -303,6 +303,10 @@ public class Farming {
     }
 
     private boolean isMoodHighEnough() {
+        if (moodToLootTo == 100) {
+            return false;
+        }
+
         for (FarmingVillage farmingVillage : farmingVillages) {
             if (farmingVillage.getMood() < moodToLootTo) {
                 return false;
