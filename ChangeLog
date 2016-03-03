@@ -1,3 +1,10 @@
+Version 0.17
+* Reworked the user interface! However, almost no testing. I've backed up the previous version just in case.
+* Bot pausing actually works while the bot isn't running (keeps the timer stable)
+* Added a logging system. Doesn't completely remove the .bat file (still have some error catching to do!)
+* Lots of fun awesome backend changes! Wooo. Nothing really added for normal users except minor inconvenience
+
+
 Version 0.16 - fix
 * Building queue no longer stops building after it hits max queue
 * Bot will now only demand when mood is set to 100.

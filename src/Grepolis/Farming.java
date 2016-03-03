@@ -373,7 +373,7 @@ public class Farming {
         MINUTES_TWO_HUNDRED_FORTY(14400),
         MINUTES_FOUR_HUNDRED_EIGHTY(28800);
 
-        int seconds;
+        public int seconds;
         TimeToFarm(int seconds) {
             this.seconds = seconds;
         }

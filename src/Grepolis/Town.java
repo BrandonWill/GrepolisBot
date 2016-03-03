@@ -1,16 +1,8 @@
 package Grepolis;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.web.WebEngine;
-import org.w3c.dom.Document;
 
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static Grepolis.util.MyLogger.log;
 

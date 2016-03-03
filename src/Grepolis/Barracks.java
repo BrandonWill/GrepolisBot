@@ -2,10 +2,7 @@ package Grepolis;
 
 import javafx.application.Platform;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.Reversed.reversed;

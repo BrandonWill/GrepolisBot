@@ -1,11 +1,9 @@
 package Grepolis.IO;
 
 import Grepolis.*;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import Grepolis.GUI.SettingsPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
@@ -45,16 +43,6 @@ public class Loader {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("initializing variables");
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    GrepolisBot.setFxUsername(new TextField());
-                    GrepolisBot.getFxUsername().setPrefColumnCount(20);
-                    GrepolisBot.setFxPassword(new PasswordField());
-                    GrepolisBot.setServerField(new TextField("enXX"));
-                    GrepolisBot.setTimeToRefresh(new TextField("00:06:00"));
-                }
-            });
             System.out.println("Account save file not found!");
             new File(jarDir + "\\Saves").mkdir();
 
@@ -70,9 +58,7 @@ public class Loader {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                GrepolisBot.setFxUsername(new TextField());
-                                GrepolisBot.getFxUsername().setPrefColumnCount(20);
-                                GrepolisBot.setFxUsernameText(finalLine.split(":")[1]);
+                                SettingsPanel.setUsernameField(new JTextField(finalLine.split(":")[1]));
                             }
                         });
                     } else if (line.startsWith("Password:")) {
@@ -80,8 +66,7 @@ public class Loader {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                GrepolisBot.setFxPassword(new PasswordField());
-                                GrepolisBot.setFxPasswordText(finalLine1.split(":")[1]);
+                                SettingsPanel.setPasswordField(new JPasswordField(finalLine1.split(":")[1]));
                             }
                         });
 
@@ -90,8 +75,7 @@ public class Loader {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                GrepolisBot.setServerField(new TextField());
-                                GrepolisBot.setServerFieldText(finalLine2.split(":")[1]);
+                                SettingsPanel.setWorldField(new JTextField(finalLine2.split(":")[1]));
                             }
                         });
                     } else if (line.startsWith("RefreshTime-")) {
@@ -99,8 +83,7 @@ public class Loader {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                GrepolisBot.setTimeToRefresh(new TextField());
-                                GrepolisBot.setTimeToRefreshText(finalLine2.split("-")[1]);
+                                SettingsPanel.setUpdateTimeField(new JTextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
                             }
                         });
                     }
@@ -256,7 +239,7 @@ public class Loader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GrepolisBot.setTowns(towns);
+        Grepolis.GrepolisBot.setTowns(towns);
     }
 
     public static void loadBarrackTroops() {
@@ -284,7 +267,7 @@ public class Loader {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
                     String text[] = line.split(",");
-                    ArrayList<Town> towns = GrepolisBot.getTowns();
+                    ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
                     Town town = null;
                     Barracks barracks = null;
                     for (String string : text) {
@@ -339,7 +322,7 @@ public class Loader {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
                     String text[] = line.split(",");
-                    ArrayList<Town> towns = GrepolisBot.getTowns();
+                    ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
                     Town town;
                     Docks docks = null;
                     for (String string : text) {
@@ -394,7 +377,7 @@ public class Loader {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
                         if (line.startsWith("Farmers enabled:")) {
-                            GrepolisBot.setFarmersEnabled(Boolean.parseBoolean(line.split(":")[1]));
+                            Grepolis.GrepolisBot.setFarmersEnabled(Boolean.parseBoolean(line.split(":")[1]));
                         } else if (line.startsWith("MoodToLoot:")) {
                             Farming.setMoodToLootTo(Integer.parseInt(line.split(":")[1]));
                         } else if (line.startsWith("Interval:")) {

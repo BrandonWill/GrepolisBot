@@ -2,7 +2,6 @@ package Grepolis;
 
 import javafx.application.Platform;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static Grepolis.util.MyLogger.log;
@@ -78,6 +77,11 @@ public class Culture {
 
     public boolean canStartParty() {
         Farming farmData = town.getFarming();
+        //log("farmData.getStorage(): " +farmData.getStorage());
+        //log("town.getBuilding(Building.BuildingType.academy).getCurrentLevel(): " + town.getBuilding(Building.BuildingType.academy).getCurrentLevel());
+        //log("farmData.getWood() >= 15000: " +(farmData.getWood()));
+        //log("farmData.getStone(): " +farmData.getStone());
+        //log("farmData.getIron(): " +farmData.getIron());
         return farmData.getStorage() >= 18000 && town.getBuilding(Building.BuildingType.academy).getCurrentLevel() >= 30 &&
                 farmData.getWood() >= 15000 && farmData.getStone() >= 18000 && farmData.getIron() >= 15000;
     }

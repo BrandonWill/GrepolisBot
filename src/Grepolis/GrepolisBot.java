@@ -1,33 +1,26 @@
 package Grepolis;
 
+import Grepolis.GUI.BotFrame;
+import Grepolis.GUI.SettingsPanel;
 import Grepolis.IO.Loader;
 import Grepolis.util.BrowserExtension;
 import Grepolis.util.MyLogger;
 import com.sun.javafx.application.PlatformImpl;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
@@ -39,17 +32,24 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
+import java.awt.*;
+import java.security.GeneralSecurityException;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
-import static Grepolis.IO.Saver.*;
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
 
-public class GrepolisBot extends JPanel {
+public class GrepolisBot {
+
+    public JFXPanel getJfxPanel() {
+        return jfxPanel;
+    }
 
     private JFXPanel jfxPanel;
-    private boolean loggedIn = false;
-    public static JFrame frame;
-    public static JPanel panel;
+    private static BotFrame botFrame;
     public static WebView webView;
 
     private static String csrfToken = null;
@@ -59,10 +59,6 @@ public class GrepolisBot extends JPanel {
     private static String server;
     private int defaultTown;
 
-    private static TextField fxUsername;
-    private static TextField fxPassword;
-    private static TextField serverField;
-    private static TextField timeToRefresh;
     private static Button startBot;
 
     private static boolean farmersEnabled = false;
@@ -77,36 +73,23 @@ public class GrepolisBot extends JPanel {
         initComponents();
     }
 
-    public static void main(String ...args){
-        // Run this later:
+    public static void main(String ...args) {
+        Loader.load();
         new MyLogger();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                frame = new JFrame();
-
-                frame.getContentPane().add(new GrepolisBot());
-
-                frame.setSize(new Dimension(1500, 800));
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                frame.setVisible(true);
+                botFrame = new BotFrame(towns);
+                botFrame.setSize(new Dimension(1500, 800));
+                botFrame.setVisible(true);
             }
         });
     }
 
-    private void initComponents(){
-        Loader.load();
+    private void initComponents() {
         jfxPanel = new JFXPanel();
         createScene();
-        setLayout(new BorderLayout());
-        add(jfxPanel, BorderLayout.CENTER);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                save(towns);
-                botIsRunning = false;
-            }
-        });
+
     }
 
     /**
@@ -196,13 +179,13 @@ public class GrepolisBot extends JPanel {
                                             //enter in username
                                             engine.executeScript("var loginElement = document.getElementById(\"login_userid\");\n" +
                                                     "var element = angular.element(loginElement);\n" +
-                                                    "element.val('" + fxUsername.getText() + "');\n" +
+                                                    "element.val('" + SettingsPanel.getUsernameField().getText() + "');\n" +
                                                     "element.triggerHandler('input');");
 
                                             //enter in password
                                             engine.executeScript("var passwordElement = document.getElementById(\"login_password\");\n" +
                                                     "var element = angular.element(passwordElement);\n" +
-                                                    "element.val('" + fxPassword.getText() + "');\n" +
+                                                    "element.val('" + SettingsPanel.getPasswordField().getText() + "');\n" +
                                                     "element.triggerHandler('input');");
 
                                             //click the login button
@@ -232,29 +215,17 @@ public class GrepolisBot extends JPanel {
                     }
                 });
 
-                do {
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } while (fxUsername == null);
-
                 GridPane inputGrid = new GridPane();
                 inputGrid.setHgap(10);
                 inputGrid.setVgap(10);
-                inputGrid.addRow(0, new Label("Username: "), fxUsername);
-                inputGrid.addRow(0, new Label("Password: "), fxPassword);
-                inputGrid.addRow(0, new Label("World: "), serverField);
-                inputGrid.addRow(0, new Label("Update time: "), timeToRefresh);
 
                 final Button fxLoginButton = new Button("Login to Grepolis");
-                fxLoginButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+                fxLoginButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(javafx.event.ActionEvent t) {
-                        if (notEmpty(fxPassword.getText()) && notEmpty(fxPassword.getText()) && notEmpty(serverField.getText())) {
+                        if (notEmpty(SettingsPanel.getPasswordField().getText()) && notEmpty(SettingsPanel.getUsernameField().getText()) && notEmpty(SettingsPanel.getWorldField().getText())) {
                             loginAttempted.set(false);
-                            server = serverField.getText();
+                            server = SettingsPanel.getWorldField().getText();
                             engine.load("https://" + server.substring(0, 2) + ".grepolis.com");
                             fxLoginButton.setDisable(true);
                         }
@@ -312,33 +283,6 @@ public class GrepolisBot extends JPanel {
                 });
                 inputGrid.addRow(0, GRC);
 
-                Button queueButton = new Button("Queue");
-                queueButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                    @Override
-                    public void handle(javafx.event.ActionEvent t) {
-                        java.awt.EventQueue.invokeLater(new Runnable() {
-                            public void run() {
-                                new QueueGUI(towns).setVisible(true);
-                            }
-                        });
-                    }
-                });
-
-                Button farmButton = new Button("Farming");
-                farmButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-                    @Override
-                    public void handle(javafx.event.ActionEvent t) {
-                        java.awt.EventQueue.invokeLater(new Runnable() {
-                            public void run() {
-                                if (towns.size() > 0) {
-                                    new FarmersGUI(towns).setVisible(true);
-                                }
-                            }
-                        });
-                    }
-                });
-
-
                 ProgressIndicator fxLoadProgress = new ProgressIndicator(0);
                 fxLoadProgress.progressProperty().bind(webView.getEngine().getLoadWorker().progressProperty());
                 fxLoadProgress.visibleProperty().bind(webView.getEngine().getLoadWorker().runningProperty());
@@ -348,23 +292,27 @@ public class GrepolisBot extends JPanel {
                         fxLoginButton,
                         fxLoadProgress,
                         startBot,
-                        queueButton,
-                        farmButton
+                        botDebugger,
+                        GRC
                 );
 
                 final VBox layout = new VBox(10);
                 layout.setStyle("-fx-background-color: cornsilk; -fx-padding: 10;");
                 layout.getChildren().addAll(
-                        new Label("Enter your Grepolis Account credentials"),
-                        inputGrid,
                         loginPane,
                         webView
                 );
                 VBox.setVgrow(webView, Priority.ALWAYS);
                 Scene scene = new Scene(layout);
 
-                fxUsername.requestFocus();
                 jfxPanel.setScene(scene);
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        botFrame.getjTabbedPane1().addTab("Browser", jfxPanel);
+                    }
+                });
 
 
 
@@ -416,6 +364,10 @@ public class GrepolisBot extends JPanel {
 
     public void setTownHasFarms(HashMap<Integer, Boolean> townHasFarms) {
         this.townHasFarms = townHasFarms;
+    }
+
+    public void setBotFrame(BotFrame botFrame) {
+        GrepolisBot.botFrame = botFrame;
     }
 
     public class BuildBarracksTroops implements Runnable {
@@ -545,25 +497,25 @@ public class GrepolisBot extends JPanel {
                 } while (!farmedTheTown);
 
 
-                    Thread.sleep(randInt(1250, 2500));
+                Thread.sleep(randInt(1250, 2500));
 
-                    //Loads data exactly from the senate
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
-                                    "var buildingData;\n" +
-                                    "xhr.onreadystatechange = function() {\n" +
-                                    "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                                    "        buildingData = xhr.responseText\n" +
-                                    "        alert(\"BuildingData:\" +xhr.status +readBody(xhr));\n" +
-                                    "    }\n" +
-                                    "}\n" +
-                                    "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_main?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "', true);\n" +
-                                    "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
-                                    "xhr.send(null);\n");
-                        }
-                    });
+                //Loads data exactly from the senate
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
+                                "var buildingData;\n" +
+                                "xhr.onreadystatechange = function() {\n" +
+                                "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
+                                "        buildingData = xhr.responseText\n" +
+                                "        alert(\"BuildingData:\" +xhr.status +readBody(xhr));\n" +
+                                "    }\n" +
+                                "}\n" +
+                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_main?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "', true);\n" +
+                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
+                                "xhr.send(null);\n");
+                    }
+                });
 
             } catch (InterruptedException e) {
                 logError(e);
@@ -841,7 +793,7 @@ public class GrepolisBot extends JPanel {
     }
 
     private long getUpdateTime() {
-        String time = timeToRefresh.getText();
+        String time = SettingsPanel.getUpdateTimeField().getText();
         String intervals[] = time.split(":");
         int hours = Integer.parseInt(intervals[0]);
         int minutes = Integer.parseInt(intervals[1]);
@@ -931,6 +883,8 @@ public class GrepolisBot extends JPanel {
 
         @Override
         public void run() {
+            long timeToUpdate = 0;
+            long pauseTime = 0;
             while (botIsRunning) {
                 try {
                     Thread.sleep(300);
@@ -938,8 +892,18 @@ public class GrepolisBot extends JPanel {
                     e.printStackTrace();
                 }
                 if (updateTime > 0) {
-                    long timeToUpdate = updateTime - System.currentTimeMillis();
-                    if (timeToUpdate > 0) {
+                    if (!botIsPaused) {
+                        if (pauseTime > 0) {
+                            updateTime += System.currentTimeMillis()-pauseTime;
+                            pauseTime = 0;
+                        }
+                        timeToUpdate = updateTime - System.currentTimeMillis();
+                    } else {
+                        if (pauseTime == 0) {
+                            pauseTime = System.currentTimeMillis();
+                        }
+                    }
+                    if (!botIsPaused && timeToUpdate > 0) {
                         long second = (timeToUpdate / 1000) % 60;
                         long minute = (timeToUpdate / (1000 * 60)) % 60;
                         long hour = (timeToUpdate / (1000 * 60 * 60)) % 24;
@@ -947,7 +911,7 @@ public class GrepolisBot extends JPanel {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                frame.setTitle(remainingTime);
+                                botFrame.setTitle(remainingTime);
                             }
                         });
 
@@ -979,81 +943,33 @@ public class GrepolisBot extends JPanel {
         return towns;
     }
 
-    public static TextField getFxUsername() {
-        return fxUsername;
-    }
-
-    public static TextField getFxPassword() {
-        return fxPassword;
-    }
-
-    public static TextField getServerField() {
-        return serverField;
-    }
-
-    public static void setFxUsername(TextField fxUsername) {
-        GrepolisBot.fxUsername = fxUsername;
-    }
-
-    public static void setFxPassword(TextField fxPassword) {
-        GrepolisBot.fxPassword = fxPassword;
-    }
-
-    public static void setServerField(TextField serverField) {
-        GrepolisBot.serverField = serverField;
-    }
-
-    public static void setServerFieldText(String serverField) {
-        GrepolisBot.serverField.setText(serverField);
-    }
-
-    public static void setFxUsernameText(String username) {
-        GrepolisBot.fxUsername.setText(username);
-    }
-
-    public static void setFxPasswordText(String password) {
-        GrepolisBot.fxPassword.setText(password);
-    }
-
-    public static void setTimeToRefreshText(String timeToRefreshText) {
-        GrepolisBot.timeToRefresh.setText(timeToRefreshText);
-    }
-
-    public static void setTimeToRefresh(TextField timeToRefresh) {
-        GrepolisBot.timeToRefresh = timeToRefresh;
-    }
-
-    public static TextField getTimeToRefresh() {
-        return timeToRefresh;
-    }
-
     private void getAllTownData() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                        //Accesses the towns!
-                        webView.getEngine().executeScript("function readBody(xhr) {\n" +
-                                "    var data;\n" +
-                                "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
-                                "        data = xhr.responseText;\n" +
-                                "    } else if (xhr.responseType === \"document\") {\n" +
-                                "        data = xhr.responseXML;\n" +
-                                "    } else {\n" +
-                                "        data = xhr.response;\n" +
-                                "    }\n" +
-                                "    return data;\n" +
-                                "}\n" +
-                                "\n" +
-                                "var xhr = new XMLHttpRequest();\n" +
-                                "xhr.onreadystatechange = function() {\n" +
-                                "    if (xhr.readyState == 4) {\n" +
-                                "        console.log(readBody(xhr));\n" +
-                                "    }\n" +
-                                "}\n" +
-                                "\n" +
-                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + defaultTown + "&action=refetch&h=" + csrfToken + "&json=%7B%22collections%22%3A%7B%22Towns%22%3A%5B%5D%7D%2C%22town_id%22%3A" + defaultTown + "%2C%22nl_init%22%3Afalse%7D', true);\n" +
-                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                                "xhr.send(null);");
+                //Accesses the towns!
+                webView.getEngine().executeScript("function readBody(xhr) {\n" +
+                        "    var data;\n" +
+                        "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                        "        data = xhr.responseText;\n" +
+                        "    } else if (xhr.responseType === \"document\") {\n" +
+                        "        data = xhr.responseXML;\n" +
+                        "    } else {\n" +
+                        "        data = xhr.response;\n" +
+                        "    }\n" +
+                        "    return data;\n" +
+                        "}\n" +
+                        "\n" +
+                        "var xhr = new XMLHttpRequest();\n" +
+                        "xhr.onreadystatechange = function() {\n" +
+                        "    if (xhr.readyState == 4) {\n" +
+                        "        console.log(readBody(xhr));\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "xhr.open('GET', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + defaultTown + "&action=refetch&h=" + csrfToken + "&json=%7B%22collections%22%3A%7B%22Towns%22%3A%5B%5D%7D%2C%22town_id%22%3A" + defaultTown + "%2C%22nl_init%22%3Afalse%7D', true);\n" +
+                        "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                        "xhr.send(null);");
 
 
             }
@@ -1061,20 +977,20 @@ public class GrepolisBot extends JPanel {
     }
 
     private void addTownsWithFarms(String text) {
-            String townData[] = text.split("\"id\"");
+        String townData[] = text.split("\"id\"");
 
-            for (String aTownData : townData) {
-                if (aTownData.contains("\"name\"")) {
+        for (String aTownData : townData) {
+            if (aTownData.contains("\"name\"")) {
 //                System.out.println("Town data: " +aTownData);
 
-                    String importantData[] = aTownData.split(",");
+                String importantData[] = aTownData.split(",");
 //                System.out.println("Important data: " + Arrays.toString(importantData));
-                    int townID = Integer.parseInt(importantData[0].replaceAll(":", ""));
-                    townHasFarms.put(townID, true);
-                }
+                int townID = Integer.parseInt(importantData[0].replaceAll(":", ""));
+                townHasFarms.put(townID, true);
             }
-            log("Towns with farms found: " +townHasFarms.size());
-            new Thread(new ActualBot()).start();
+        }
+        log("Towns with farms found: " +townHasFarms.size());
+        new Thread(new ActualBot()).start();
     }
 
     private void addAlerts() {
@@ -1319,6 +1235,10 @@ public class GrepolisBot extends JPanel {
         return null;
     }
 
+    public static void setBotIsRunning(boolean botIsRunning) {
+        GrepolisBot.botIsRunning = botIsRunning;
+    }
+
     //TODO separate this stuff into towns!
     public static boolean isFarmersEnabled() {
         return farmersEnabled;
@@ -1327,5 +1247,6 @@ public class GrepolisBot extends JPanel {
     public static void setFarmersEnabled(boolean farmersEnabled) {
         GrepolisBot.farmersEnabled = farmersEnabled;
     }
+
 
 }

@@ -1,7 +1,13 @@
 package Grepolis.util;
 
 
+import Grepolis.GUI.LogPanel;
+import Grepolis.Town;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.*;
 
@@ -48,7 +54,7 @@ public class MyLogger {
         logger.addHandler(consoleHandler);
     }
 
-    private String formatTime(int time) {
+    private static String formatTime(int time) {
         String currentTime = String.valueOf(time);
         if (time < 10) {
             currentTime = "0" + time;
@@ -56,8 +62,44 @@ public class MyLogger {
         return currentTime;
     }
 
-    public static void log(Level level, String msg){
+    public static void log(Level level, final String msg){
         logger.log(level, msg);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                StringBuilder sb = new StringBuilder();
+
+                if (!msg.equals("\n")) {
+                    ZonedDateTime zonedDateTime = ZonedDateTime.now();
+                    sb.append(formatTime(zonedDateTime.getHour()))
+                            .append(":").append(formatTime(zonedDateTime.getMinute()))
+                            .append(":").append(formatTime(zonedDateTime.getSecond()))
+                            .append(" ");
+                }
+
+                trunkTextArea(LogPanel.getjTextArea());
+                LogPanel.getjTextArea().append(sb.toString() +  msg + "\n");
+
+//                JTextArea holder = LogPanel.getjTextArea();
+//                String currentText = holder.getText();
+//                String newError = sb.toString() +  msg;
+//                String newTextToAppend = newError + "\n" + currentText;
+//                holder.setText(newTextToAppend);
+            }
+        });
+    }
+
+    final static int SCROLL_BUFFER_SIZE = 300;
+    private static void trunkTextArea(JTextArea txtWin) {
+        int numLinesToTrunk = txtWin.getLineCount() - SCROLL_BUFFER_SIZE;
+        if(numLinesToTrunk > 0) {
+            try {
+                int posOfLastLineToTrunk = txtWin.getLineEndOffset(numLinesToTrunk - 1);
+                txtWin.replaceRange("",0,posOfLastLineToTrunk);
+            }
+            catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static void log(String msg) {

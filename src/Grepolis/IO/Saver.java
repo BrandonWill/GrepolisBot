@@ -1,11 +1,11 @@
 package Grepolis.IO;
 
 import Grepolis.*;
+import Grepolis.GUI.SettingsPanel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
@@ -43,10 +43,10 @@ public class Saver {
             System.out.println("Account file couldn't be saved!");
         }
         if (writer != null) {
-            writer.println("Username:" + GrepolisBot.getFxUsername().getText());
-            writer.println("Password:" +GrepolisBot.getFxPassword().getText());
-            writer.println("Server:" +GrepolisBot.getServerField().getText());
-            writer.println("RefreshTime-" + GrepolisBot.getTimeToRefresh().getText());
+            writer.println("Username:" + SettingsPanel.getUsernameField().getText());
+            writer.println("Password:" + SettingsPanel.getPasswordField().getText());
+            writer.println("Server:" + SettingsPanel.getWorldField().getText());
+            writer.println("RefreshTime:" + SettingsPanel.getUpdateTimeField().getText().replaceAll(":", "-"));
             writer.close();
         }
     }
@@ -67,7 +67,7 @@ public class Saver {
         } catch (FileNotFoundException e) {
             System.out.println("Building file couldn't be saved!");
         }
-        if (writer != null) {
+        if (writer != null && towns != null && towns.size() > 0) {
             for (Town town : towns) {
                 writer.print("townID:" + town.getId());
                 writer.print(",");
