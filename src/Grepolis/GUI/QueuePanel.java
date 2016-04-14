@@ -48,6 +48,15 @@ public class QueuePanel extends JPanel {
         }
     }
 
+    public void changeTown() {
+        if (currentTownIndex != -1) {
+            jComboBox1.setSelectedIndex(currentTownIndex);
+            changeTown(towns.get(currentTownIndex));
+        }else if (towns.size() > 0) {
+            changeTown(towns.get(0));
+        }
+    }
+
     public void changeTown(Town town) {
         //Update the building levels and building level to build
         try {

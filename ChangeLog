@@ -1,3 +1,6 @@
+Version 0.18
+* The town you currently have selected in the queue tab will now automatically update without you changing towns
+
 Version 0.17
 * Reworked the user interface! However, almost no testing. I've backed up the previous version just in case.
 * Bot pausing actually works while the bot isn't running (keeps the timer stable)

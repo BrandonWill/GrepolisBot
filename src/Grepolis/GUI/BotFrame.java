@@ -11,6 +11,8 @@ import Grepolis.IO.Saver;
 import Grepolis.Town;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -21,10 +23,25 @@ import java.util.ArrayList;
  */
 public class BotFrame extends javax.swing.JFrame {
     private ArrayList<Town> towns;
+    private QueuePanel queueTab;
 
     public BotFrame(ArrayList<Town> townList) {
         this.towns = townList;
         initComponents();
+        addJTabbedPaneListener();
+    }
+
+    private void addJTabbedPaneListener() {
+        ChangeListener changeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent) {
+                JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+                int index = sourceTabbedPane.getSelectedIndex();
+                if (index == 1) { //queue tab
+                    queueTab.changeTown();
+                }
+            }
+        };
+        jTabbedPane1.addChangeListener(changeListener);
     }
 
     private void initComponents() {
@@ -68,7 +85,7 @@ public class BotFrame extends javax.swing.JFrame {
                         .addGap(0, 586, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Queue", new QueuePanel(towns));
+        jTabbedPane1.addTab("Queue", queueTab = new QueuePanel(towns));
 
         javax.swing.GroupLayout farmingPanelLayout = new javax.swing.GroupLayout(farmingPanel);
         farmingPanel.setLayout(farmingPanelLayout);
