@@ -154,7 +154,7 @@ public class FarmingPanel extends JPanel {
         jLabel1.setText("All towns");
 
         jTextPane1.setEditable(false);
-        jTextPane1.setText("Clicking save will overwrite data for all towns! All new towns will automatically have this data if enabled is checked.");
+        jTextPane1.setText("All current and new towns will have these settings. They override (not overwrite) your current town settings. To get your old settings back, simply uncheck the box!");
         jTextPane1.setToolTipText("");
         jScrollPane1.setViewportView(jTextPane1);
 
