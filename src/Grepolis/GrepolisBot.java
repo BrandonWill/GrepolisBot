@@ -61,7 +61,6 @@ public class GrepolisBot {
 
     private static Button startBot;
 
-    private static boolean farmersEnabled = false;
     private static boolean startedBot = false;
 
     private static volatile boolean botIsPaused = false;
@@ -79,6 +78,9 @@ public class GrepolisBot {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception ignored) {}
                 botFrame = new BotFrame(towns);
                 botFrame.setSize(new Dimension(1500, 800));
                 botFrame.setVisible(true);
@@ -136,7 +138,7 @@ public class GrepolisBot {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36");
 
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
@@ -751,7 +753,7 @@ public class GrepolisBot {
                                 docksQueue[0].interrupt();
                             }
 
-                            if (farmersEnabled && townHasFarms.get(towns.get(i).getId()) != null) {
+                            if (towns.get(i).getFarming().isEnabled() && townHasFarms.get(towns.get(i).getId()) != null) {
                                 farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
                                 farmer[0].start();
                             } else {
@@ -1112,7 +1114,7 @@ public class GrepolisBot {
                             if (data.contains("VillagesData:200")) {
                                 currentTown.getFarming().parseVillageData(data);
                                 if (!currentTown.hasFullStorage()) {
-                                    currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(Farming.getTimeToFarm().seconds));
+                                    currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(currentTown.getFarming().getIntervalToFarm().getSeconds()));
 
                                     if (currentTown.getFarming().farmTheVillages()) {
                                         log(currentTown.getName() + " has successfully farmed the villages!");
@@ -1237,15 +1239,6 @@ public class GrepolisBot {
 
     public static void setBotIsRunning(boolean botIsRunning) {
         GrepolisBot.botIsRunning = botIsRunning;
-    }
-
-    //TODO separate this stuff into towns!
-    public static boolean isFarmersEnabled() {
-        return farmersEnabled;
-    }
-
-    public static void setFarmersEnabled(boolean farmersEnabled) {
-        GrepolisBot.farmersEnabled = farmersEnabled;
     }
 
 

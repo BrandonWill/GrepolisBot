@@ -1,5 +1,6 @@
 Version 0.18
 * The town you currently have selected in the queue tab will now automatically update without you changing towns
+* Farming tab has been updated to allow all city editing and single city editing.
 
 Version 0.17
 * Reworked the user interface! However, almost no testing. I've backed up the previous version just in case.

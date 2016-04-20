@@ -226,9 +226,21 @@ public class Saver {
         }
         if (writer != null) {
             if (towns.size() > 0) {
-                writer.println("Farmers enabled:" + GrepolisBot.isFarmersEnabled());
-                writer.println("MoodToLoot:" +towns.get(0).getFarming().getMoodToLootTo());
-                writer.println("Interval:" +towns.get(0).getFarming().getTimeToFarm());
+                writer.println("All Farmers enabled:" + Farming.isAllEnabled());
+                writer.println("All MoodToLoot:" +Farming.getAllMoodToLootTo());
+                writer.println("All Interval:" +Farming.getAllIntervalToFarm());
+                if (!Farming.isAllEnabled()) {
+                    for (Town town : towns) {
+                        writer.print("townID:" + town.getId());
+                        writer.print(",");
+                        writer.print("enabled:" + town.getFarming().isEnabled());
+                        writer.print(",");
+                        writer.print("MoodToLoot:" + town.getFarming().getMoodToLootTo());
+                        writer.print(",");
+                        writer.print("Interval:" + town.getFarming().getIntervalToFarm());
+                        writer.println();
+                    }
+                }
             }
             writer.close();
         }

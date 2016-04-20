@@ -20,13 +20,18 @@ public class Farming {
     private int island_y;
     private boolean booty;
     private boolean diplomacy;
+    private boolean enabled;
     private int trade_office;
     private int storage;
     private int wood = 0;
     private int stone = 0;
     private int iron = 0;
-    private static int moodToLootTo = 80;
-    private static TimeToFarm timeToFarm = TimeToFarm.MINUTES_FIVE;
+    private int moodToLootTo = 80;
+    private IntervalToFarm intervalToFarm = IntervalToFarm.MINUTES_FIVE;
+
+    public static int allMoodToLootTo = 80;
+    public static boolean allEnabled;
+    public static IntervalToFarm allIntervalToFarm;
 
 
 
@@ -271,7 +276,7 @@ public class Farming {
         }
         sb.append("],\"time_option\":");
 
-        sb.append(String.valueOf(timeToFarm.seconds));
+        sb.append(String.valueOf(intervalToFarm.seconds));
 
         sb.append(",\"claim_factor\":");
         sb.append(getFarmAmount());
@@ -315,20 +320,20 @@ public class Farming {
         return true;
     }
 
-    public static void setMoodToLootTo(int moodToLootTo) {
-        Farming.moodToLootTo = moodToLootTo;
+    public void setMoodToLootTo(int moodToLootTo) {
+        this.moodToLootTo = moodToLootTo;
     }
 
-    public static TimeToFarm getTimeToFarm() {
-        return timeToFarm;
+    public IntervalToFarm getIntervalToFarm() {
+        return isAllEnabled() ? allIntervalToFarm : intervalToFarm;
     }
 
-    public static void setTimeToFarm(TimeToFarm timeToFarm) {
-        Farming.timeToFarm = timeToFarm;
+    public void setIntervalToFarm(IntervalToFarm intervalToFarm) {
+        this.intervalToFarm = intervalToFarm;
     }
 
     public int getMoodToLootTo() {
-        return moodToLootTo;
+        return isAllEnabled() ? allMoodToLootTo : moodToLootTo;
     }
 
     public int getStorage() {
@@ -363,7 +368,39 @@ public class Farming {
         this.iron = iron;
     }
 
-    public enum TimeToFarm {
+    public boolean isEnabled() {
+        return isAllEnabled() ? isAllEnabled() : enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public static int getAllMoodToLootTo() {
+        return allMoodToLootTo;
+    }
+
+    public static void setAllMoodToLootTo(int allMoodToLootTo) {
+        Farming.allMoodToLootTo = allMoodToLootTo;
+    }
+
+    public static boolean isAllEnabled() {
+        return allEnabled;
+    }
+
+    public static void setAllEnabled(boolean allEnabled) {
+        Farming.allEnabled = allEnabled;
+    }
+
+    public static IntervalToFarm getAllIntervalToFarm() {
+        return allIntervalToFarm;
+    }
+
+    public static void setAllIntervalToFarm(IntervalToFarm allIntervalToFarm) {
+        Farming.allIntervalToFarm = allIntervalToFarm;
+    }
+
+    public enum IntervalToFarm {
         MINUTES_FIVE(300),
         MINUTES_TEN(600),
         MINUTES_TWENTY(1200),
@@ -374,8 +411,12 @@ public class Farming {
         MINUTES_FOUR_HUNDRED_EIGHTY(28800);
 
         public int seconds;
-        TimeToFarm(int seconds) {
+        IntervalToFarm(int seconds) {
             this.seconds = seconds;
+        }
+
+        public int getSeconds() {
+            return seconds;
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * Created by Brandon on 10/9/2015.
  * Time: 4:05 AM
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class Loader {
 
     public static void load() {
@@ -268,7 +269,7 @@ public class Loader {
                 while ((line = reader.readLine()) != null) {
                     String text[] = line.split(",");
                     ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
-                    Town town = null;
+                    Town town;
                     Barracks barracks = null;
                     for (String string : text) {
                         if (string.startsWith("townID:")) {
@@ -376,12 +377,42 @@ public class Loader {
         try {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
-                        if (line.startsWith("Farmers enabled:")) {
-                            Grepolis.GrepolisBot.setFarmersEnabled(Boolean.parseBoolean(line.split(":")[1]));
-                        } else if (line.startsWith("MoodToLoot:")) {
-                            Farming.setMoodToLootTo(Integer.parseInt(line.split(":")[1]));
-                        } else if (line.startsWith("Interval:")) {
-                            Farming.setTimeToFarm(Farming.TimeToFarm.valueOf(line.split(":")[1]));
+                        if (line.startsWith("All Farmers enabled:")) {
+                            Farming.setAllEnabled(Boolean.parseBoolean(line.split(":")[1]));
+                        } else if (line.startsWith("All MoodToLoot:")) {
+                            Farming.setAllMoodToLootTo(Integer.parseInt(line.split(":")[1]));
+                        } else if (line.startsWith("All Interval:")) {
+                            Farming.setAllIntervalToFarm(Farming.IntervalToFarm.valueOf(line.split(":")[1]));
+                        } else if (line.startsWith("townID:")) {
+                            Town town = null;
+                            ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
+                            String text[] = line.split(",");
+                            for (String string : text) {
+                                if (string.startsWith("townID:")) {
+                                    int townID = Integer.parseInt(string.split(":")[1]);
+                                    for (Town townSearcher : towns) {
+                                        if (townSearcher.getId() == townID) {
+                                            town = townSearcher;
+                                        }
+                                    }
+                                }
+                                if (string.startsWith("enabled:")) {
+                                    if (town != null) {
+                                        town.getFarming().setEnabled(Boolean.parseBoolean(string.split(":")[1]));
+                                    }
+                                }
+                                if (string.startsWith("MoodToLoot:")) {
+                                    if (town != null) {
+                                        town.getFarming().setMoodToLootTo(Integer.parseInt(string.split(":")[1]));
+                                    }
+                                }
+                                if (string.startsWith("Interval:")) {
+                                    if (town != null) {
+                                        town.getFarming().setIntervalToFarm(Farming.IntervalToFarm.valueOf(string.split(":")[1]));
+                                    }
+                                }
+
+                            }
                         }
                 }
             }
