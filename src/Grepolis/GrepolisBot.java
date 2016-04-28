@@ -757,6 +757,12 @@ public class GrepolisBot {
                                 farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
                                 farmer[0].start();
                             } else {
+                                if (!towns.get(i).getFarming().isEnabled()) {
+                                    log(currentTown.getName() + " farmers are disabled!");
+                                }
+                                if (townHasFarms.get(towns.get(i).getId()) == null) {
+                                    log(currentTown.getName() + " doesn't have any farmers!");
+                                }
                                 farmedTheTown = true;
                             }
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
