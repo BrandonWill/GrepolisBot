@@ -18,12 +18,12 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 /**
- *
  * @author Brandon
  */
 public class BotFrame extends javax.swing.JFrame {
     private ArrayList<Town> towns;
     private QueuePanel queueTab;
+    private FarmingPanel farmingTab;
 
     public BotFrame(ArrayList<Town> townList) {
         this.towns = townList;
@@ -38,7 +38,11 @@ public class BotFrame extends javax.swing.JFrame {
                 int index = sourceTabbedPane.getSelectedIndex();
                 if (index == 1) { //queue tab
                     queueTab.changeTown();
+                    System.out.println(towns.size());
+                } else if (index == 2) { //farming tab
+                    farmingTab.setTowns(towns);
                 }
+
             }
         };
         jTabbedPane1.addChangeListener(changeListener);
@@ -98,7 +102,7 @@ public class BotFrame extends javax.swing.JFrame {
                         .addGap(0, 586, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Farming", new FarmingPanel(towns));
+        jTabbedPane1.addTab("Farming", farmingTab = new FarmingPanel(towns));
 
         javax.swing.GroupLayout logPaneLayout = new javax.swing.GroupLayout(logPane);
         logPane.setLayout(logPaneLayout);
@@ -141,14 +145,18 @@ public class BotFrame extends javax.swing.JFrame {
     }// </editor-fold>
 
     private javax.swing.JPanel browserPanel;
-    private javax.swing.JPanel farmingPanel;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel logPane;
     private javax.swing.JPanel queuePanel;
+    private javax.swing.JPanel farmingPanel;
     private javax.swing.JPanel settingsPanel;
 
     public JTabbedPane getjTabbedPane1() {
         return jTabbedPane1;
+    }
+
+    public void setTowns(ArrayList<Town> towns) {
+        this.towns = towns;
     }
 
 

@@ -24,7 +24,7 @@ import Grepolis.*;
  */
 public class QueuePanel extends JPanel {
     private ArrayList<Town> towns;
-    private int currentTownIndex = -1; //Used only for updating the buildings/troops when the tab is clicked
+    private static int currentTownIndex = -1; //Used only for updating the buildings/troops when the tab is clicked
 
     public QueuePanel(ArrayList<Town> townList) {
         this.towns = townList;
@@ -49,6 +49,10 @@ public class QueuePanel extends JPanel {
     }
 
     public void changeTown() {
+        jComboBox1.removeAllItems();
+        for (Town town : towns) {
+            jComboBox1.addItem(town.getName());
+        }
         if (currentTownIndex != -1) {
             jComboBox1.setSelectedIndex(currentTownIndex);
             changeTown(towns.get(currentTownIndex));

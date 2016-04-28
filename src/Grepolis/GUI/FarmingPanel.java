@@ -452,6 +452,14 @@ public class FarmingPanel extends JPanel {
         }
     }
 
+    public void setTowns(ArrayList<Town> towns) {
+        this.towns = towns;
+        jComboBox3.removeAllItems();
+        for (Town town : towns) {
+            jComboBox3.addItem(town.getName());
+        }
+    }
+
     // Variables declaration - do not modify
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

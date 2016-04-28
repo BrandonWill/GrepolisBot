@@ -31,7 +31,7 @@ public class Farming {
 
     public static int allMoodToLootTo = 80;
     public static boolean allEnabled;
-    public static IntervalToFarm allIntervalToFarm;
+    public static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
 
 
 
@@ -308,12 +308,12 @@ public class Farming {
     }
 
     private boolean isMoodHighEnough() {
-        if (moodToLootTo == 100) {
+        if (getMoodToLootTo() == 100) {
             return false;
         }
 
         for (FarmingVillage farmingVillage : farmingVillages) {
-            if (farmingVillage.getMood() < moodToLootTo) {
+            if (farmingVillage.getMood() < getMoodToLootTo()) {
                 return false;
             }
         }

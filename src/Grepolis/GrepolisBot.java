@@ -1220,7 +1220,8 @@ public class GrepolisBot {
             }
         });
         log("Towns found: " + towns.size());
-//        log("Town[0] id and name: " + towns.get(0).getId() + " : " + towns.get(0).getName());
+
+        botFrame.setTowns(towns);
         //TODO NEEDS THIS TO ACTUALLY START LOL
 //        new Thread(new ActualBot()).start();
     }
