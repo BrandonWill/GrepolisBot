@@ -38,7 +38,6 @@ public class BotFrame extends javax.swing.JFrame {
                 int index = sourceTabbedPane.getSelectedIndex();
                 if (index == 1) { //queue tab
                     queueTab.changeTown();
-                    System.out.println(towns.size());
                 } else if (index == 2) { //farming tab
                     farmingTab.setTowns(towns);
                 }
@@ -89,7 +88,9 @@ public class BotFrame extends javax.swing.JFrame {
                         .addGap(0, 586, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Queue", queueTab = new QueuePanel(towns));
+
+        queueTab = new QueuePanel(towns);
+        jTabbedPane1.addTab("Queue", new JScrollPane(queueTab, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 
         javax.swing.GroupLayout farmingPanelLayout = new javax.swing.GroupLayout(farmingPanel);
         farmingPanel.setLayout(farmingPanelLayout);

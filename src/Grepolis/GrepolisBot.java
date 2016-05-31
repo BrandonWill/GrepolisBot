@@ -1040,8 +1040,9 @@ public class GrepolisBot {
                             if (data.contains("TownFarmingData:200")) {
                                 addTownsWithFarms(data);
                             } else {
-                                log(Level.SEVERE, "Error! Can't find the towns! Error log: " + event.getData());
-                                pauseBot();
+                                log(Level.WARNING, "Error! Can't find the towns with farms! Error log: " + event.getData());
+                                log(Level.WARNING, "Captain either not enabled or catastrophic error occurred!");
+                                new Thread(new ActualBot()).start();
                             }
                         }
                         //Checks for conqueror in the town
@@ -1222,8 +1223,6 @@ public class GrepolisBot {
         log("Towns found: " + towns.size());
 
         botFrame.setTowns(towns);
-        //TODO NEEDS THIS TO ACTUALLY START LOL
-//        new Thread(new ActualBot()).start();
     }
 
     private boolean ownTheTown(Town town, ArrayList<Town> townList) {
