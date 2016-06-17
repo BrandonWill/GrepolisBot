@@ -78,12 +78,6 @@ public class MyLogger {
 
                 trunkTextArea(LogPanel.getjTextArea());
                 LogPanel.getjTextArea().append(sb.toString() +  msg + "\n");
-
-//                JTextArea holder = LogPanel.getjTextArea();
-//                String currentText = holder.getText();
-//                String newError = sb.toString() +  msg;
-//                String newTextToAppend = newError + "\n" + currentText;
-//                holder.setText(newTextToAppend);
             }
         });
     }

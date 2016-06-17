@@ -35,9 +35,12 @@ public class Saver {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            String jarDir = jarFile.getParentFile().getPath();
+            String jarDir = null;
+            if (jarFile != null) {
+                jarDir = jarFile.getParentFile().getPath();
+            }
 
-            writer = new PrintWriter(jarDir + "\\Saves\\AccountSave.txt");
+            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "AccountSave.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("Account file couldn't be saved!");
@@ -61,9 +64,12 @@ public class Saver {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            String jarDir = jarFile.getParentFile().getPath();
+            String jarDir = null;
+            if (jarFile != null) {
+                jarDir = jarFile.getParentFile().getPath();
+            }
 
-            writer = new PrintWriter(jarDir + "\\Saves\\buildingSave.txt");
+            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "buildingSave.txt");
         } catch (FileNotFoundException e) {
             System.out.println("Building file couldn't be saved!");
         }
@@ -153,9 +159,12 @@ public class Saver {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            String jarDir = jarFile.getParentFile().getPath();
+            String jarDir = null;
+            if (jarFile != null) {
+                jarDir = jarFile.getParentFile().getPath();
+            }
 
-            writer = new PrintWriter(jarDir + "\\Saves\\TroopSave.txt");
+            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "TroopSave.txt");
         } catch (FileNotFoundException e) {
             System.out.println("Troop file couldn't be saved!");
         }
@@ -185,9 +194,12 @@ public class Saver {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            String jarDir = jarFile.getParentFile().getPath();
+            String jarDir = null;
+            if (jarFile != null) {
+                jarDir = jarFile.getParentFile().getPath();
+            }
 
-            writer = new PrintWriter(jarDir + "\\Saves\\DocksSave.txt");
+            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "DocksSave.txt");
         } catch (FileNotFoundException e) {
             System.out.println("Docks file couldn't be saved!");
         }
@@ -218,9 +230,12 @@ public class Saver {
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
-            String jarDir = jarFile.getParentFile().getPath();
+            String jarDir = null;
+            if (jarFile != null) {
+                jarDir = jarFile.getParentFile().getPath();
+            }
 
-            writer = new PrintWriter(jarDir + "\\Saves\\FarmersSave.txt");
+            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "FarmersSave.txt");
         } catch (FileNotFoundException e) {
             System.out.println("Farmers file couldn't be saved!");
         }

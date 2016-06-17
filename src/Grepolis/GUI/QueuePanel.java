@@ -684,7 +684,7 @@ public class QueuePanel extends JPanel {
 
         trade_officePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         trade_officePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        trade_officePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\trade_officex20.png"))); // NOI18N
+        trade_officePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "trade_officex20.png"))); // NOI18N
         trade_officePic.setIconTextGap(-20);
         trade_officePic.setOpaque(true);
         trade_officePic.setLayout(null);
@@ -698,7 +698,7 @@ public class QueuePanel extends JPanel {
 
         oraclePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         oraclePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        oraclePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\oraclex20.png"))); // NOI18N
+        oraclePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "oraclex20.png"))); // NOI18N
         oraclePic.setIconTextGap(-20);
         oraclePic.setOpaque(true);
         oraclePic.setLayout(null);
@@ -708,7 +708,7 @@ public class QueuePanel extends JPanel {
 
         statuePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         statuePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        statuePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\statuex20.png"))); // NOI18N
+        statuePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "statuex20.png"))); // NOI18N
         statuePic.setIconTextGap(-20);
         statuePic.setOpaque(true);
         statuePic.setLayout(null);
@@ -719,7 +719,7 @@ public class QueuePanel extends JPanel {
 
         stonerPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         stonerPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        stonerPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\stonerx20.png"))); // NOI18N
+        stonerPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "stonerx20.png"))); // NOI18N
         stonerPic.setIconTextGap(-20);
         stonerPic.setOpaque(true);
         stonerPic.setLayout(null);
@@ -732,7 +732,7 @@ public class QueuePanel extends JPanel {
 
         farmPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         farmPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        farmPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\farmx20.png"))); // NOI18N
+        farmPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "farmx20.png"))); // NOI18N
         farmPic.setIconTextGap(-20);
         farmPic.setOpaque(true);
         farmPic.setLayout(null);
@@ -743,7 +743,7 @@ public class QueuePanel extends JPanel {
 
         lumberPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         lumberPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lumberPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\lumberx20.png"))); // NOI18N
+        lumberPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "lumberx20.png"))); // NOI18N
         lumberPic.setIconTextGap(-20);
         lumberPic.setOpaque(true);
         lumberPic.setLayout(null);
@@ -754,7 +754,7 @@ public class QueuePanel extends JPanel {
 
         hidePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         hidePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        hidePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\hidex20.png"))); // NOI18N
+        hidePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "hidex20.png"))); // NOI18N
         hidePic.setIconTextGap(-20);
         hidePic.setOpaque(true);
         hidePic.setLayout(null);
@@ -765,7 +765,7 @@ public class QueuePanel extends JPanel {
 
         storagePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         storagePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        storagePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\storagex20.png"))); // NOI18N
+        storagePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "storagex20.png"))); // NOI18N
         storagePic.setIconTextGap(-20);
         storagePic.setOpaque(true);
         storagePic.setLayout(null);
@@ -786,7 +786,7 @@ public class QueuePanel extends JPanel {
 
         marketPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         marketPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        marketPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\marketx20.png"))); // NOI18N
+        marketPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "marketx20.png"))); // NOI18N
         marketPic.setIconTextGap(-20);
         marketPic.setOpaque(true);
         marketPic.setLayout(null);
@@ -797,7 +797,7 @@ public class QueuePanel extends JPanel {
 
         ironerPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         ironerPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        ironerPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\ironerx20.png"))); // NOI18N
+        ironerPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "ironerx20.png"))); // NOI18N
         ironerPic.setIconTextGap(-20);
         ironerPic.setOpaque(true);
         ironerPic.setLayout(null);
@@ -810,7 +810,7 @@ public class QueuePanel extends JPanel {
 
         towerPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         towerPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        towerPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\towerx20.png"))); // NOI18N
+        towerPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "towerx20.png"))); // NOI18N
         towerPic.setIconTextGap(-20);
         towerPic.setOpaque(true);
         towerPic.setLayout(null);
@@ -820,7 +820,7 @@ public class QueuePanel extends JPanel {
 
         libraryPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         libraryPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        libraryPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\libraryx20.png"))); // NOI18N
+        libraryPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "libraryx20.png"))); // NOI18N
         libraryPic.setIconTextGap(-20);
         libraryPic.setOpaque(true);
         libraryPic.setLayout(null);
@@ -830,7 +830,7 @@ public class QueuePanel extends JPanel {
 
         lighthousePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         lighthousePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lighthousePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\lighthousex20.png"))); // NOI18N
+        lighthousePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "lighthousex20.png"))); // NOI18N
         lighthousePic.setIconTextGap(-20);
         lighthousePic.setOpaque(true);
         lighthousePic.setLayout(null);
@@ -848,7 +848,7 @@ public class QueuePanel extends JPanel {
 
         theaterPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         theaterPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        theaterPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\theaterx20.png"))); // NOI18N
+        theaterPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "theaterx20.png"))); // NOI18N
         theaterPic.setIconTextGap(-20);
         theaterPic.setOpaque(true);
         theaterPic.setLayout(null);
@@ -859,7 +859,7 @@ public class QueuePanel extends JPanel {
 
         templePic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         templePic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        templePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\templex20.png"))); // NOI18N
+        templePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "templex20.png"))); // NOI18N
         templePic.setIconTextGap(-20);
         templePic.setOpaque(true);
         templePic.setLayout(null);
@@ -870,7 +870,7 @@ public class QueuePanel extends JPanel {
 
         academyPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         academyPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        academyPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\academyx20.png"))); // NOI18N
+        academyPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "academyx20.png"))); // NOI18N
         academyPic.setIconTextGap(-20);
         academyPic.setOpaque(true);
         academyPic.setLayout(null);
@@ -881,7 +881,7 @@ public class QueuePanel extends JPanel {
 
         thermalPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         thermalPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        thermalPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\thermalx20.png"))); // NOI18N
+        thermalPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "thermalx20.png"))); // NOI18N
         thermalPic.setIconTextGap(-20);
         thermalPic.setOpaque(true);
         thermalPic.setLayout(null);
@@ -892,7 +892,7 @@ public class QueuePanel extends JPanel {
 
         docksPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         docksPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        docksPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\docksx20.png"))); // NOI18N
+        docksPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "docksx20.png"))); // NOI18N
         docksPic.setIconTextGap(-20);
         docksPic.setOpaque(true);
         docksPic.setLayout(null);
@@ -905,7 +905,7 @@ public class QueuePanel extends JPanel {
 
         barracksPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         barracksPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        barracksPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\barracksx20.png"))); // NOI18N
+        barracksPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "barracksx20.png"))); // NOI18N
         barracksPic.setIconTextGap(-20);
         barracksPic.setOpaque(true);
         barracksPic.setLayout(null);
@@ -920,7 +920,7 @@ public class QueuePanel extends JPanel {
 
         wallPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         wallPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        wallPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\wallx20.png"))); // NOI18N
+        wallPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "wallx20.png"))); // NOI18N
         wallPic.setIconTextGap(-20);
         wallPic.setOpaque(true);
         wallPic.setLayout(null);
@@ -935,7 +935,7 @@ public class QueuePanel extends JPanel {
 
         mainPic.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         mainPic.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        mainPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Buildings\\mainx20.png"))); // NOI18N
+        mainPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Buildings" + File.separator + "mainx20.png"))); // NOI18N
         mainPic.setIconTextGap(-20);
         mainPic.setOpaque(true);
         mainPic.setLayout(null);
@@ -1129,7 +1129,7 @@ public class QueuePanel extends JPanel {
 
         swordPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         swordPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        swordPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\swordx40.png"))); // NOI18N
+        swordPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "swordx40.png"))); // NOI18N
         swordPic.setText("0");
         swordPic.setToolTipText("1000(+300)");
         swordPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1149,7 +1149,7 @@ public class QueuePanel extends JPanel {
 
         slingerPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         slingerPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        slingerPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\slingerx40.png"))); // NOI18N
+        slingerPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "slingerx40.png"))); // NOI18N
         slingerPic.setText("0");
         slingerPic.setToolTipText("1000(+300)");
         slingerPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1168,7 +1168,7 @@ public class QueuePanel extends JPanel {
 
         archerPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         archerPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        archerPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\archerx40.png"))); // NOI18N
+        archerPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "archerx40.png"))); // NOI18N
         archerPic.setText("0");
         archerPic.setToolTipText("1000(+300)");
         archerPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1187,7 +1187,7 @@ public class QueuePanel extends JPanel {
 
         hoplitePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         hoplitePic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        hoplitePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\hoplitex40.png"))); // NOI18N
+        hoplitePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "hoplitex40.png"))); // NOI18N
         hoplitePic.setText("0");
         hoplitePic.setToolTipText("1000(+300)");
         hoplitePic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1206,7 +1206,7 @@ public class QueuePanel extends JPanel {
 
         riderPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         riderPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        riderPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\riderx40.png"))); // NOI18N
+        riderPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "riderx40.png"))); // NOI18N
         riderPic.setText("0");
         riderPic.setToolTipText("1000(+300)");
         riderPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1225,7 +1225,7 @@ public class QueuePanel extends JPanel {
 
         chariotPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         chariotPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        chariotPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\chariotx40.png"))); // NOI18N
+        chariotPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "chariotx40.png"))); // NOI18N
         chariotPic.setText("0");
         chariotPic.setToolTipText("1000(+300)");
         chariotPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1244,7 +1244,7 @@ public class QueuePanel extends JPanel {
 
         catapultPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         catapultPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        catapultPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\catapultx40.png"))); // NOI18N
+        catapultPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "catapultx40.png"))); // NOI18N
         catapultPic.setText("0");
         catapultPic.setToolTipText("1000(+300)");
         catapultPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1263,7 +1263,7 @@ public class QueuePanel extends JPanel {
 
         minotaurPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         minotaurPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        minotaurPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\minotaurx40.png"))); // NOI18N
+        minotaurPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "minotaurx40.png"))); // NOI18N
         minotaurPic.setText("0");
         minotaurPic.setToolTipText("1000(+300)");
         minotaurPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1282,7 +1282,7 @@ public class QueuePanel extends JPanel {
 
         manticorePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         manticorePic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        manticorePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\manticorex40.png"))); // NOI18N
+        manticorePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "manticorex40.png"))); // NOI18N
         manticorePic.setText("0");
         manticorePic.setToolTipText("1000(+300)");
         manticorePic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1301,7 +1301,7 @@ public class QueuePanel extends JPanel {
 
         centaurPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         centaurPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        centaurPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\centaurx40.png"))); // NOI18N
+        centaurPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "centaurx40.png"))); // NOI18N
         centaurPic.setText("0");
         centaurPic.setToolTipText("1000(+300)");
         centaurPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1320,7 +1320,7 @@ public class QueuePanel extends JPanel {
 
         pegasusPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         pegasusPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        pegasusPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\pegasusx40.png"))); // NOI18N
+        pegasusPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "pegasusx40.png"))); // NOI18N
         pegasusPic.setText("0");
         pegasusPic.setToolTipText("1000(+300)");
         pegasusPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1339,7 +1339,7 @@ public class QueuePanel extends JPanel {
 
         harpyPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         harpyPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        harpyPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\harpyx40.png"))); // NOI18N
+        harpyPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "harpyx40.png"))); // NOI18N
         harpyPic.setText("0");
         harpyPic.setToolTipText("1000(+300)");
         harpyPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1358,7 +1358,7 @@ public class QueuePanel extends JPanel {
 
         medusaPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         medusaPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        medusaPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\medusax40.png"))); // NOI18N
+        medusaPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "medusax40.png"))); // NOI18N
         medusaPic.setText("0");
         medusaPic.setToolTipText("1000(+300)");
         medusaPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1377,7 +1377,7 @@ public class QueuePanel extends JPanel {
 
         zyklopPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         zyklopPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        zyklopPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\zyklopx40.png"))); // NOI18N
+        zyklopPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "zyklopx40.png"))); // NOI18N
         zyklopPic.setText("0");
         zyklopPic.setToolTipText("1000(+300)");
         zyklopPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1396,7 +1396,7 @@ public class QueuePanel extends JPanel {
 
         cerberusPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         cerberusPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        cerberusPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\cerberusx40.png"))); // NOI18N
+        cerberusPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "cerberusx40.png"))); // NOI18N
         cerberusPic.setText("0");
         cerberusPic.setToolTipText("1000(+300)");
         cerberusPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1415,7 +1415,7 @@ public class QueuePanel extends JPanel {
 
         furyPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         furyPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        furyPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\furyx40.png"))); // NOI18N
+        furyPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "furyx40.png"))); // NOI18N
         furyPic.setText("0");
         furyPic.setToolTipText("1000(+300)");
         furyPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1434,7 +1434,7 @@ public class QueuePanel extends JPanel {
 
         griffinPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         griffinPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        griffinPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\griffinx40.png"))); // NOI18N
+        griffinPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "griffinx40.png"))); // NOI18N
         griffinPic.setText("0");
         griffinPic.setToolTipText("1000(+300)");
         griffinPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1453,7 +1453,7 @@ public class QueuePanel extends JPanel {
 
         calydonian_boarPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         calydonian_boarPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        calydonian_boarPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\calydonian_boarx40.png"))); // NOI18N
+        calydonian_boarPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "calydonian_boarx40.png"))); // NOI18N
         calydonian_boarPic.setText("0");
         calydonian_boarPic.setToolTipText("1000(+300)");
         calydonian_boarPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1472,7 +1472,7 @@ public class QueuePanel extends JPanel {
 
         godsentPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         godsentPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        godsentPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\godsentx40.png"))); // NOI18N
+        godsentPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "godsentx40.png"))); // NOI18N
         godsentPic.setText("0");
         godsentPic.setToolTipText("1000(+300)");
         godsentPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1491,7 +1491,7 @@ public class QueuePanel extends JPanel {
 
         big_transporterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         big_transporterPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        big_transporterPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\big_transporterx40.png"))); // NOI18N
+        big_transporterPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "big_transporterx40.png"))); // NOI18N
         big_transporterPic.setText("0");
         big_transporterPic.setToolTipText("1000(+300)");
         big_transporterPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1510,7 +1510,7 @@ public class QueuePanel extends JPanel {
 
         biremePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         biremePic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        biremePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\biremex40.png"))); // NOI18N
+        biremePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "biremex40.png"))); // NOI18N
         biremePic.setText("0");
         biremePic.setToolTipText("1000(+300)");
         biremePic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1529,7 +1529,7 @@ public class QueuePanel extends JPanel {
 
         attack_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         attack_shipPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        attack_shipPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\attack_shipx40.png"))); // NOI18N
+        attack_shipPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "attack_shipx40.png"))); // NOI18N
         attack_shipPic.setText("0");
         attack_shipPic.setToolTipText("1000(+300)");
         attack_shipPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1548,7 +1548,7 @@ public class QueuePanel extends JPanel {
 
         demolition_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         demolition_shipPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        demolition_shipPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\demolition_shipx40.png"))); // NOI18N
+        demolition_shipPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "demolition_shipx40.png"))); // NOI18N
         demolition_shipPic.setText("0");
         demolition_shipPic.setToolTipText("1000(+300)");
         demolition_shipPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1567,7 +1567,7 @@ public class QueuePanel extends JPanel {
 
         small_transporterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         small_transporterPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        small_transporterPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\small_transporterx40.png"))); // NOI18N
+        small_transporterPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "small_transporterx40.png"))); // NOI18N
         small_transporterPic.setText("0");
         small_transporterPic.setToolTipText("1000(+300)");
         small_transporterPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1586,7 +1586,7 @@ public class QueuePanel extends JPanel {
 
         triremePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         triremePic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        triremePic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\triremex40.png"))); // NOI18N
+        triremePic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "triremex40.png"))); // NOI18N
         triremePic.setText("0");
         triremePic.setToolTipText("1000(+300)");
         triremePic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1605,7 +1605,7 @@ public class QueuePanel extends JPanel {
 
         colonize_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         colonize_shipPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        colonize_shipPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\colonize_shipx40.png"))); // NOI18N
+        colonize_shipPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "colonize_shipx40.png"))); // NOI18N
         colonize_shipPic.setText("0");
         colonize_shipPic.setToolTipText("1000(+300)");
         colonize_shipPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -1624,7 +1624,7 @@ public class QueuePanel extends JPanel {
 
         sea_monsterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         sea_monsterPic.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        sea_monsterPic.setIcon(new javax.swing.ImageIcon(getImage("\\Images\\Troops\\sea_monsterx40.png"))); // NOI18N
+        sea_monsterPic.setIcon(new javax.swing.ImageIcon(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "sea_monsterx40.png"))); // NOI18N
         sea_monsterPic.setText("0");
         sea_monsterPic.setToolTipText("1000(+300)");
         sea_monsterPic.setVerticalAlignment(javax.swing.SwingConstants.TOP);

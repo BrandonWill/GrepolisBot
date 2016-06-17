@@ -187,7 +187,7 @@ public class Town {
     }
 
     public void parseTownSwitchData(String data) {
-        hasConqueror = !data.contains("\\\"conqueror_units\\\":[]");
+//        hasConqueror = !data.contains("\\\"conqueror_units\\\":[]");
 //        log("Has a conqueror: " +hasConqueror);
     }
 

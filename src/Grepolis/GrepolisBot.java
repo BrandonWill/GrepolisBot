@@ -73,8 +73,8 @@ public class GrepolisBot {
     }
 
     public static void main(String ...args) {
-        Loader.load();
         new MyLogger();
+        Loader.load();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -138,7 +138,7 @@ public class GrepolisBot {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36");
 
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);

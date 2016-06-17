@@ -8,25 +8,26 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
 
+import static Grepolis.util.MyLogger.log;
 /**
  * @Author Brandon
  * Created by Brandon on 10/9/2015.
  * Time: 4:05 AM
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class Loader {
 
     public static void load() {
-        loadAccount();
-        loadBuildings();
-        loadBarrackTroops();
-        loadDocksTroops();
-        loadFarmers();
+        if (loadAccount()) {
+            loadBuildings();
+            loadBarrackTroops();
+            loadDocksTroops();
+            loadFarmers();
+        }
     }
 
-    protected static void loadAccount() {
+    protected static boolean loadAccount() {
         BufferedReader reader = null;
         CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
         File jarFile = null;
@@ -39,15 +40,19 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
         }
-        String fileName = jarDir + "\\Saves\\AccountSave.txt";
+        String fileName = jarDir + File.separator + "Saves" + File.separator + "AccountSave.txt";
         try {
             reader = new BufferedReader(new FileReader(fileName));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("initializing variables");
             System.out.println("Account save file not found!");
-            new File(jarDir + "\\Saves").mkdir();
-
+            if (!new File(jarDir + File.separator + "Saves").exists()) {
+                if (!(new File(jarDir + File.separator + "Saves").mkdir())) {
+                    log(Level.SEVERE, "Unable to create a save directory!");
+                    return false;
+                }
+            }
         }
 
         String line;
@@ -94,6 +99,7 @@ public class Loader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public static void loadBuildings() {
@@ -110,12 +116,10 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
         }
-        String fileName = jarDir + "\\Saves\\buildingSave.txt";
+        String fileName = jarDir + File.separator + "Saves" + File.separator + "buildingSave.txt";
         try {
             reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {
-            new File(jarDir + "\\Saves").mkdir();
-        }
+        } catch (Exception ignored) { /*Error checked inside of loadAccount with creating an account.*/}
         String line;
 
         try {
@@ -257,12 +261,10 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
         }
-        String fileName = jarDir + "\\Saves\\TroopSave.txt";
+        String fileName = jarDir + File.separator + "Saves" + File.separator + "TroopSave.txt";
         try {
             reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {
-            new File(jarDir + "\\Saves").mkdir();
-        }
+        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
         String line;
 
         try {
@@ -312,12 +314,10 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
         }
-        String fileName = jarDir + "\\Saves\\DocksSave.txt";
+        String fileName = jarDir + File.separator + "Saves" + File.separator + "DocksSave.txt";
         try {
             reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {
-            new File(jarDir + "\\Saves").mkdir();
-        }
+        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
         String line;
 
         try {
@@ -367,12 +367,10 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
         }
-        String fileName = jarDir + "\\Saves\\FarmersSave.txt";
+        String fileName = jarDir + File.separator + "Saves" + File.separator + "FarmersSave.txt";
         try {
             reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {
-            new File(jarDir + "\\Saves").mkdir();
-        }
+        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
         String line;
 
         try {
