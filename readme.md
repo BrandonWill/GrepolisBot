@@ -5,16 +5,24 @@ This is the source code and release for GrepolisBot. This is the ONLY location t
 GrepolisBot is licensed under [GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ### Warning
-The bot is currently in beta! It requires Captain to work! Without Captain, it won't be able to load your towns. This will be fixed later on. However, farming will ONLY be allowed for people with captain. The bot does not check if you have this or not currently. You'll probably get banned if you use this without captain!
+The bot is currently in beta! It requires Captain for farming! The bot does not check if you have this or not currently. You'll greatly increase your chance of being banned if you try to farm without captain!
 
 # Preview
-![preview screenshot](http://i.imgur.com/U53xnun.png)
+### Settings
+![settings screenshot](http://i.imgur.com/tNle3Mu.png)
+### Queue
+![queue screenshot](http://i.imgur.com/kvTiBV4.png)
+### Farming
+![farming screenshot](http://i.imgur.com/c8LnRZh.png)
+### Log
+![log screenshot](http://i.imgur.com/LMvBm5g.png)
+### Browser (ability to add Grepolis Report Converter!)
+![browser screenshot](http://i.imgur.com/HtSoMbc.jpg)
 
 # Setup
 
 1. Update your java [here](https://java.com/en/download/). There is a HUGE difference between earlier versions of java for the browser.
 2. Extract the zip file above.
-3. The bot actions aren't programmed yet in an easily viewable manner. For now, if you want a similar logging system as Grepolis2Bot, you can start the bot via batch file rather than the .jar file.
-4. Enter in your username and password. Although untested, foreign worlds use the same javascript data in English to login. fr10 should work as the world! Please let me know if this isn't the case.
-5. Click Login to Grepolis. Before clicking Start bot, do whatever you need to do beforehand. It's advisable that you use the bot only to bot and not to play the game. The bot shows itself as the most recent version of chrome, so you should use that as you browser as well.
-6. After it does the first city, you can enable farmers and begin setting the buildings/troops. Farming settings are currently for every city and not individual ones.
+4. Enter in your username, password, and world.
+5. Click the browser tab and then login to Grepolis. The bot shows as the most recent version of chrome. You should use chrome as your main browser when not botting to decrease your risk of being banned.
+6. Start the bot when you're ready. I suggest waiting for the bot to go through all your towns first before changing settings.
