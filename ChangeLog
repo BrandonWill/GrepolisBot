@@ -1,6 +1,10 @@
 Version 0.19
 * In development still...
 * Should now support Linux/Mac systems with loading and saving images and the bot files
+* Zooming has been added!
+    *Zoom in with control and +
+    *Zoom out with control and -
+    *Reset zoom with control and 0
 
 
 

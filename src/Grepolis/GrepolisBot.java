@@ -33,6 +33,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -90,6 +92,63 @@ public class GrepolisBot {
 
     private void initComponents() {
         jfxPanel = new JFXPanel();
+
+        Action resetZoom = new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                PlatformImpl.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (webView != null) {
+                            webView.setScaleX(1);
+                            webView.setScaleY(1);
+                        }
+                    }
+                });
+            }
+        };
+
+        jfxPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.CTRL_DOWN_MASK), "resetZoom");
+        jfxPanel.getActionMap().put("resetZoom", resetZoom);
+
+        Action zoomIn = new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                PlatformImpl.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (webView != null) {
+                            webView.setScaleX(webView.getScaleX()*1.1);
+                            webView.setScaleY(webView.getScaleY() * 1.1);
+                        }
+                    }
+                });
+            }
+        };
+
+        jfxPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK), "zoomIn");
+        jfxPanel.getActionMap().put("zoomIn", zoomIn);
+
+        Action zoomOut = new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                PlatformImpl.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (webView != null) {
+                            webView.setScaleX(webView.getScaleX()/1.1);
+                            webView.setScaleY(webView.getScaleY()/1.1);
+                        }
+                    }
+                });
+            }
+        };
+
+        jfxPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK), "zoomOut");
+        jfxPanel.getActionMap().put("zoomOut", zoomOut);
+
+
+
         createScene();
 
     }
@@ -493,7 +552,6 @@ public class GrepolisBot {
             try {
                 //TODO add a check to see if farmers are enabled and to check if building queue is enabled
                 //TODO check if there's any buildings to even build. Why waste time loading/checking
-//                town.addListenerToBuildings(webView.getEngine(), server, csrfToken);
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!farmedTheTown);
