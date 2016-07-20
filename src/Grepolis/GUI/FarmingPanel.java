@@ -31,7 +31,9 @@ public class FarmingPanel extends JPanel {
         jComboBox3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                changeTown(towns.get(jComboBox3.getSelectedIndex()));
+                if (towns.size() > 0 && jComboBox3.getSelectedIndex() >= 0) {
+                    changeTown(towns.get(jComboBox3.getSelectedIndex()));
+                }
             }
         });
         initComponents();

@@ -1,5 +1,6 @@
 Version 0.19
-* In development still...
+* Town templates have been added!
+* Lots of tiny bugs have been patched such as towns not loading as fast as they should have!
 * Should now support Linux/Mac systems with loading and saving images and the bot files
 * Zooming has been added!
     *Zoom in with control and +

@@ -19,32 +19,14 @@ public class Saver {
 
     public static void save(ArrayList<Town> towns) {
         saveAccount();
-        saveBuildings(towns);
-        saveTroops(towns);
-        saveDocks(towns);
-        saveFarmers(towns);
+        saveBuildings(towns, "Saves");
+        saveTroops(towns, "Saves");
+        saveDocks(towns, "Saves");
+        saveFarmers(towns, "Saves");
     }
 
     public static void saveAccount() {
-        PrintWriter writer = null;
-        try {
-            CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-            File jarFile = null;
-            try {
-                jarFile = new File(codeSource.getLocation().toURI().getPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            String jarDir = null;
-            if (jarFile != null) {
-                jarDir = jarFile.getParentFile().getPath();
-            }
-
-            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "AccountSave.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Account file couldn't be saved!");
-        }
+        PrintWriter writer = getPrintWriter("Saves", "AccountSave.txt");
         if (writer != null) {
             writer.println("Username:" + SettingsPanel.getUsernameField().getText());
             writer.println("Password:" + SettingsPanel.getPasswordField().getText());
@@ -54,28 +36,12 @@ public class Saver {
         }
     }
 
-    public static void saveBuildings(ArrayList<Town> towns) {
-        PrintWriter writer = null;
-        try {
-            CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-            File jarFile = null;
-            try {
-                jarFile = new File(codeSource.getLocation().toURI().getPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            String jarDir = null;
-            if (jarFile != null) {
-                jarDir = jarFile.getParentFile().getPath();
-            }
-
-            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "buildingSave.txt");
-        } catch (FileNotFoundException e) {
-            System.out.println("Building file couldn't be saved!");
-        }
-        if (writer != null && towns != null && towns.size() > 0) {
+    public static void saveBuildings(ArrayList<Town> towns, String directory) {
+        PrintWriter writer = getPrintWriter(directory, "buildingSave.txt");
+        if (writer != null) {
             for (Town town : towns) {
-                writer.print("townID:" + town.getId());
+                writer.print("townID:");
+                writer.print(town.getId());
                 writer.print(",");
                 writer.print("name:");
                 writer.print(town.getName());
@@ -143,34 +109,25 @@ public class Saver {
                 writer.print("trade_office:");
                 writer.print(town.getBuilding(Building.BuildingType.trade_office).getBuildTo());
 
+//                for (Building building : town.getBuildingList()) {
+//                    System.out.println(building.getBuildingType().name() + ":" + building.getBuildTo() + ",");
+//                    writer.print(building.getBuildingType().name());
+//                    writer.print(":");
+//                    writer.print(building.getBuildTo());
+//                    writer.print(",");
+//                }
                 writer.println();
             }
             writer.close();
         }
     }
 
-    public static void saveTroops(ArrayList<Town> towns) {
-        PrintWriter writer = null;
-        try {
-            CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-            File jarFile = null;
-            try {
-                jarFile = new File(codeSource.getLocation().toURI().getPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            String jarDir = null;
-            if (jarFile != null) {
-                jarDir = jarFile.getParentFile().getPath();
-            }
-
-            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "TroopSave.txt");
-        } catch (FileNotFoundException e) {
-            System.out.println("Troop file couldn't be saved!");
-        }
+    public static void saveTroops(ArrayList<Town> towns, String directory) {
+        PrintWriter writer = getPrintWriter(directory, "TroopSave.txt");
         if (writer != null) {
             for (Town town : towns) {
-                writer.print("townID:" + town.getId());
+                writer.print("townID:");
+                writer.print(town.getId());
                 writer.print(",");
                 for (BarracksUnit barracksUnit : town.getBarracks().getBarracksUnits()) {
                     writer.print(barracksUnit.getUnitType().name());
@@ -184,28 +141,12 @@ public class Saver {
         }
     }
 
-    public static void saveDocks(ArrayList<Town> towns) {
-        PrintWriter writer = null;
-        try {
-            CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-            File jarFile = null;
-            try {
-                jarFile = new File(codeSource.getLocation().toURI().getPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            String jarDir = null;
-            if (jarFile != null) {
-                jarDir = jarFile.getParentFile().getPath();
-            }
-
-            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "DocksSave.txt");
-        } catch (FileNotFoundException e) {
-            System.out.println("Docks file couldn't be saved!");
-        }
+    public static void saveDocks(ArrayList<Town> towns, String directory) {
+        PrintWriter writer = getPrintWriter(directory, "DocksSave.txt");
         if (writer != null) {
             for (Town town : towns) {
-                writer.print("townID:" + town.getId());
+                writer.print("townID:");
+                writer.print(town.getId());
                 writer.print(",");
                 for (DocksUnit docksUnit : town.getDocks().getDocksUnits()) {
                     writer.print(docksUnit.getUnitType().name());
@@ -219,31 +160,13 @@ public class Saver {
         }
     }
 
-    public static void saveFarmers(ArrayList<Town> towns) {
-        //Will update when the time comes for changing the settings across multiple towns
-        PrintWriter writer = null;
-        try {
-            CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-            File jarFile = null;
-            try {
-                jarFile = new File(codeSource.getLocation().toURI().getPath());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            String jarDir = null;
-            if (jarFile != null) {
-                jarDir = jarFile.getParentFile().getPath();
-            }
-
-            writer = new PrintWriter(jarDir + File.separator + "Saves" + File.separator + "FarmersSave.txt");
-        } catch (FileNotFoundException e) {
-            System.out.println("Farmers file couldn't be saved!");
-        }
+    public static void saveFarmers(ArrayList<Town> towns, String directory) {
+        PrintWriter writer = getPrintWriter(directory, "FarmersSave.txt");
         if (writer != null) {
             if (towns.size() > 0) {
                 writer.println("All Farmers enabled:" + Farming.isAllEnabled());
-                writer.println("All MoodToLoot:" +Farming.getAllMoodToLootTo());
-                writer.println("All Interval:" +Farming.getAllIntervalToFarm());
+                writer.println("All MoodToLoot:" + Farming.getAllMoodToLootTo());
+                writer.println("All Interval:" + Farming.getAllIntervalToFarm());
                 if (!Farming.isAllEnabled()) {
                     for (Town town : towns) {
                         writer.print("townID:" + town.getId());
@@ -259,6 +182,50 @@ public class Saver {
             }
             writer.close();
         }
+    }
+
+    public static void saveTemplate(Town town, String fileName) {
+        ArrayList<Town> towns = new ArrayList<>();
+        towns.add(town);
+        String nameHolder = towns.get(0).getName();
+        towns.get(0).setName(fileName);
+        String directory = "Saves" + File.separator + "Templates" + File.separator + fileName;
+        saveBuildings(towns, directory);
+        saveTroops(towns, directory);
+        saveDocks(towns, directory);
+        saveFarmers(towns, directory);
+
+        towns.get(0).setName(nameHolder);
+    }
+
+    private static PrintWriter getPrintWriter(String fileName) {
+        return getPrintWriter("Saves", fileName);
+    }
+
+    private static PrintWriter getPrintWriter(String saveLocation, String fileName) {
+        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
+        File jarFile = null;
+        try {
+            jarFile = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        String jarDir;
+        if (jarFile != null) {
+            jarDir = jarFile.getParentFile().getPath();
+            File directory = new File(jarDir + File.separator + saveLocation + File.separator);
+            System.out.println("Directory: " + jarDir + File.separator + saveLocation + File.separator);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            try {
+                return new PrintWriter(jarDir + File.separator + saveLocation + File.separator + fileName);
+            } catch (FileNotFoundException e) {
+                System.out.println("Error saving " + fileName);
+                return null;
+            }
+        }
+        return null;
     }
 
 }

@@ -339,6 +339,10 @@ public class Town {
         return buildingList;
     }
 
+    public void setBuildingList(ArrayList<Building> buildingList) {
+        this.buildingList = buildingList;
+    }
+
     public String getCsrftoken() {
         return csrftoken;
     }

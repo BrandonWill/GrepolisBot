@@ -148,7 +148,6 @@ public class Building {
         tower("Tower", "A mighty guard tower increases the defensive strength of your troops by 10% and turns your polis into a nearly invincible stronghold against attackers."),
         lumber("Timber camp", "In the dense forests outside your polis, your lumberjacks are harvesting the massive amounts of lumber that is needed to expand your city and supply your troops. The higher the expansion level of the timber camp, the more usable wood is produced by your lumberjacks."),
         storage("Warehouse", "Your city's resources are stored in the warehouse. The higher the expansion level of the warehouse, the more resources can be stored there. Each expansion level protects 100 of each resource against being looted.");
-        //TODO the rest of the buildings
 
         String inGameName;
         String description;

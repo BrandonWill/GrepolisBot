@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
 import Grepolis.*;
+import Grepolis.IO.Saver;
 
 /**
  *
@@ -24,7 +25,9 @@ import Grepolis.*;
  */
 public class QueuePanel extends JPanel {
     private ArrayList<Town> towns;
-    private static int currentTownIndex = -1; //Used only for updating the buildings/troops when the tab is clicked
+    private static int currentTownIndex = 0; //Used only for updating the buildings/troops when the tab is clicked
+    private static int currentTemplateIndex = 0;
+    private static ArrayList<Town> templateTowns;
 
     public QueuePanel(ArrayList<Town> townList) {
         this.towns = townList;
@@ -36,9 +39,18 @@ public class QueuePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentTownIndex = jComboBox1.getSelectedIndex();
-                changeTown(towns.get(jComboBox1.getSelectedIndex()));
+                if (towns.size() > 0 && jComboBox1.getSelectedIndex() >= 0) {
+                    changeTown(towns.get(jComboBox1.getSelectedIndex()));
+                }
             }
         });
+
+        templateComboBox = new JComboBox<>();
+        if (templateTowns != null) {
+            for (Town town : templateTowns) {
+                templateComboBox.addItem(town.getName());
+            }
+        }
         initComponents();
         if (currentTownIndex != -1) {
             jComboBox1.setSelectedIndex(currentTownIndex);
@@ -50,8 +62,14 @@ public class QueuePanel extends JPanel {
 
     public void changeTown() {
         jComboBox1.removeAllItems();
+        templateComboBox.removeAllItems();
         for (Town town : towns) {
             jComboBox1.addItem(town.getName());
+        }
+        if (templateTowns != null) {
+            for (Town town : templateTowns) {
+                templateComboBox.addItem(town.getName());
+            }
         }
         if (currentTownIndex != -1) {
             jComboBox1.setSelectedIndex(currentTownIndex);
@@ -602,6 +620,7 @@ public class QueuePanel extends JPanel {
         farmLevelToBuild = new javax.swing.JSpinner();
         storageLevelToBuild = new javax.swing.JSpinner();
         saveButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         swordPic = new javax.swing.JLabel();
@@ -658,6 +677,11 @@ public class QueuePanel extends JPanel {
         colonize_shipPic = new javax.swing.JLabel();
         sea_monsterToBuild = new javax.swing.JSpinner();
         sea_monsterPic = new javax.swing.JLabel();
+        templateSaveButton = new javax.swing.JButton();
+        templateNextButton = new javax.swing.JButton();
+        templatePreviousButton = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        templateLoadButton = new javax.swing.JButton();
 
         //setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -1030,7 +1054,7 @@ public class QueuePanel extends JPanel {
                                                         .addComponent(trade_officePic)
                                                         .addComponent(trade_officeLevelToBuild, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addComponent(jLabel2))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(347, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1122,6 +1146,8 @@ public class QueuePanel extends JPanel {
                 saveButtonActionPerformed(evt);
             }
         });
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(1096, 130));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -1754,7 +1780,7 @@ public class QueuePanel extends JPanel {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(sea_monsterPic, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(sea_monsterToBuild, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 12, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1882,53 +1908,114 @@ public class QueuePanel extends JPanel {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane1.setViewportView(jPanel2);
+
+        templateSaveButton.setText("Save");
+        templateSaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                templateSaveButtonActionPerformed(evt);
+            }
+        });
+
+        templateNextButton.setText("Next");
+        templateNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                templateNextButtonActionPerformed(evt);
+            }
+        });
+
+        templatePreviousButton.setText("Prev");
+        templatePreviousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                templatePreviousButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Town Templates");
+
+        templateLoadButton.setText("Load");
+        templateLoadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                templateLoadButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1)
-                                .addGap(92, 92, 92))
                         .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(previousTownButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(nextTownButton))
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(37, 37, 37))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                                        .addComponent(templateSaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                        .addGroup(layout.createSequentialGroup()
+                                                                                                .addComponent(templatePreviousButton)
+                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(templateNextButton))
+                                                                                        .addComponent(templateComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                        .addComponent(templateLoadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                                .addGap(196, 196, 196))
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addComponent(jLabel4)
+                                                                                .addGap(218, 218, 218)))
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addComponent(jLabel1)
+                                                                                .addGap(82, 82, 82))
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                        .addGroup(layout.createSequentialGroup()
+                                                                                                .addComponent(previousTownButton)
+                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(nextTownButton))
+                                                                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                .addGap(27, 27, 27))))
+                                                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addContainerGap())))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel1)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel1)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(previousTownButton)
+                                                        .addComponent(nextTownButton))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(saveButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel4)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(templateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(templatePreviousButton)
+                                                        .addComponent(templateNextButton))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(templateSaveButton)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(previousTownButton)
-                                        .addComponent(nextTownButton))
-                                .addGap(18, 18, 18)
-                                .addComponent(saveButton)
-                                .addGap(226, 226, 226))
+                                .addComponent(templateLoadButton)
+                                .addGap(154, 154, 154))
         );
+
     }// </editor-fold>
 
     private void nextTownButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2041,6 +2128,54 @@ public class QueuePanel extends JPanel {
         }
     }
 
+    private void templateSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        String fileName = JOptionPane.showInputDialog(this, "This saves your current town as a template you can load for other towns.\n" +
+                                                            "Make sure you saved your town before saving it as a template! \n" +
+                                                            "Enter in your desired template name:");
+        if (fileName != null) {
+            System.out.println("Saving file");
+            if (currentTownIndex == -1) {
+                Saver.saveTemplate(towns.get(0), fileName);
+            } else {
+                Saver.saveTemplate(towns.get(currentTownIndex), fileName);
+            }
+        }
+    }
+
+    private void templateNextButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int size = templateComboBox.getItemCount();
+        int currentIndex = templateComboBox.getSelectedIndex();
+        if (currentIndex+1 < size) {
+            templateComboBox.setSelectedIndex(currentIndex+1);
+        }
+    }
+
+    private void templatePreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int currentIndex = templateComboBox.getSelectedIndex();
+        if (currentIndex-1 >= 0) {
+            templateComboBox.setSelectedIndex(currentIndex-1);
+        }
+    }
+
+    private void templateLoadButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int currentTemplateIndex = templateComboBox.getSelectedIndex();
+        int currentTownIndex = jComboBox1.getSelectedIndex();
+        Town currentTown = towns.get(currentTownIndex);
+        Town templateTown = templateTowns.get(currentTemplateIndex);
+        currentTown.setBarracks(templateTown.getBarracks());
+        currentTown.setDocks(templateTown.getDocks());
+        currentTown.setBuildingList(templateTown.getBuildingList());
+        currentTown.setFarming(templateTown.getFarming());
+    }
+
+    public static ArrayList<Town> getTemplateTowns() {
+        return templateTowns;
+    }
+
+    public static void setTemplateTowns(ArrayList<Town> templateTowns) {
+        QueuePanel.templateTowns = templateTowns;
+    }
+
     private String getImage(String imageLocation) {
         CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
         File jarFile = null;
@@ -2105,8 +2240,10 @@ public class QueuePanel extends JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner libraryLevelToBuild;
     private javax.swing.JLabel libraryPic;
     private javax.swing.JSpinner lighthouseLevelToBuild;
@@ -2146,6 +2283,11 @@ public class QueuePanel extends JPanel {
     private javax.swing.JLabel storagePic;
     private javax.swing.JLabel swordPic;
     private javax.swing.JSpinner swordToBuild;
+    private JComboBox<String> templateComboBox;
+    private javax.swing.JButton templateLoadButton;
+    private javax.swing.JButton templateNextButton;
+    private javax.swing.JButton templatePreviousButton;
+    private javax.swing.JButton templateSaveButton;
     private javax.swing.JSpinner templeLevelToBuild;
     private javax.swing.JLabel templePic;
     private javax.swing.JSpinner theaterLevelToBuild;

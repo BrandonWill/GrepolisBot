@@ -7,6 +7,7 @@ package Grepolis.GUI;
  */
 
 import Grepolis.GrepolisBot;
+import Grepolis.IO.Loader;
 import Grepolis.IO.Saver;
 import Grepolis.Town;
 
@@ -37,6 +38,7 @@ public class BotFrame extends javax.swing.JFrame {
                 JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
                 int index = sourceTabbedPane.getSelectedIndex();
                 if (index == 1) { //queue tab
+                    Loader.loadTemplateTowns();
                     queueTab.changeTown();
                 } else if (index == 2) { //farming tab
                     farmingTab.setTowns(towns);

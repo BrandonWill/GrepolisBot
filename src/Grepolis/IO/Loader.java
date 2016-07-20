@@ -1,6 +1,7 @@
 package Grepolis.IO;
 
 import Grepolis.*;
+import Grepolis.GUI.QueuePanel;
 import Grepolis.GUI.SettingsPanel;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import static Grepolis.util.MyLogger.log;
+
 /**
  * @Author Brandon
  * Created by Brandon on 10/9/2015.
@@ -20,10 +22,11 @@ public class Loader {
 
     public static void load() {
         if (loadAccount()) {
-            loadBuildings();
-            loadBarrackTroops();
-            loadDocksTroops();
-            loadFarmers();
+            loadBuildings("Saves");
+            loadBarrackTroops("Saves");
+            loadDocksTroops("Saves");
+            loadFarmers("Saves");
+            loadTemplateTowns();
         }
     }
 
@@ -102,24 +105,9 @@ public class Loader {
         return true;
     }
 
-    public static void loadBuildings() {
+    public static void loadBuildings(String directory) {
         ArrayList<Town> towns = new ArrayList<>();
-        BufferedReader reader = null;
-        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-        File jarFile = null;
-        try {
-            jarFile = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String jarDir = null;
-        if (jarFile != null) {
-            jarDir = jarFile.getParentFile().getPath();
-        }
-        String fileName = jarDir + File.separator + "Saves" + File.separator + "buildingSave.txt";
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) { /*Error checked inside of loadAccount with creating an account.*/}
+        BufferedReader reader = getBufferedReader(directory, "buildingSave.txt");
         String line;
 
         try {
@@ -245,33 +233,28 @@ public class Loader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Grepolis.GrepolisBot.setTowns(towns);
+        if (directory.equals("Saves")) {
+            System.out.println("Adding towns!");
+            Grepolis.GrepolisBot.setTowns(towns);
+        } else if (directory.contains("Saves" + File.separator + "Templates")) {
+            QueuePanel.setTemplateTowns(towns);
+        }
     }
 
-    public static void loadBarrackTroops() {
-        BufferedReader reader = null;
-        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-        File jarFile = null;
-        try {
-            jarFile = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String jarDir = null;
-        if (jarFile != null) {
-            jarDir = jarFile.getParentFile().getPath();
-        }
-        String fileName = jarDir + File.separator + "Saves" + File.separator + "TroopSave.txt";
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
+    public static void loadBarrackTroops(String directory) {
+        BufferedReader reader = getBufferedReader(directory, "TroopSave.txt");
         String line;
 
         try {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
                     String text[] = line.split(",");
-                    ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
+                    ArrayList<Town> towns;
+                    if (directory.equals("Saves")) {
+                        towns = Grepolis.GrepolisBot.getTowns();
+                    } else {
+                        towns = QueuePanel.getTemplateTowns();
+                    }
                     Town town;
                     Barracks barracks = null;
                     for (String string : text) {
@@ -300,31 +283,20 @@ public class Loader {
         }
     }
 
-    public static void loadDocksTroops() {
-        BufferedReader reader = null;
-
-        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-        File jarFile = null;
-        try {
-            jarFile = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String jarDir = null;
-        if (jarFile != null) {
-            jarDir = jarFile.getParentFile().getPath();
-        }
-        String fileName = jarDir + File.separator + "Saves" + File.separator + "DocksSave.txt";
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
+    public static void loadDocksTroops(String directory) {
+        BufferedReader reader = getBufferedReader(directory, "DocksSave.txt");
         String line;
 
         try {
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
                     String text[] = line.split(",");
-                    ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
+                    ArrayList<Town> towns;
+                    if (directory.equals("Saves")) {
+                        towns = Grepolis.GrepolisBot.getTowns();
+                    } else {
+                        towns = QueuePanel.getTemplateTowns();
+                    }
                     Town town;
                     Docks docks = null;
                     for (String string : text) {
@@ -353,24 +325,9 @@ public class Loader {
         }
     }
 
-    public static void loadFarmers() {
-        BufferedReader reader = null;
+    public static void loadFarmers(String directory) {
+        BufferedReader reader = getBufferedReader(directory, "FarmersSave.txt");
 
-        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-        File jarFile = null;
-        try {
-            jarFile = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        String jarDir = null;
-        if (jarFile != null) {
-            jarDir = jarFile.getParentFile().getPath();
-        }
-        String fileName = jarDir + File.separator + "Saves" + File.separator + "FarmersSave.txt";
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (Exception ignored) {/*Error checked inside of loadAccount with creating an account.*/}
         String line;
 
         try {
@@ -391,7 +348,12 @@ public class Loader {
                         Farming.setAllIntervalToFarm(Farming.IntervalToFarm.valueOf(line.split(":")[1]));
                     } else if (line.startsWith("townID:")) {
                         Town town = null;
-                        ArrayList<Town> towns = Grepolis.GrepolisBot.getTowns();
+                        ArrayList<Town> towns;
+                        if (directory.equals("Saves")) {
+                            towns = Grepolis.GrepolisBot.getTowns();
+                        } else {
+                            towns = QueuePanel.getTemplateTowns();
+                        }
                         String text[] = line.split(",");
                         for (String string : text) {
                             if (string.startsWith("townID:")) {
@@ -426,4 +388,65 @@ public class Loader {
             e.printStackTrace();
         }
     }
+
+    public static void loadTemplateTowns() {
+        BufferedReader reader = null;
+
+        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
+        File jarFile = null;
+        try {
+            jarFile = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        String jarDir = null;
+        if (jarFile != null) {
+            jarDir = jarFile.getParentFile().getPath();
+        }
+
+        File templateLocation = new File(jarDir + File.separator + "Saves" + File.separator + "Templates");
+        if (!templateLocation.exists()) {
+            templateLocation.mkdir();
+        }
+        File[] files = templateLocation.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                        String path = "Saves" + File.separator + "Templates" + File.separator + file.getName();
+                        System.out.println("Loading template at: " +path);
+                        loadBuildings(path);
+                        loadBarrackTroops(path);
+                        loadDocksTroops(path);
+                        loadFarmers(path);
+                }
+            }
+        }
+    }
+
+    private static BufferedReader getBufferedReader(String loadLocation, String fileName) {
+        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
+        File jarFile = null;
+        try {
+            jarFile = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        String jarDir;
+        if (jarFile != null) {
+            jarDir = jarFile.getParentFile().getPath();
+            File directory = new File(jarDir + File.separator + loadLocation + File.separator);
+            System.out.println("Loading from: " + jarDir + File.separator + loadLocation + File.separator + fileName);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            try {
+                return new BufferedReader(new FileReader(jarDir + File.separator + loadLocation + File.separator + fileName));
+            } catch (FileNotFoundException e) {
+                System.out.println("Error saving " + fileName);
+                return null;
+            }
+        }
+        return null;
+    }
+
 }
