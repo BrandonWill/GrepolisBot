@@ -234,10 +234,24 @@ public class Loader {
             e.printStackTrace();
         }
         if (directory.equals("Saves")) {
-            System.out.println("Adding towns!");
             Grepolis.GrepolisBot.setTowns(towns);
-        } else if (directory.contains("Saves" + File.separator + "Templates")) {
-            QueuePanel.setTemplateTowns(towns);
+        } else {
+            if (QueuePanel.getTemplateTowns() != null && QueuePanel.getTemplateTowns().size() > 0) {
+                if (towns.size() > 0) {
+                    boolean hasTown = false;
+                    Town templateTown = towns.get(0); //Will only have 1 town if it does.
+                    for (Town town : QueuePanel.getTemplateTowns()) {
+                        if (town.getName().equals(templateTown.getName())) {
+                            hasTown = true;
+                        }
+                    }
+                    if (!hasTown) {
+                        QueuePanel.getTemplateTowns().add(templateTown);
+                    }
+                }
+            } else {
+                QueuePanel.setTemplateTowns(towns);
+            }
         }
     }
 
@@ -413,7 +427,7 @@ public class Loader {
             for (File file : files) {
                 if (file.isDirectory()) {
                         String path = "Saves" + File.separator + "Templates" + File.separator + file.getName();
-                        System.out.println("Loading template at: " +path);
+//                        System.out.println("Loading template at: " +path);
                         loadBuildings(path);
                         loadBarrackTroops(path);
                         loadDocksTroops(path);
@@ -435,7 +449,7 @@ public class Loader {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
             File directory = new File(jarDir + File.separator + loadLocation + File.separator);
-            System.out.println("Loading from: " + jarDir + File.separator + loadLocation + File.separator + fileName);
+            //System.out.println("Loading from: " + jarDir + File.separator + loadLocation + File.separator + fileName);
             if (!directory.exists()) {
                 directory.mkdir();
             }
