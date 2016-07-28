@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
 import Grepolis.*;
+import Grepolis.IO.Loader;
 import Grepolis.IO.Saver;
 
 /**
@@ -2133,13 +2134,16 @@ public class QueuePanel extends JPanel {
                                                             "Make sure you saved your town before saving it as a template! \n" +
                                                             "Enter in your desired template name:");
         if (fileName != null) {
-            System.out.println("Saving file");
+            //System.out.println("Saving file");
             if (currentTownIndex == -1) {
                 Saver.saveTemplate(towns.get(0), fileName);
             } else {
                 Saver.saveTemplate(towns.get(currentTownIndex), fileName);
             }
         }
+
+        Loader.loadTemplateTowns();
+        changeTown();
     }
 
     private void templateNextButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2166,6 +2170,7 @@ public class QueuePanel extends JPanel {
         currentTown.setDocks(templateTown.getDocks());
         currentTown.setBuildingList(templateTown.getBuildingList());
         currentTown.setFarming(templateTown.getFarming());
+        changeTown(currentTown);
     }
 
     public static ArrayList<Town> getTemplateTowns() {

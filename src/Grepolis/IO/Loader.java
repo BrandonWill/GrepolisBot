@@ -53,7 +53,7 @@ public class Loader {
             if (!new File(jarDir + File.separator + "Saves").exists()) {
                 if (!(new File(jarDir + File.separator + "Saves").mkdir())) {
                     log(Level.SEVERE, "Unable to create a save directory!");
-					System.out.println(Level.SEVERE, "Unable to create a save directory!");
+					System.out.println("Unable to create a save directory!");
                     return false;
                 }
             }

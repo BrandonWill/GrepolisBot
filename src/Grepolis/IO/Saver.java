@@ -214,7 +214,7 @@ public class Saver {
         if (jarFile != null) {
             jarDir = jarFile.getParentFile().getPath();
             File directory = new File(jarDir + File.separator + saveLocation + File.separator);
-            System.out.println("Directory: " + jarDir + File.separator + saveLocation + File.separator);
+            //System.out.println("Directory: " + jarDir + File.separator + saveLocation + File.separator);
             if (!directory.exists()) {
                 directory.mkdirs();
             }

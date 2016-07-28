@@ -1,4 +1,5 @@
 Version 0.19
+* Templates will now automatically load/save without you having to change the tab.
 * You can now farm without captain!
 * Town templates have been added!
 * Lots of tiny bugs have been patched such as towns not loading as fast as they should have!
