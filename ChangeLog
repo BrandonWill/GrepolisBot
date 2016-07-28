@@ -1,4 +1,5 @@
 Version 0.19
+* You can now farm without captain!
 * Town templates have been added!
 * Lots of tiny bugs have been patched such as towns not loading as fast as they should have!
 * Should now support Linux/Mac systems with loading and saving images and the bot files

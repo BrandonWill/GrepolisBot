@@ -10,8 +10,8 @@ public class FarmingVillage {
     private String name;
     private int stage; //farming village level
     private int mood;
-    private boolean lootable_human; //can loot again
-    private boolean loot; //true if the village is NOT owned. Not true for 2.97
+    private boolean lootable_human; //The time we can loot at again in regular time.
+    private long loot = 0; //The time to loot in unix time!
     private boolean rel; //is 1 if it's owned by the player
     private boolean canFarm;
 
@@ -55,11 +55,11 @@ public class FarmingVillage {
         this.mood = mood;
     }
 
-    public void setLoot(boolean loot) {
+    public void setLoot(long loot) {
         this.loot = loot;
     }
 
-    public boolean isLoot() {
+    public long isLoot() {
         return loot;
     }
 
@@ -71,8 +71,15 @@ public class FarmingVillage {
         this.rel = rel;
     }
 
-    public boolean isCanFarm() {
-        return canFarm;
+    public boolean canFarm() {
+        if (Farming.captainEnabled) {
+            return canFarm;
+        } else {
+            if (loot > 0) {
+                return GrepolisBot.getServerUnixTime() >= loot;
+            }
+        }
+        return false;
     }
 
     public void setCanFarm(boolean canFarm) {

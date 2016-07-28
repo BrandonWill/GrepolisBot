@@ -52,7 +52,7 @@ public class QueuePanel extends JPanel {
             }
         }
         initComponents();
-        if (currentTownIndex != -1) {
+        if (currentTownIndex != 0) {
             jComboBox1.setSelectedIndex(currentTownIndex);
             changeTown(towns.get(currentTownIndex));
         }else if (towns.size() > 0) {

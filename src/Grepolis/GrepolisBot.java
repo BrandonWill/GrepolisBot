@@ -46,10 +46,6 @@ import static Grepolis.util.MyLogger.logError;
 
 public class GrepolisBot {
 
-    public JFXPanel getJfxPanel() {
-        return jfxPanel;
-    }
-
     private JFXPanel jfxPanel;
     private static BotFrame botFrame;
     public static WebView webView;
@@ -67,14 +63,16 @@ public class GrepolisBot {
 
     private static volatile boolean botIsPaused = false;
     private static volatile boolean botIsRunning = true;
+    private static volatile boolean loadedVillagesFromMap = false;
+    private static volatile boolean openedFarmInterface = false;
 
     private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
 
-    public GrepolisBot(){
+    public GrepolisBot() {
         initComponents();
     }
 
-    public static void main(String ...args) {
+    public static void main(String... args) {
         new MyLogger();
         Loader.load();
         SwingUtilities.invokeLater(new Runnable() {
@@ -82,7 +80,8 @@ public class GrepolisBot {
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 botFrame = new BotFrame(towns);
                 botFrame.setSize(new Dimension(1500, 800));
                 botFrame.setVisible(true);
@@ -118,7 +117,7 @@ public class GrepolisBot {
                     @Override
                     public void run() {
                         if (webView != null) {
-                            webView.setScaleX(webView.getScaleX()*1.1);
+                            webView.setScaleX(webView.getScaleX() * 1.1);
                             webView.setScaleY(webView.getScaleY() * 1.1);
                         }
                     }
@@ -136,8 +135,8 @@ public class GrepolisBot {
                     @Override
                     public void run() {
                         if (webView != null) {
-                            webView.setScaleX(webView.getScaleX()/1.1);
-                            webView.setScaleY(webView.getScaleY()/1.1);
+                            webView.setScaleX(webView.getScaleX() / 1.1);
+                            webView.setScaleY(webView.getScaleY() / 1.1);
                         }
                     }
                 });
@@ -148,17 +147,15 @@ public class GrepolisBot {
         jfxPanel.getActionMap().put("zoomOut", zoomOut);
 
 
-
         createScene();
 
     }
 
     /**
      * createScene
-     *
+     * <p/>
      * Note: Key is that Scene needs to be created and run on "FX user thread"
-     *       NOT on the AWT-EventQueue Thread
-     *
+     * NOT on the AWT-EventQueue Thread
      */
     private void createScene() {
         /*
@@ -166,14 +163,16 @@ public class GrepolisBot {
          * Since our browser only uses Grepolis, it's alright as long as they're not compromised.
          * This is done because Grepolis Report Converter isn't a trusted website. This allows the images to be loaded on the forums.
          */
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
                     }
+
                     public void checkClientTrusted(
                             java.security.cert.X509Certificate[] certs, String authType) {
                     }
+
                     public void checkServerTrusted(
                             java.security.cert.X509Certificate[] certs, String authType) {
                     }
@@ -184,7 +183,8 @@ public class GrepolisBot {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (GeneralSecurityException ignored) {}
+        } catch (GeneralSecurityException ignored) {
+        }
 
         PlatformImpl.startup(new Runnable() {
             @Override
@@ -205,7 +205,32 @@ public class GrepolisBot {
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
                     @Override
                     public void changed(ObservableValue<? extends Document> ov, Document oldDoc, Document doc) {
-                        engine.executeScript("function readBody(xhr) {\n" +
+                        engine.executeScript("var s_ajaxListener = new Object();\n" +
+                                "s_ajaxListener.tempOpen = window.XMLHttpRequest.prototype.open;\n" +
+                                "s_ajaxListener.tempSend = window.XMLHttpRequest.prototype.send;\n" +
+                                "s_ajaxListener.callback = function () {\n" +
+                                "}\n" +
+                                "\n" +
+                                "window.XMLHttpRequest.prototype.open = function(a,b) {\n" +
+                                "  if (!a) var a='';\n" +
+                                "  if (!b) var b='';\n" +
+                                "  s_ajaxListener.tempOpen.apply(this, arguments);\n" +
+                                "  s_ajaxListener.method = a;  \n" +
+                                "  s_ajaxListener.url = b;\n" +
+                                "  if (a.toLowerCase() == 'get') {\n" +
+                                "    s_ajaxListener.data = b.split('?');\n" +
+                                "    s_ajaxListener.data = s_ajaxListener.data[1];\n" +
+                                "  }\n" +
+                                "}\n" +
+                                "\n" +
+                                "window.XMLHttpRequest.prototype.send = function(a,b) {\n" +
+                                "  if (!a) var a='';\n" +
+                                "  if (!b) var b='';\n" +
+                                "  s_ajaxListener.tempSend.apply(this, arguments);\n" +
+                                "  if(s_ajaxListener.method.toLowerCase() == 'post')s_ajaxListener.data = a;\n" +
+                                "  s_ajaxListener.callback();\n" +
+                                "}\n" +
+                                "function readBody(xhr) {\n" +
                                 "    var data;\n" +
                                 "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
                                 "        data = xhr.responseText;\n" +
@@ -222,8 +247,8 @@ public class GrepolisBot {
                                 "function newXHR() {\n" +
                                 "    var realXHR = new oldXHR();\n" +
                                 "    realXHR.addEventListener(\"readystatechange\", function() {\n" +
-                                "        if(realXHR.readyState==4){\n" +
-                                "            alert(\"XHR Reader:\" +realXHR.status +readBody(realXHR));\n" +
+                                "        if(realXHR.readyState==4 && realXHR.status==200){\n" +
+                                "            alert(\"XHR Reader:\" +realXHR.status +readBody(realXHR) +\" URL:\" +s_ajaxListener.url);\n" +
                                 "        }\n" +
                                 "    }, false);\n" +
                                 "    return realXHR;\n" +
@@ -376,7 +401,6 @@ public class GrepolisBot {
                 });
 
 
-
             }
         });
     }
@@ -405,11 +429,11 @@ public class GrepolisBot {
         if (word.contains("_")) {
             String[] holder = word.split("_");
             word = "";
-            for (String string: holder) {
+            for (String string : holder) {
                 word += string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase() + " ";
             }
             if (word.endsWith(" ")) {
-                word = word.substring(0, word.length()-1);
+                word = word.substring(0, word.length() - 1);
             }
         } else {
             word = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
@@ -486,6 +510,7 @@ public class GrepolisBot {
     }
 
     private boolean builtDocksTroops = false;
+
     public class BuildDocksTroops implements Runnable {
         Town town;
 
@@ -541,6 +566,7 @@ public class GrepolisBot {
     }
 
     private boolean builtTheBuildings = false;
+
     public class BuildTheBuildings implements Runnable {
         Town town;
 
@@ -584,6 +610,7 @@ public class GrepolisBot {
     }
 
     private boolean obtainedCultureData;
+
     public class StartCultureEvents implements Runnable {
         Town town;
 
@@ -628,6 +655,7 @@ public class GrepolisBot {
 
     private boolean farmedTheTown = false;
     long currentTime;
+
     public class FarmTheTown implements Runnable {
         Town town;
 
@@ -645,33 +673,69 @@ public class GrepolisBot {
 
                 if (currentTime > town.getTimeToFarm()) {
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            webView.getEngine().executeScript("function readBody(xhr) {\n" +
-                                    "    var data;\n" +
-                                    "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
-                                    "        data = xhr.responseText;\n" +
-                                    "    } else if (xhr.responseType === \"document\") {\n" +
-                                    "        data = xhr.responseXML;\n" +
-                                    "    } else {\n" +
-                                    "        data = xhr.response;\n" +
-                                    "    }\n" +
-                                    "    return data;\n" +
-                                    "}\n" +
-                                    "\n" +
-                                    "var xhr = new XMLHttpRequest();\n" +
-                                    "var farmData;\n" +
-                                    "xhr.onreadystatechange = function() {\n" +
-                                    "    if (xhr.readyState == 4) {\n" +
-                                    "        alert(\"FarmData:\" +xhr.status +readBody(xhr));\n" +
-                                    "    }\n" +
-                                    "}\n" +
-                                    "xhr.open('GET', 'https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + town.getId() +"&action=index&h=" + csrfToken + "&json=%7B\"town_id\"%3A" + town.getId() + "%2C\"nl_init\"%3Atrue%7D ', true);\n" +
-                                    "xhr.send(null);");
+                    if (Farming.captainEnabled) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                webView.getEngine().executeScript("function readBody(xhr) {\n" +
+                                        "    var data;\n" +
+                                        "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                                        "        data = xhr.responseText;\n" +
+                                        "    } else if (xhr.responseType === \"document\") {\n" +
+                                        "        data = xhr.responseXML;\n" +
+                                        "    } else {\n" +
+                                        "        data = xhr.response;\n" +
+                                        "    }\n" +
+                                        "    return data;\n" +
+                                        "}\n" +
+                                        "\n" +
+                                        "var xhr = new XMLHttpRequest();\n" +
+                                        "var farmData;\n" +
+                                        "xhr.onreadystatechange = function() {\n" +
+                                        "    if (xhr.readyState == 4) {\n" +
+                                        "        alert(\"FarmData:\" +xhr.status +readBody(xhr));\n" +
+                                        "    }\n" +
+                                        "}\n" +
+                                        "xhr.open('GET', 'https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "&json=%7B\"town_id\"%3A" + town.getId() + "%2C\"nl_init\"%3Atrue%7D ', true);\n" +
+                                        "xhr.send(null);");
 
+                            }
+                        });
+                    } else {
+                        loadedVillagesFromMap = false;
+
+//                        System.out.println("Loading farmers");
+                        if (!town.hasFullStorage()) {
+                            town.getFarming().loadVillagesFromMap();
+
+                            while (!loadedVillagesFromMap) {
+                                Thread.sleep(randInt(100, 500));
+                            }
+
+//                        System.out.println("Going through all the farming villages. Total #: " +town.getFarming().getFarmingVillages().size());
+                            for (final FarmingVillage farmingVillage : town.getFarming().getFarmingVillages()) {
+                                if (farmingVillage.canFarm()) {
+                                    openedFarmInterface = false;
+
+                                    town.getFarming().openFarmingVillageInterface(farmingVillage);
+
+                                    while (!openedFarmInterface) {
+                                        Thread.sleep(randInt(100, 500));
+                                    }
+
+                                    if (town.getFarming().farmTheVillage(farmingVillage)) {
+                                        log("The farming village " + farmingVillage.getName() + " was farmed successfully!");
+                                        Thread.sleep(randInt(500, 1000));
+                                    }
+                                } else {
+                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed!");
+                                }
+                            }
+                        } else {
+                            log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
                         }
-                    });
+                        farmedTheTown = true;
+                    }
                 } else {
                     log(town.getName() + " Farmers aren't ready!");
                     farmedTheTown = true;
@@ -686,43 +750,48 @@ public class GrepolisBot {
 
     public class Startup implements Runnable {
 
-        public Startup() {}
+        public Startup() {
+        }
 
 
         @Override
         public void run() {
-            final int townID = defaultTown;
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
+            if (Farming.captainEnabled) {
+                final int townID = defaultTown;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
 //                    webView.getEngine().load("https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + townID + "&action=index&h=" + csrfToken);
-                    webView.getEngine().executeScript("function readBody(xhr) {\n" +
-                            "    var data;\n" +
-                            "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
-                            "        data = xhr.responseText;\n" +
-                            "    } else if (xhr.responseType === \"document\") {\n" +
-                            "        data = xhr.responseXML;\n" +
-                            "    } else {\n" +
-                            "        data = xhr.response;\n" +
-                            "    }\n" +
-                            "    return data;\n" +
-                            "}\n" +
-                            "\n" +
-                            "var xhr = new XMLHttpRequest();\n" +
-                            "var htmlData;\n" +
-                            "xhr.onreadystatechange = function() {\n" +
-                            "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                            "        htmlData = readBody(xhr);\n" +
-                            "        alert(\"TownFarmingData:\" +xhr.status +readBody(xhr));\n" +
-                            "    }\n" +
-                            "}\n" +
-                            "\n" +
-                            "xhr.open('GET', 'https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + townID + "&action=index&h=" + csrfToken + "', true);\n" +
-                            "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                            "xhr.send(null)");
+                        webView.getEngine().executeScript("function readBody(xhr) {\n" +
+                                "    var data;\n" +
+                                "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                                "        data = xhr.responseText;\n" +
+                                "    } else if (xhr.responseType === \"document\") {\n" +
+                                "        data = xhr.responseXML;\n" +
+                                "    } else {\n" +
+                                "        data = xhr.response;\n" +
+                                "    }\n" +
+                                "    return data;\n" +
+                                "}\n" +
+                                "\n" +
+                                "var xhr = new XMLHttpRequest();\n" +
+                                "var htmlData;\n" +
+                                "xhr.onreadystatechange = function() {\n" +
+                                "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
+                                "        htmlData = readBody(xhr);\n" +
+                                "        alert(\"TownFarmingData:\" +xhr.status +readBody(xhr));\n" +
+                                "    }\n" +
+                                "}\n" +
+                                "\n" +
+                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + townID + "&action=index&h=" + csrfToken + "', true);\n" +
+                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                                "xhr.send(null)");
 
-                }
-            });
+                    }
+                });
+            } else {
+                new Thread(new ActualBot()).start();
+            }
         }
         //
     }
@@ -730,6 +799,9 @@ public class GrepolisBot {
     private boolean townAlreadyAdded(Town town) {
         for (Town town1 : towns) {
             if (town1.getId() == town.getId()) {
+                town1.getFarming().setIsland_x(town.getFarming().getIsland_x());
+                town1.getFarming().setIsland_y(town.getFarming().getIsland_y());
+                town1.setFullStorage(town.hasFullStorage());
                 return true;
             }
         }
@@ -741,7 +813,7 @@ public class GrepolisBot {
             town1.setServer(server);
             town1.setCsrftoken(csrfToken);
             if (town1.getId() == townID && !town1.getName().equals(name)) {
-                log("Updating town name from " + town1.getName() + " to " +name);
+                log("Updating town name from " + town1.getName() + " to " + name);
                 town1.setName(name);
                 return true;
             }
@@ -752,6 +824,7 @@ public class GrepolisBot {
     private long updateTime = 0;
     private volatile boolean canContinue;
     private Town currentTown;
+
     public class ActualBot implements Runnable {
         public void run() {
             try {
@@ -811,16 +884,16 @@ public class GrepolisBot {
                                 docksQueue[0].interrupt();
                             }
 
-                            if (towns.get(i).getFarming().isEnabled() && townHasFarms.get(towns.get(i).getId()) != null) {
+                            if (towns.get(i).getFarming().isEnabled() && (townHasFarms.get(towns.get(i).getId()) != null || !Farming.captainEnabled)) {
                                 farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
                                 farmer[0].start();
                             } else {
                                 if (!towns.get(i).getFarming().isEnabled()) {
                                     log(currentTown.getName() + " farmers are disabled!");
                                 }
-                                if (townHasFarms.get(towns.get(i).getId()) == null) {
-                                    log(currentTown.getName() + " doesn't have any farmers!");
-                                }
+//                                if (townHasFarms.get(towns.get(i).getId()) == null) {
+//                                    log(currentTown.getName() + " doesn't have any farmers or they're not loaded yet!");
+//                                }
                                 farmedTheTown = true;
                             }
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
@@ -838,15 +911,21 @@ public class GrepolisBot {
                             log(currentTown.getName() + " has a conqueror! Skipping town!");
                         }
 
-                        if (i+1 < towns.size()) {
-                            new Thread(new TownSwitcher(towns.get(i+1))).start();
+                        canContinue = false;
+
+                        if (i + 1 < towns.size()) {
+                            new Thread(new TownSwitcher(towns.get(i + 1))).start();
                         } else {
                             log("\n");
-                            new Thread(new TownSwitcher(towns.get(0))).start();
+                            if (towns.size() > 1) {
+                                new Thread(new TownSwitcher(towns.get(0))).start();
+                            } else {
+                                canContinue = true;
+                            }
                         }
 
                         do {
-                            Thread.sleep(250);
+                            Thread.sleep(randInt(250, 500));
                         } while (!canContinue);
 
                     }
@@ -864,9 +943,9 @@ public class GrepolisBot {
         int hours = Integer.parseInt(intervals[0]);
         int minutes = Integer.parseInt(intervals[1]);
         int seconds = Integer.parseInt(intervals[2]);
-        long timeToUpdate = TimeUnit.HOURS.toMillis(hours) +TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.SECONDS.toMillis(seconds);
-        double variance = ((double) timeToUpdate)* 0.1;
-        timeToUpdate = ThreadLocalRandom.current().nextLong(timeToUpdate-(long) variance, timeToUpdate+ (long)variance);
+        long timeToUpdate = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.SECONDS.toMillis(seconds);
+        double variance = ((double) timeToUpdate) * 0.1;
+        timeToUpdate = ThreadLocalRandom.current().nextLong(timeToUpdate - (long) variance, timeToUpdate + (long) variance);
         return System.currentTimeMillis() + timeToUpdate;
     }
 
@@ -902,7 +981,7 @@ public class GrepolisBot {
                             "    }\n" +
                             "}\n" +
                             "\n" +
-                            "xhr.open('GET', 'https://" + server + ".grepolis.com/game/index?action=switch_town&town_id=" + town.getId() + "&h=" + csrfToken + "&json=' +encodeURIComponent(JSON.stringify(" + townSwitcherJSON() +")), true);\n" +
+                            "xhr.open('GET', 'https://" + server + ".grepolis.com/game/index?action=switch_town&town_id=" + town.getId() + "&h=" + csrfToken + "&json=' +encodeURIComponent(JSON.stringify(" + townSwitcherJSON() + ")), true);\n" +
                             "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                             "xhr.send(null);");
                     try {
@@ -917,7 +996,7 @@ public class GrepolisBot {
         }
 
         private String townSwitcherJSON() {
-            return "{\"town_id\":" + town.getId() +",\"nl_init\":true}";
+            return "{\"town_id\":" + town.getId() + ",\"nl_init\":true}";
         }
     }
 
@@ -960,7 +1039,7 @@ public class GrepolisBot {
                 if (updateTime > 0) {
                     if (!botIsPaused) {
                         if (pauseTime > 0) {
-                            updateTime += System.currentTimeMillis()-pauseTime;
+                            updateTime += System.currentTimeMillis() - pauseTime;
                             pauseTime = 0;
                         }
                         timeToUpdate = updateTime - System.currentTimeMillis();
@@ -1055,7 +1134,7 @@ public class GrepolisBot {
                 townHasFarms.put(townID, true);
             }
         }
-        log("Towns with farms found: " +townHasFarms.size());
+        log("Towns with farms found: " + townHasFarms.size());
         new Thread(new ActualBot()).start();
     }
 
@@ -1077,21 +1156,27 @@ public class GrepolisBot {
                                         for (String string : html.split(",")) {
                                             if (string.contains("csrfToken") && csrfToken == null) {
                                                 csrfToken = string.split(":")[1].replaceAll("\"", "");
-                                                log("csrftoken: " +csrfToken);
+                                                log("csrftoken: " + csrfToken);
                                             }
                                             if (string.contains("\"townId\":")) {
                                                 defaultTown = Integer.parseInt(string.split(":")[1].replaceAll("\"", ""));
-                                                log("Default town: " +defaultTown);
+                                                log("Default town: " + defaultTown);
+                                            }
+                                            if (string.contains("\"captain\":null")) {
+                                                Farming.setCaptainEnabled(false);
+                                                log(Level.SEVERE, "--------Captain wasn't found!-----");
                                             }
                                         }
                                         getAllTownData();
                                     }
                                 });
                             }
-                            if (data.contains("\"Towns\":{\"data\":")) {
+                            if (data.contains("Town") && data.contains("player_id") && data.contains("storage")) {
+                                //this loads all the towns and it updates them!
                                 loadTowns(data);
                             }
-//                            log("XHR event detected: " +data);
+
+//                            System.out.println("XHR event detected: " + data);
                         }
 //                      Adds a check for towns with farmers
                         if (data.contains("TownFarmingData:")) {
@@ -1197,6 +1282,24 @@ public class GrepolisBot {
                                 pauseBot();
                             }
                         }
+                        if (data.contains("FarmingInterfaceOpened:")) {
+                            if (data.contains("FarmingInterfaceOpened:200")) {
+                                openedFarmInterface = true;
+                            } else {
+                                log(Level.SEVERE, "Error! Can't open the farming interface! Error log: " + event.getData());
+                                pauseBot();
+                            }
+                        }
+                        if (data.contains("LoadedVillagesFromMap:")) {
+                            if (data.contains("LoadedVillagesFromMap:200")) {
+                                if (currentTown.getFarming().parseVillagesFromMap(data)) {
+                                    loadedVillagesFromMap = true;
+                                }
+                            } else {
+                                log(Level.SEVERE, "Error! Was unable to load the farming villages from the map! Error log: " + event.getData());
+                                pauseBot();
+                            }
+                        }
                     }
                 });
             }
@@ -1204,16 +1307,24 @@ public class GrepolisBot {
     }
 
 
-
+    private boolean saidonce = false;
     private void loadTowns(String text) {
         ArrayList<Town> townList = new ArrayList<>();
-        String townData[] = text.split("\"player_id\":");
+        text = text.replaceAll("\\\\", "");
+        String townData[] = text.split("player_id");
+
+//        System.out.println("Loading a town!");
 
         for (String aTownData : townData) {
-            if (aTownData.contains("\"name\"")) {
+            if (aTownData.contains("last_wood")) {
                 aTownData = aTownData.replaceAll("\"", "");
-//                System.out.println("Town data: " +aTownData);
+                //System.out.println("Town data: " +aTownData);
                 Town town = new Town();
+
+                int storage = 0;
+                int wood = 0;
+                int stone = 0;
+                int iron = 0;
 
                 String importantData[] = aTownData.split(",");
                 for (String data : importantData) {
@@ -1229,7 +1340,22 @@ public class GrepolisBot {
                     if (data.startsWith("island_y")) {
                         town.getFarming().setIsland_y(Integer.parseInt(data.split(":")[1]));
                     }
+                    if (data.startsWith("last_wood")) {
+                        wood = Integer.parseInt(data.split(":")[1]);
+                    }
+                    if (data.startsWith("last_stone")) {
+                        stone = Integer.parseInt(data.split(":")[1]);
+                    }
+                    if (data.startsWith("last_iron")) {
+                        iron = Integer.parseInt(data.split(":")[1]);
+                    }
+                    if (data.startsWith("storage")) {
+                        storage = Integer.parseInt(data.split(":")[1]);
+                    }
+
                 }
+
+                town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
 
 //                String importantData[] = aTownData.split(",");
 ////                System.out.println("Important data: " + Arrays.toString(importantData));
@@ -1239,6 +1365,12 @@ public class GrepolisBot {
                 town.setCsrftoken(csrfToken);
 //                System.out.println("Town id: " +town.getId());
 //                System.out.println("Town name: " +town.getName());
+//                System.out.println("island_x: " + town.getFarming().getIsland_x());
+//                System.out.println("island_y: " + town.getFarming().getIsland_y());
+//                System.out.println("Wood: " + wood);
+//                System.out.println("Stone: " + stone);
+//                System.out.println("Iron: " + iron);
+//                System.out.println("Storage: " + storage + " full: " + ((wood == storage) && (stone == storage) && (iron == storage)));
 
                 townList.add(town);
 
@@ -1278,7 +1410,10 @@ public class GrepolisBot {
                 return (town1.getName().compareTo(town2.getName()));
             }
         });
-        log("Towns found: " + towns.size());
+        if (!saidonce) {
+            log("Towns found: " + towns.size());
+            saidonce = true;
+        }
 
         botFrame.setTowns(towns);
     }
@@ -1299,6 +1434,16 @@ public class GrepolisBot {
             }
         }
         return null;
+    }
+
+    public static long getServerUnixTime() {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        Calendar c = Calendar.getInstance(tz);
+        return c.getTimeInMillis() / 1000;
+    }
+
+    public JFXPanel getJfxPanel() {
+        return jfxPanel;
     }
 
     public static void setBotIsRunning(boolean botIsRunning) {

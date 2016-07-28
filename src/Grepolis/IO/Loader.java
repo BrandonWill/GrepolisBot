@@ -47,12 +47,13 @@ public class Loader {
         try {
             reader = new BufferedReader(new FileReader(fileName));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("initializing variables");
             System.out.println("Account save file not found!");
             if (!new File(jarDir + File.separator + "Saves").exists()) {
                 if (!(new File(jarDir + File.separator + "Saves").mkdir())) {
                     log(Level.SEVERE, "Unable to create a save directory!");
+					System.out.println(Level.SEVERE, "Unable to create a save directory!");
                     return false;
                 }
             }
@@ -456,7 +457,7 @@ public class Loader {
             try {
                 return new BufferedReader(new FileReader(jarDir + File.separator + loadLocation + File.separator + fileName));
             } catch (FileNotFoundException e) {
-                System.out.println("Error saving " + fileName);
+                System.out.println("Error loading " + fileName);
                 return null;
             }
         }
