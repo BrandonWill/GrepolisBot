@@ -73,20 +73,28 @@ public class GrepolisBot {
     }
 
     public static void main(String... args) {
-        new MyLogger();
-        Loader.load();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception ignored) {
+        double javaVersion = Double.parseDouble(Runtime.class.getPackage().getSpecificationVersion());
+        if (javaVersion >= 1.8) {
+            new MyLogger();
+            Loader.load();
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } catch (Exception ignored) {
+                    }
+                    botFrame = new BotFrame(towns);
+                    botFrame.setSize(new Dimension(1500, 800));
+                    botFrame.setVisible(true);
                 }
-                botFrame = new BotFrame(towns);
-                botFrame.setSize(new Dimension(1500, 800));
-                botFrame.setVisible(true);
-            }
-        });
+            });
+        } else {
+            JOptionPane.showMessageDialog(null, "Your current java version is: " +Runtime.class.getPackage().getSpecificationVersion() +"\n"
+                                          +"You need to have Java 8 or higher to run this program. In order to fix this: \n"
+                                          +"1. Uninstall older versions of Java\n"
+                                          +"2. Install the newest version of Java (Google download java)");
+        }
     }
 
     private void initComponents() {
