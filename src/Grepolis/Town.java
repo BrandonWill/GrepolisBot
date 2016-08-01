@@ -26,6 +26,9 @@ public class Town {
     private String csrftoken;
     private boolean hasConqueror;
 
+    private int island_x;
+    private int island_y;
+
 
     public boolean parseHTML(String html) {
 
@@ -390,5 +393,29 @@ public class Town {
 
     public void setHasConqueror(boolean hasConqueror) {
         this.hasConqueror = hasConqueror;
+    }
+
+    public int getIsland_x() {
+        return island_x;
+    }
+
+    public void setIsland_x(int island_x) {
+        this.island_x = island_x;
+    }
+
+    public int getIsland_y() {
+        return island_y;
+    }
+
+    public void setIsland_y(int island_y) {
+        this.island_y = island_y;
+    }
+
+    public String getIslandChunkX() {
+        return String.valueOf((int) (island_x / 20.0));
+    }
+
+    public String getIslandChunkY() {
+        return String.valueOf((int) (island_y / 20.0));
     }
 }

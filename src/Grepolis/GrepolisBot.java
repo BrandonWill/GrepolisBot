@@ -799,8 +799,8 @@ public class GrepolisBot {
     private boolean townAlreadyAdded(Town town) {
         for (Town town1 : towns) {
             if (town1.getId() == town.getId()) {
-                town1.getFarming().setIsland_x(town.getFarming().getIsland_x());
-                town1.getFarming().setIsland_y(town.getFarming().getIsland_y());
+                town1.setIsland_x(town.getIsland_x());
+                town1.setIsland_y(town.getIsland_y());
                 town1.setFullStorage(town.hasFullStorage());
                 return true;
             }
@@ -812,7 +812,7 @@ public class GrepolisBot {
         for (Town town1 : towns) {
             town1.setServer(server);
             town1.setCsrftoken(csrfToken);
-            if (town1.getId() == townID && !town1.getName().equals(name)) {
+            if (town1.getId() == townID && !town1.getName().equals(name) && !town1.getName().contains("}]")) {
                 log("Updating town name from " + town1.getName() + " to " + name);
                 town1.setName(name);
                 return true;
@@ -1175,8 +1175,11 @@ public class GrepolisBot {
                                 //this loads all the towns and it updates them!
                                 loadTowns(data);
                             }
+//                            if (data.contains("URL:")) {
+//                                data = data.split("URL:")[1];
+//                                System.out.println("XHR event detected: " + data);
+//                            }
 
-//                            System.out.println("XHR event detected: " + data);
                         }
 //                      Adds a check for towns with farmers
                         if (data.contains("TownFarmingData:")) {
@@ -1263,7 +1266,7 @@ public class GrepolisBot {
                         if (data.contains("VillagesData:")) {
                             if (data.contains("VillagesData:200")) {
                                 currentTown.getFarming().parseVillageData(data);
-                                if (!currentTown.hasFullStorage()) {
+                                if (!currentTown.hasFullStorage() && getServerUnixTime() >= currentTown.getTimeToFarm()) {
                                     currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(currentTown.getFarming().getIntervalToFarm().getSeconds()));
 
                                     if (currentTown.getFarming().farmTheVillages()) {
@@ -1273,7 +1276,7 @@ public class GrepolisBot {
                                     }
                                     farmedTheTown = true;
                                 } else {
-                                    log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
+                                    log(currentTown.getName() + " Farmers disabled. Warehouse is full. Or farmers aren't ready!");
                                     farmedTheTown = true;
                                 }
 
@@ -1308,6 +1311,7 @@ public class GrepolisBot {
 
 
     private boolean saidonce = false;
+
     private void loadTowns(String text) {
         ArrayList<Town> townList = new ArrayList<>();
         text = text.replaceAll("\\\\", "");
@@ -1335,10 +1339,10 @@ public class GrepolisBot {
                         town.setId(Integer.parseInt(data.split(":")[1]));
                     }
                     if (data.startsWith("island_x")) {
-                        town.getFarming().setIsland_x(Integer.parseInt(data.split(":")[1]));
+                        town.setIsland_x(Integer.parseInt(data.split(":")[1]));
                     }
                     if (data.startsWith("island_y")) {
-                        town.getFarming().setIsland_y(Integer.parseInt(data.split(":")[1]));
+                        town.setIsland_y(Integer.parseInt(data.split(":")[1]));
                     }
                     if (data.startsWith("last_wood")) {
                         wood = Integer.parseInt(data.split(":")[1]);

@@ -16,8 +16,7 @@ public class Farming {
     private Town town;
     private ArrayList<FarmingVillage> farmingVillages = new ArrayList<>();
 
-    private int island_x;
-    private int island_y;
+
     private boolean booty;
     private boolean diplomacy;
     private boolean enabled;
@@ -56,6 +55,7 @@ public class Farming {
         if (currentTownData != null) {
 //            log("Current town data: " +currentTownData);
             for (String data : currentTownData.split(",")) {
+                /* Not needed anymore. We load this at the start of the bot.
                 if (data.contains("\"island_x\":")) {
                     island_x = Integer.parseInt(data.split(":")[1]);
 //                    log("island_x:" +island_x);
@@ -64,6 +64,7 @@ public class Farming {
                     island_y = Integer.parseInt(data.split(":")[1]);
 //                    log("island_y:" +island_y);
                 }
+                */
                 if (data.contains("\"booty\":")) {
                     booty = Boolean.parseBoolean(data.split(":")[1]);
 //                    log("booty researched: " +booty);
@@ -169,8 +170,8 @@ public class Farming {
         //JSON starts here!
         sb.append("&json=' +encodeURIComponent(JSON.stringify(");
 
-        sb.append("{\"island_x\":").append(island_x);
-        sb.append(",\"island_y\":").append(island_y);
+        sb.append("{\"island_x\":").append(town.getIsland_x());
+        sb.append(",\"island_y\":").append(town.getIsland_y());
         sb.append(",\"current_town_id\":").append(town.getId());
         sb.append(",\"booty_researched\":").append(boolToString(booty));
         sb.append(",\"diplomacy_researched\":").append(boolToString(diplomacy));
@@ -215,6 +216,10 @@ public class Farming {
                         farmingVillage.setLootable_human(data.split(":")[1].contains("at"));
                     }
                     if (data.contains("\"loot\"")) {
+                        String timeToLoot = data.split(":")[1];
+                        if (isStringDigit(timeToLoot)) {
+                            town.setTimeToFarm(Long.parseLong(timeToLoot));
+                        }
 //                        farmingVillage.setLoot(data.contains("null"));
 //                        log("loot: " +farmingVillage.isLoot());
                     }
@@ -348,7 +353,12 @@ public class Farming {
 
                 for (String data : village.split(",")) {
                     if (data.contains("\"id\"")) {
-                        farmingVillage.setId(Integer.parseInt(data.split(":")[1]));
+                        String id = data.split(":")[1];
+                        if (isStringDigit(id)) {
+                            farmingVillage.setId(Integer.parseInt(id));
+                        } else {
+                            break;
+                        }
 //                        System.out.println("id:" + farmingVillage.getId());
                     }
                     if (data.contains("name")) {
@@ -365,13 +375,7 @@ public class Farming {
                     if (data.contains("\"loot\"")) {
                         String holder = data.split(":")[1];
                         if (holder != null) {
-                            boolean isInteger = true;
-                            for (Character c : holder.toCharArray()) {
-                                if (!Character.isDigit(c)) {
-                                    isInteger = false;
-                                }
-                            }
-                            if (isInteger) {
+                            if (isStringDigit(holder)) {
                                 long timeToFarm = Long.parseLong(holder);
                                 farmingVillage.setLoot(timeToFarm);
                             }
@@ -434,11 +438,11 @@ public class Farming {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"chunks\":[{\"x\":");
 //        System.out.println("island_x: " +island_x + " ChunkX:" +getChunkX() + " test: " +town.getFarming().getIsland_x());
-        sb.append(getChunkX());
+        sb.append(town.getIslandChunkX());
 
         sb.append(",\"y\":");
 //        System.out.println("island_y: " +island_y + " ChunkY:" +getChunkY() + " test: " +town.getFarming().getIsland_y());
-        sb.append(getChunkY());
+        sb.append(town.getIslandChunkY());
 
         sb.append(",\"timestamp\":");
         sb.append(0);
@@ -552,6 +556,15 @@ public class Farming {
         return true;
     }
 
+    private boolean isStringDigit(String number) {
+        for (Character c : number.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setMoodToLootTo(int moodToLootTo) {
         this.moodToLootTo = moodToLootTo;
     }
@@ -653,22 +666,6 @@ public class Farming {
         }
     }
 
-    public int getIsland_x() {
-        return island_x;
-    }
-
-    public void setIsland_x(int island_x) {
-        this.island_x = island_x;
-    }
-
-    public int getIsland_y() {
-        return island_y;
-    }
-
-    public void setIsland_y(int island_y) {
-        this.island_y = island_y;
-    }
-
     public static boolean isCaptainEnabled() {
         return captainEnabled;
     }
@@ -679,14 +676,6 @@ public class Farming {
 
     public ArrayList<FarmingVillage> getFarmingVillages() {
         return farmingVillages;
-    }
-
-    public String getChunkX() {
-        return String.valueOf((int)(island_x / 20.0));
-    }
-
-    public String getChunkY() {
-        return String.valueOf((int) (island_y / 20.0));
     }
 
 
