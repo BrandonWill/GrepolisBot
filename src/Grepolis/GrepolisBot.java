@@ -669,7 +669,7 @@ public class GrepolisBot {
 
                 Thread.sleep(3000);
 
-                currentTime = System.currentTimeMillis();
+                currentTime = getServerUnixTime();
 
                 if (currentTime > town.getTimeToFarm()) {
 
@@ -1125,7 +1125,7 @@ public class GrepolisBot {
         String townData[] = text.split("\"id\"");
 
         for (String aTownData : townData) {
-            if (aTownData.contains("\"name\"")) {
+            if (aTownData.contains("\"player_id\"")) {
 //                System.out.println("Town data: " +aTownData);
 
                 String importantData[] = aTownData.split(",");
@@ -1146,6 +1146,10 @@ public class GrepolisBot {
                     @Override
                     public void handle(WebEvent<String> event) {
                         String data = event.getData();
+                        String URL = null;
+                        if (data.contains("URL:")) {
+                            URL = data.split("URL:")[1];
+                        }
                         //Reads all XHR events
                         if (data.contains("XHR Reader:")) {
                             if (data.contains("\"TownGroupTowns\":{\"data\":")) {
@@ -1165,6 +1169,11 @@ public class GrepolisBot {
                                             if (string.contains("\"captain\":null")) {
                                                 Farming.setCaptainEnabled(false);
                                                 log(Level.SEVERE, "--------Captain wasn't found!-----");
+                                            }
+                                            if (string.contains("\"battlepoint_villages\":true")) {
+                                                log("Battle point villages have been detected. Setting all loot mood to 100!");
+                                                Farming.setBattlePointVillages(true);
+                                                Farming.setAllMoodToLootTo(100);
                                             }
                                         }
                                         getAllTownData();
@@ -1266,8 +1275,8 @@ public class GrepolisBot {
                         if (data.contains("VillagesData:")) {
                             if (data.contains("VillagesData:200")) {
                                 currentTown.getFarming().parseVillageData(data);
-                                if (!currentTown.hasFullStorage() && getServerUnixTime() >= currentTown.getTimeToFarm()) {
-                                    currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(currentTown.getFarming().getIntervalToFarm().getSeconds()));
+                                if (!currentTown.hasFullStorage()) {
+                                    //currentTown.setTimeToFarm(currentTime + TimeUnit.SECONDS.toMillis(currentTown.getFarming().getIntervalToFarm().getSeconds()));
 
                                     if (currentTown.getFarming().farmTheVillages()) {
                                         log(currentTown.getName() + " has successfully farmed the villages!");

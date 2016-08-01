@@ -59,7 +59,7 @@ public class FarmingVillage {
         this.loot = loot;
     }
 
-    public long isLoot() {
+    public long getLoot() {
         return loot;
     }
 

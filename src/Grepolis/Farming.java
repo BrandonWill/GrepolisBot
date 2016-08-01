@@ -33,9 +33,15 @@ public class Farming {
     public static boolean allEnabled;
     public static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
 
+    private static boolean battlePointVillages = false;
+
 
     public Farming(Town town) {
         this.town = town;
+        if (battlePointVillages) {
+            moodToLootTo = 100;
+            allMoodToLootTo = 100;
+        }
     }
 
     public void parseHTML(String townData) {
@@ -216,12 +222,13 @@ public class Farming {
                         farmingVillage.setLootable_human(data.split(":")[1].contains("at"));
                     }
                     if (data.contains("\"loot\"")) {
+//                        System.out.println("loot data:" +data);
                         String timeToLoot = data.split(":")[1];
                         if (isStringDigit(timeToLoot)) {
+                            farmingVillage.setLoot(Long.parseLong(timeToLoot));
                             town.setTimeToFarm(Long.parseLong(timeToLoot));
                         }
-//                        farmingVillage.setLoot(data.contains("null"));
-//                        log("loot: " +farmingVillage.isLoot());
+//                        System.out.println("loot: " +farmingVillage.getLoot());
                     }
                     if (data.contains("\"rel\":")) {
                         farmingVillage.setRel(data.contains("\"rel\":1"));
@@ -378,6 +385,7 @@ public class Farming {
                             if (isStringDigit(holder)) {
                                 long timeToFarm = Long.parseLong(holder);
                                 farmingVillage.setLoot(timeToFarm);
+                                town.setTimeToFarm(timeToFarm);
                             }
 
                         }
@@ -676,6 +684,10 @@ public class Farming {
 
     public ArrayList<FarmingVillage> getFarmingVillages() {
         return farmingVillages;
+    }
+
+    public static void setBattlePointVillages(boolean battlePointVillages) {
+        Farming.battlePointVillages = battlePointVillages;
     }
 
 
