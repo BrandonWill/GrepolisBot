@@ -613,7 +613,8 @@ public class Farming {
         }
         sb.append("],\"time_option\":");
 
-        sb.append(String.valueOf(intervalToFarm.seconds));
+        int farmTime = booty ? intervalToFarm.seconds * 2 : intervalToFarm.seconds;
+        sb.append(String.valueOf(farmTime));
 
         sb.append(",\"claim_factor\":");
         sb.append(getFarmAmount());
