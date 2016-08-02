@@ -33,7 +33,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -90,10 +89,10 @@ public class GrepolisBot {
                 }
             });
         } else {
-            JOptionPane.showMessageDialog(null, "Your current java version is: " +Runtime.class.getPackage().getSpecificationVersion() +"\n"
-                                          +"You need to have Java 8 or higher to run this program. In order to fix this: \n"
-                                          +"1. Uninstall older versions of Java\n"
-                                          +"2. Install the newest version of Java (Google download java)");
+            JOptionPane.showMessageDialog(null, "Your current java version is: " + Runtime.class.getPackage().getSpecificationVersion() + "\n"
+                    + "You need to have Java 8 or higher to run this program. In order to fix this: \n"
+                    + "1. Uninstall older versions of Java\n"
+                    + "2. Install the newest version of Java (Google download java)");
         }
     }
 
@@ -573,6 +572,89 @@ public class GrepolisBot {
         }
     }
 
+    private static boolean researchedTheTown = false;
+
+    public void setResearchedTheTown(boolean researchedTheTown) {
+        GrepolisBot.researchedTheTown = researchedTheTown;
+    }
+
+    public class Researcher implements Runnable {
+        Town town;
+
+        public Researcher(Town town) {
+            this.town = town;
+        }
+
+        public void run() {
+            try {
+                //TODO Fix this so that BuildTheBuildings waits on this
+                do {
+                    Thread.sleep(randInt(250, 500));
+                } while (!builtTheBuildings);
+
+                if (town.getBuilding(Building.BuildingType.academy) != null && town.getBuilding(Building.BuildingType.academy).getLevel() > 0) {
+                    Thread.sleep(randInt(1250, 2500));
+
+                    //Loads data exactly from the senate
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            GrepolisBot.webView.getEngine().executeScript("function readBody(xhr) {\n" +
+                                    "    var data;\n" +
+                                    "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                                    "        data = xhr.responseText;\n" +
+                                    "    } else if (xhr.responseType === \"document\") {\n" +
+                                    "        data = xhr.responseXML;\n" +
+                                    "    } else {\n" +
+                                    "        data = xhr.response;\n" +
+                                    "    }\n" +
+                                    "    return data;\n" +
+                                    "}\n" +
+                                    "\n" +
+                                    "var xhr = new XMLHttpRequest();\n" +
+                                    "xhr.onreadystatechange = function() {\n" +
+                                    "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
+                                    "        alert(\"AcademyData:\" +xhr.status +readBody(xhr));\n" +
+                                    "    }\n" +
+                                    "}\n" +
+                                    "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/frontend_bridge" + stringForLoadingAcademy() + ", true);\n" +
+                                    "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                                    "xhr.send(null);");
+                        }
+                    });
+                } else {
+                    researchedTheTown = true;
+                }
+
+            } catch (InterruptedException e) {
+                logError(e);
+            }
+        }
+
+        private String stringForLoadingAcademy() {
+            //{"window_type":"academy","tab_type":"research","known_data":{"models":["Player","PlayerLedger","PremiumFeatures"],
+            // "collections":["TownBuildings","TownResearches","ResearchOrders","BuildingOrders","Towns","PlayerHeroes"],
+            // "templates":[]},"town_id":xxxxx,"nl_init":true}
+            StringBuilder sb = new StringBuilder();
+            String town_id = "?town_id=" + town.getId();
+            String action = "&action=fetch";
+            String h = "&h=" + town.getCsrftoken();
+            sb.append(town_id);
+            sb.append(action);
+            sb.append(h);
+
+            //JSON starts here!
+            sb.append("&json=' +encodeURIComponent(JSON.stringify(");
+
+            sb.append("{\"window_type\":\"academy\",\"tab_type\":\"research\",\"known_data\":{\"models\":[\"Player\",\"PlayerLedger\",\"PremiumFeatures\"],\"collections\":[\"TownBuildings\",\"BuildingOrders\",\"Towns\",\"PlayerHeroes\"],\"templates\":[]},\"town_id\":" + town.getId() + ",\"nl_init\":true}");
+
+
+            sb.append("))");
+            //System.out.println("String: " +sb.toString());
+            return sb.toString();
+        }
+    }
+
     private boolean builtTheBuildings = false;
 
     public class BuildTheBuildings implements Runnable {
@@ -632,6 +714,10 @@ public class GrepolisBot {
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!builtTheBuildings);
+
+                do {
+                    Thread.sleep(randInt(250, 500));
+                } while (!researchedTheTown);
 
                 if (town.getCulture().canStartParty()) {
                     Thread.sleep(randInt(1250, 2500));
@@ -722,21 +808,21 @@ public class GrepolisBot {
 
 //                        System.out.println("Going through all the farming villages. Total #: " +town.getFarming().getFarmingVillages().size());
                             for (final FarmingVillage farmingVillage : town.getFarming().getFarmingVillages()) {
+                                openedFarmInterface = false;
+
+                                town.getFarming().openFarmingVillageInterface(farmingVillage);
+
+                                while (!openedFarmInterface) {
+                                    Thread.sleep(randInt(100, 500));
+                                }
+
                                 if (farmingVillage.canFarm()) {
-                                    openedFarmInterface = false;
-
-                                    town.getFarming().openFarmingVillageInterface(farmingVillage);
-
-                                    while (!openedFarmInterface) {
-                                        Thread.sleep(randInt(100, 500));
-                                    }
-
-                                    if (town.getFarming().farmTheVillage(farmingVillage)) {
+                                    if (town.getFarming().farmTheVillageFromMap(farmingVillage)) {
                                         log("The farming village " + farmingVillage.getName() + " was farmed successfully!");
                                         Thread.sleep(randInt(500, 1000));
                                     }
                                 } else {
-                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed!");
+                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed! Farmable at: " +farmingVillage.getLoot() + " and it's: " +getServerUnixTime());
                                 }
                             }
                         } else {
@@ -899,10 +985,13 @@ public class GrepolisBot {
                                 if (!towns.get(i).getFarming().isEnabled()) {
                                     log(currentTown.getName() + " farmers are disabled!");
                                 }
-//                                if (townHasFarms.get(towns.get(i).getId()) == null) {
+//                                if (townHasFarms.get(towns.get(i).getFarm_town_id()) == null) {
 //                                    log(currentTown.getName() + " doesn't have any farmers or they're not loaded yet!");
 //                                }
                                 farmedTheTown = true;
+                            }
+                            if (!researchedTheTown) {
+                                (new Thread(new Researcher(towns.get(i)))).start();
                             }
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
                             culture[0].start();
@@ -1165,6 +1254,7 @@ public class GrepolisBot {
                                     @Override
                                     public void run() {
                                         String html = (String) webView.getEngine().executeScript("document.documentElement.outerHTML");
+                                        //                                       CreateResearchEnum.parseHTML(html);
                                         for (String string : html.split(",")) {
                                             if (string.contains("csrfToken") && csrfToken == null) {
                                                 csrfToken = string.split(":")[1].replaceAll("\"", "");
@@ -1217,6 +1307,17 @@ public class GrepolisBot {
                                 pauseBot();
                             }
                         }
+                        if (data.contains("AcademyData:")) {
+                            if (data.contains("AcademyData:200")) {
+                                Research.parseHTML(data);
+                                researchedTheTown = true;
+                            } else {
+                                researchedTheTown = true;
+                                log(Level.SEVERE, "Error! Can't find the Academy data! Error log: " + event.getData());
+                                pauseBot();
+                            }
+                        }
+
                         //builds the buildings
                         if (data.contains("BuildingData:")) {
                             if (data.contains("BuildingData:200")) {
@@ -1304,7 +1405,9 @@ public class GrepolisBot {
                         }
                         if (data.contains("FarmingInterfaceOpened:")) {
                             if (data.contains("FarmingInterfaceOpened:200")) {
-                                openedFarmInterface = true;
+                                if (currentTown.getFarming().parseVillagesFromMap(data)) {
+                                    openedFarmInterface = true;
+                                }
                             } else {
                                 log(Level.SEVERE, "Error! Can't open the farming interface! Error log: " + event.getData());
                                 pauseBot();
@@ -1353,7 +1456,12 @@ public class GrepolisBot {
                         town.setName(data.split(":")[1]);
                     }
                     if (data.startsWith("id:")) {
-                        town.setId(Integer.parseInt(data.split(":")[1]));
+                        String id = data.split(":")[1];
+                        if (isStringDigit(id)) {
+                            town.setId(Integer.parseInt(id));
+                        } else {
+                            break;
+                        }
                     }
                     if (data.startsWith("island_x")) {
                         town.setIsland_x(Integer.parseInt(data.split(":")[1]));
@@ -1376,15 +1484,18 @@ public class GrepolisBot {
 
                 }
 
+                town.setLast_wood(wood);
+                town.setLast_stone(iron);
+                town.setLast_stone(stone);
                 town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
 
 //                String importantData[] = aTownData.split(",");
 ////                System.out.println("Important data: " + Arrays.toString(importantData));
-//                town.setId(Integer.parseInt(importantData[0].replaceAll(":", "")));
+//                town.setFarm_town_id(Integer.parseInt(importantData[0].replaceAll(":", "")));
 //                town.setName(importantData[1].split(":")[1].replaceAll("\"", ""));
                 town.setServer(server);
                 town.setCsrftoken(csrfToken);
-//                System.out.println("Town id: " +town.getId());
+//                System.out.println("Town id: " +town.getFarm_town_id());
 //                System.out.println("Town name: " +town.getName());
 //                System.out.println("island_x: " + town.getFarming().getIsland_x());
 //                System.out.println("island_y: " + town.getFarming().getIsland_y());
@@ -1469,6 +1580,15 @@ public class GrepolisBot {
 
     public static void setBotIsRunning(boolean botIsRunning) {
         GrepolisBot.botIsRunning = botIsRunning;
+    }
+
+    private boolean isStringDigit(String number) {
+        for (Character c : number.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

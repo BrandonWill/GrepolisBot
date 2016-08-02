@@ -19,6 +19,7 @@ public class Town {
     private Docks docks = new Docks(this);
     private Culture culture = new Culture(this);
     private Farming farming = new Farming(this);
+    private Research research = new Research(this);
     private boolean isBuildingQueueFull;
     private boolean fullStorage = false;
     private Long timeToFarm = (long) 0;
@@ -28,6 +29,9 @@ public class Town {
 
     private int island_x;
     private int island_y;
+    private int last_wood;
+    private int last_stone;
+    private int last_iron;
 
 
     public boolean parseHTML(String html) {
@@ -417,5 +421,37 @@ public class Town {
 
     public String getIslandChunkY() {
         return String.valueOf((int) (island_y / 20.0));
+    }
+
+    public Research getResearch() {
+        return research;
+    }
+
+    public void setResearch(Research research) {
+        this.research = research;
+    }
+
+    public int getLast_wood() {
+        return last_wood;
+    }
+
+    public void setLast_wood(int last_wood) {
+        this.last_wood = last_wood;
+    }
+
+    public int getLast_stone() {
+        return last_stone;
+    }
+
+    public void setLast_stone(int last_stone) {
+        this.last_stone = last_stone;
+    }
+
+    public int getLast_iron() {
+        return last_iron;
+    }
+
+    public void setLast_iron(int last_iron) {
+        this.last_iron = last_iron;
     }
 }

@@ -6,7 +6,8 @@ package Grepolis;
  * Time: 5:50 PM
  */
 public class FarmingVillage {
-    private int id;
+    private int battlePointFarmID = 0; //specifically given to these villages!
+    private int farm_town_id = 0;
     private String name;
     private int stage; //farming village level
     private int mood;
@@ -23,12 +24,16 @@ public class FarmingVillage {
         this.lootable_human = lootable_human;
     }
 
-    public int getId() {
-        return id;
+    public int getFarm_town_id() {
+        //Attempt to salvage how horrible their code is.
+        if (farm_town_id == 0 && battlePointFarmID != 0) {
+            return battlePointFarmID;
+        }
+        return farm_town_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setFarm_town_id(int farm_town_id) {
+        this.farm_town_id = farm_town_id;
     }
 
     public String getName() {
@@ -84,5 +89,13 @@ public class FarmingVillage {
 
     public void setCanFarm(boolean canFarm) {
         this.canFarm = canFarm;
+    }
+
+    public int getBattlePointFarmID() {
+        return battlePointFarmID;
+    }
+
+    public void setBattlePointFarmID(int battlePointFarmID) {
+        this.battlePointFarmID = battlePointFarmID;
     }
 }

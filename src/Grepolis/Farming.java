@@ -206,9 +206,9 @@ public class Farming {
                 FarmingVillage farmingVillage = new FarmingVillage();
                 for (String data : village.split(",")) {
                     if (data.contains("\"id\"")) {
-                        farmingVillage.setId(Integer.parseInt(data.split(":")[1]));
-                        farmingVillage.setCanFarm(allData.contains("farm_town_" + farmingVillage.getId() + " checked"));
-//                        log("id:" +farmingVillage.getId());
+                        farmingVillage.setFarm_town_id(Integer.parseInt(data.split(":")[1]));
+                        farmingVillage.setCanFarm(allData.contains("farm_town_" + farmingVillage.getFarm_town_id() + " checked"));
+//                        log("id:" +farmingVillage.getFarm_town_id());
                     }
                     if (data.contains("name")) {
                         farmingVillage.setName(data.split(":")[1]);
@@ -235,7 +235,7 @@ public class Farming {
 //                        log("loot: " +farmingVillage.isLoot());
                     }
                 }
-                if (farmingVillage.getId() != 0) {
+                if (farmingVillage.getFarm_town_id() != 0) {
                     farmingVillages.add(farmingVillage);
                 }
             }
@@ -268,7 +268,7 @@ public class Farming {
                         "        alert(\"FarmingInterfaceOpened:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
-                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_info?town_id=" + town.getId() + "&action=claim_info&h=" + town.getCsrftoken() + "&json=' +encodeURIComponent(JSON.stringify(" + getFarmerInterfaceJSON(farmingVillage) + ")), true);\n" +
+                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/" + getFarmerInterfaceJSON(farmingVillage) + ", true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
             }
@@ -279,20 +279,42 @@ public class Farming {
     private String getFarmerInterfaceJSON(FarmingVillage farmingVillage) {
         //{"id":????,"town_id":?????,"nl_init":true}
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"id\":");
-        sb.append(farmingVillage.getId());
-        sb.append(",");
+        if (battlePointVillages) {
+            sb.append("frontend_bridge?town_id=").append(town.getId()).append("&action=fetch&h=").append(town.getCsrftoken());
 
-        sb.append("\"town_id\":");
-        sb.append(town.getId());
-        sb.append(",");
+            sb.append("&json=' +encodeURIComponent(JSON.stringify(");
 
-        sb.append("\"nl_init\":true}");
+            sb.append("{\"window_type\":\"farm_town\",\"tab_type\":\"index\",\"known_data\":{\"models\":[\"PlayerKillpoints\",\"PremiumFeatures\"]," +
+                    "\"collections\":[\"FarmTowns\",\"Towns\"],\"templates\":[]},\"arguments\":" +
+                    "{\"farm_town_id\":" + farmingVillage.getFarm_town_id() +"},\"town_id\":" + town.getId() +",\"nl_init\":true}");
 
-        return sb.toString();
+            sb.append("))");
+
+            return sb.toString();
+
+        } else {
+
+            sb.append("farm_town_info?town_id=").append(town.getId()).append("&action=claim_info&h=").append(town.getCsrftoken());
+
+            sb.append("&json=' +encodeURIComponent(JSON.stringify(");
+
+            sb.append("{\"id\":");
+            sb.append(farmingVillage.getFarm_town_id());
+            sb.append(",");
+
+            sb.append("\"town_id\":");
+            sb.append(town.getId());
+            sb.append(",");
+
+            sb.append("\"nl_init\":true}");
+
+            sb.append("))");
+
+            return sb.toString();
+        }
     }
 
-    public boolean farmTheVillage(final FarmingVillage farmingVillage) {
+    public boolean farmTheVillageFromMap(final FarmingVillage farmingVillage) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -314,7 +336,7 @@ public class Farming {
                         "        alert(\"FarmedTheVillage:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
-                        "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/farm_town_info?town_id=" + town.getId() + "&action=claim_load&h=" + town.getCsrftoken() + "&json=' +encodeURIComponent(JSON.stringify(" + getFarmingVillageJSON(farmingVillage) + ")), true);\n" +
+                        "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/" + getFarmingVillageJSON(farmingVillage) + ", true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
             }
@@ -324,25 +346,46 @@ public class Farming {
 
     private String getFarmingVillageJSON(FarmingVillage farmingVillage) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"target_id\":");
-        sb.append(farmingVillage.getId());
-        sb.append(",");
 
-        sb.append("\"claim_type\":");
-        sb.append(getFarmAmount());
-        sb.append(",");
+        if (battlePointVillages) {
+            sb.append("frontend_bridge?town_id=").append(town.getId()).append("&action=execute&h=").append(town.getCsrftoken());
 
-        sb.append("\"time\":");
-        sb.append(String.valueOf(intervalToFarm.seconds));
-        sb.append(",");
+            sb.append("&json=' +encodeURIComponent(JSON.stringify(");
 
-        sb.append("\"town_id\":");
-        sb.append(town.getId());
-        sb.append(",");
+            sb.append("{\"model_url\":\"FarmTownPlayerRelation/" + farmingVillage.getBattlePointFarmID() +"\",\"action_name\":\"claim\",\"arguments\":" +
+                    "{\"farm_town_id\":" + farmingVillage.getFarm_town_id() +",\"type\":\"resources\",\"option\":1},\"town_id\":" + town.getId() + ",\"nl_init\":true}");
 
-        sb.append("\"nl_init\":true}");
+            sb.append("))");
+
+            return sb.toString();
+
+        } else {
+
+            sb.append("farm_town_info?town_id=").append(town.getId()).append("&action=claim_load&h=").append(town.getCsrftoken());
+
+            sb.append("&json=' +encodeURIComponent(JSON.stringify(");
+
+            sb.append("{\"target_id\":");
+            sb.append(farmingVillage.getFarm_town_id());
+            sb.append(",");
+
+            sb.append("\"claim_type\":");
+            sb.append(getFarmAmount());
+            sb.append(",");
+
+            sb.append("\"time\":");
+            sb.append(String.valueOf(intervalToFarm.seconds));
+            sb.append(",");
+
+            sb.append("\"town_id\":");
+            sb.append(town.getId());
+            sb.append(",");
+
+            sb.append("\"nl_init\":true}");
+            sb.append("))");
 
 //        log("sb.toString(): " +sb.toString());
+        }
 
         return sb.toString();
     }
@@ -352,53 +395,84 @@ public class Farming {
         // "demand":"stone","mood":84,"relation_status":1,"ratio":1.25,"loot":1469053323,
         // "lootable_human":"on 2016-07-20 at 23:22 ","looted":1469053023},"80":
         String[] parsed = villageData.split("\\{");
-        farmingVillages.clear();
+        //farmingVillages.clear();
         for (String village : parsed) {
             if (village.contains("\"id\"") && village.contains("\"relation_status\":1")) {
 //                System.out.println("Parsed: " +village);
                 FarmingVillage farmingVillage = new FarmingVillage();
 
                 for (String data : village.split(",")) {
-                    if (data.contains("\"id\"")) {
+                    if (data.contains("farm_town_id")) {
                         String id = data.split(":")[1];
                         if (isStringDigit(id)) {
-                            farmingVillage.setId(Integer.parseInt(id));
+                            int actualID = Integer.parseInt(id);
+                            if (getFarmingVillage(actualID) != null) {
+                                farmingVillage = getFarmingVillage(actualID);
+                            } else {
+                                if (farmingVillage != null) {
+                                    farmingVillage.setFarm_town_id(actualID);
+                                }
+                            }
                         } else {
                             break;
                         }
-//                        System.out.println("id:" + farmingVillage.getId());
+//                        System.out.println("id:" + farmingVillage.getFarm_town_id());
+                    }
+                    if (data.contains("\"id\"")) {
+                        String id = data.split(":")[1];
+                        if (isStringDigit(id)) {
+                            int actualID = Integer.parseInt(id);
+                            if (getFarmingVillage(actualID) != null) {
+                                farmingVillage = getFarmingVillage(actualID);
+                            } else {
+                                if (farmingVillage != null) {
+                                    farmingVillage.setBattlePointFarmID(actualID);
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+//                        System.out.println("id:" + farmingVillage.getFarm_town_id());
                     }
                     if (data.contains("name")) {
-                        farmingVillage.setName(data.split(":")[1]);
+                        if (farmingVillage != null) {
+                            farmingVillage.setName(data.split(":")[1]);
+                        }
                     }
                     if (data.contains("mood")) {
-                        farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
+                        if (farmingVillage != null) {
+                            farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
+                        }
 //                        System.out.println("mood:" + farmingVillage.getMood());
                     }
                     if (data.contains("lootable_human")) {
                         //Not multilingual function and is rather useless.
 //                        farmingVillage.setLootable_human(data.split(":")[1].contains("at"));
                     }
-                    if (data.contains("\"loot\"")) {
+                    if (data.contains("\"lootable_at\"")) {
                         String holder = data.split(":")[1];
                         if (holder != null) {
                             if (isStringDigit(holder)) {
                                 long timeToFarm = Long.parseLong(holder);
-                                farmingVillage.setLoot(timeToFarm);
+                                if (farmingVillage != null) {
+                                    farmingVillage.setLoot(timeToFarm);
+                                }
                                 town.setTimeToFarm(timeToFarm);
                             }
 
                         }
                     }
                     if (data.contains("\"relation_status\":")) {
-                        farmingVillage.setRel(data.contains("\"relation_status\":1"));
+                        if (farmingVillage != null) {
+                            farmingVillage.setRel(data.contains("\"relation_status\":1"));
+                        }
 //                        System.out.println("relation_status: " + farmingVillage.isRel());
                     }
                 }
-                if (farmingVillage.getId() != 0) {
+                if (farmingVillage != null && farmingVillage.getFarm_town_id() != 0) {
                     boolean notAdded = true;
                     for (FarmingVillage village1 : farmingVillages) {
-                        if (village1.getId() == farmingVillage.getId()) {
+                        if (village1.getFarm_town_id() == farmingVillage.getFarm_town_id()) {
                             notAdded = false;
                         }
                     }
@@ -410,6 +484,15 @@ public class Farming {
             }
         }
         return true;
+    }
+
+    private FarmingVillage getFarmingVillage(int id) {
+        for (FarmingVillage farmingVillage : farmingVillages) {
+            if (farmingVillage.getFarm_town_id() == id) {
+                return farmingVillage;
+            }
+        }
+        return null;
     }
 
     public void loadVillagesFromMap() {
@@ -434,7 +517,7 @@ public class Farming {
                         "        alert(\"LoadedVillagesFromMap:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
-                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/map_data?town_id=" + town.getId() + "&action=get_chunks&h=" + town.getCsrftoken() + "&json=' +encodeURIComponent(JSON.stringify(" + villagesFromMapJSON() + ")), true);\n" +
+                        "xhr.open('GET', 'https://" + town.getServer() + ".grepolis.com/game/" + villagesFromMapJSON() + ", true);\n" +
                         "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                         "xhr.send(null);");
             }
@@ -442,8 +525,17 @@ public class Farming {
     }
 
     private String villagesFromMapJSON() {
-        //{"chunks":[{"x":??,"y":??,"timestamp":0}],"town_id":?????,"nl_init":true}
+
         StringBuilder sb = new StringBuilder();
+        //{"window_type":"farm_town","tab_type":"index","known_data":{"models":["PlayerKillpoints","PremiumFeatures"],"collections":["FarmTownPlayerRelations","FarmTowns","Towns"],"templates":[]},"arguments":{"farm_town_id":xxxx},"town_id":xxxxx,"nl_init":true}
+        //We are telling the game we don't know the player relations!
+        //TODO in the future? We don't need this right now!
+
+        //sb.append("frontend_bridge?town_id=").append(town.getFarm_town_id()).append("&action=fetch&h=").append(town.getCsrftoken()).append("&json=' +encodeURIComponent(JSON.stringify(");
+
+        sb.append("map_data?town_id=").append(town.getId()).append("&action=get_chunks&h=").append(town.getCsrftoken()).append("&json=' +encodeURIComponent(JSON.stringify(");
+
+        //{"chunks":[{"x":??,"y":??,"timestamp":0}],"town_id":?????,"nl_init":true}
         sb.append("{\"chunks\":[{\"x\":");
 //        System.out.println("island_x: " +island_x + " ChunkX:" +getChunkX() + " test: " +town.getFarming().getIsland_x());
         sb.append(town.getIslandChunkX());
@@ -461,6 +553,7 @@ public class Farming {
         sb.append(",");
 
         sb.append("\"nl_init\":true}");
+        sb.append("))");
 
 //        System.out.println("Sb being encoded: " +sb.toString());
 
@@ -511,7 +604,7 @@ public class Farming {
         sb.append("{\"farm_town_ids\":[");
         for (FarmingVillage farmingVillage : farmingVillages) {
             if (farmingVillage.isRel()) {
-                sb.append(farmingVillage.getId());
+                sb.append(farmingVillage.getFarm_town_id());
                 sb.append(",");
             }
         }
