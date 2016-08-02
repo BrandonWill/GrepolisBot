@@ -906,7 +906,7 @@ public class GrepolisBot {
         for (Town town1 : towns) {
             town1.setServer(server);
             town1.setCsrftoken(csrfToken);
-            if (town1.getId() == townID && !town1.getName().equals(name) && !town1.getName().contains("}]")) {
+            if (town1.getId() == townID && !town1.getName().equals(name) && !name.contains("}")) {
                 log("Updating town name from " + town1.getName() + " to " + name);
                 town1.setName(name);
                 return true;
