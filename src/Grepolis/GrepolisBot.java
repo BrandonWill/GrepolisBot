@@ -822,7 +822,7 @@ public class GrepolisBot {
                                         Thread.sleep(randInt(500, 1000));
                                     }
                                 } else {
-                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed! Farmable at: " +farmingVillage.getLoot() + " and it's: " +getServerUnixTime());
+                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed or is farmed to its' cap!");
                                 }
                             }
                         } else {
@@ -1272,6 +1272,12 @@ public class GrepolisBot {
                                                 log("Battle point villages have been detected. Setting all loot mood to 100!");
                                                 Farming.setBattlePointVillages(true);
                                                 Farming.setAllMoodToLootTo(100);
+                                            }
+                                            if (string.contains("\"game_speed\"")) {
+                                                String gameSpeed = string.split(":")[1];
+                                                if (isStringDigit(gameSpeed)) {
+                                                    Farming.setGameSpeed(Integer.parseInt(gameSpeed));
+                                                }
                                             }
                                         }
                                         getAllTownData();

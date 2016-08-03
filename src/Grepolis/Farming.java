@@ -34,6 +34,7 @@ public class Farming {
     public static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
 
     private static boolean battlePointVillages = false;
+    private static int gameSpeed = 1;
 
 
     public Farming(Town town) {
@@ -203,7 +204,7 @@ public class Farming {
             String villages[] = villagesData.split("\\{");
             for (String village : villages) {
 //                log("found village data: " +village);
-                FarmingVillage farmingVillage = new FarmingVillage();
+                FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
                 for (String data : village.split(",")) {
                     if (data.contains("\"id\"")) {
                         farmingVillage.setFarm_town_id(Integer.parseInt(data.split(":")[1]));
@@ -399,7 +400,7 @@ public class Farming {
         for (String village : parsed) {
             if (village.contains("\"id\"") && village.contains("\"relation_status\":1")) {
 //                System.out.println("Parsed: " +village);
-                FarmingVillage farmingVillage = new FarmingVillage();
+                FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
 
                 for (String data : village.split(",")) {
                     if (data.contains("farm_town_id")) {
@@ -445,9 +446,10 @@ public class Farming {
                         }
 //                        System.out.println("mood:" + farmingVillage.getMood());
                     }
-                    if (data.contains("lootable_human")) {
-                        //Not multilingual function and is rather useless.
-//                        farmingVillage.setLootable_human(data.split(":")[1].contains("at"));
+                    if (data.contains("\"loot\"") && village.contains("\"lootable_at\"")) {
+                        if (farmingVillage != null) {
+                            farmingVillage.setResourcedLooted(Integer.parseInt(data.split(":")[1]));
+                        }
                     }
                     if (data.contains("\"lootable_at\"")) {
                         String holder = data.split(":")[1];
@@ -635,11 +637,13 @@ public class Farming {
     private boolean hasAFarmerAvailable() {
         for (FarmingVillage farmingVillage : farmingVillages) {
             if (farmingVillage.canFarm()) {
-                return true;
+                    return true;
             }
         }
         return false;
     }
+
+
 
     private String getFarmAmount() {
         return isMoodHighEnough() ? "\"double\"" : "\"normal\"";
@@ -748,19 +752,21 @@ public class Farming {
     }
 
     public enum IntervalToFarm {
-        MINUTES_FIVE(300),
-        MINUTES_TEN(600),
-        MINUTES_TWENTY(1200),
-        MINUTES_FORTY(2400),
-        MINUTES_NINETY(5400),
-        MINUTES_ONE_HUNDRED_EIGHTY(10800),
-        MINUTES_TWO_HUNDRED_FORTY(14400),
-        MINUTES_FOUR_HUNDRED_EIGHTY(28800);
+        MINUTES_FIVE(300, 1),
+        MINUTES_TEN(600, 1),
+        MINUTES_TWENTY(1200, 2),
+        MINUTES_FORTY(2400, 2),
+        MINUTES_NINETY(5400, 3),
+        MINUTES_ONE_HUNDRED_EIGHTY(10800, 3),
+        MINUTES_TWO_HUNDRED_FORTY(14400, 4),
+        MINUTES_FOUR_HUNDRED_EIGHTY(28800, 4);
 
         public int seconds;
+        public int option;
 
-        IntervalToFarm(int seconds) {
+        IntervalToFarm(int seconds, int option) {
             this.seconds = seconds;
+            this.option = option;
         }
 
         public int getSeconds() {
@@ -782,6 +788,14 @@ public class Farming {
 
     public static void setBattlePointVillages(boolean battlePointVillages) {
         Farming.battlePointVillages = battlePointVillages;
+    }
+
+    public static int getGameSpeed() {
+        return gameSpeed;
+    }
+
+    public static void setGameSpeed(int gameSpeed) {
+        Farming.gameSpeed = gameSpeed;
     }
 
 
