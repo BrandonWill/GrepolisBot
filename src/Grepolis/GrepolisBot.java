@@ -1264,9 +1264,22 @@ public class GrepolisBot {
                                                 defaultTown = Integer.parseInt(string.split(":")[1].replaceAll("\"", ""));
                                                 log("Default town: " + defaultTown);
                                             }
-                                            if (string.contains("\"captain\":null")) {
-                                                Farming.setCaptainEnabled(false);
-                                                log(Level.SEVERE, "--------Captain wasn't found!-----");
+                                            if (string.contains("\"captain\":")) {
+                                                if (string.contains("null")) {
+                                                    Farming.setCaptainEnabled(false);
+                                                    log(Level.SEVERE, "--------Captain wasn't found!-----");
+                                                } else {
+                                                    if (string.contains(":")) {
+                                                        String expiresAt = string.split(":")[1];
+                                                        if (isStringDigit(expiresAt)) {
+                                                            long expires = Long.parseLong(expiresAt);
+                                                            if (getServerUnixTime() >= expires) {
+                                                                Farming.setCaptainEnabled(false);
+                                                                log(Level.SEVERE, "--------Captain detected as expired!-----");
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                             if (string.contains("\"battlepoint_villages\":true")) {
                                                 log("Battle point villages have been detected. Setting all loot mood to 100!");

@@ -440,15 +440,22 @@ public class Farming {
                             farmingVillage.setName(data.split(":")[1]);
                         }
                     }
+                    if (data.contains("stage")) {
+                        if (farmingVillage != null) {
+                            System.out.println("Stage : " + data);
+                            farmingVillage.setStage(Integer.parseInt(data.split(":")[1]));
+                        }
+                    }
                     if (data.contains("mood")) {
                         if (farmingVillage != null) {
                             farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
                         }
 //                        System.out.println("mood:" + farmingVillage.getMood());
                     }
-                    if (data.contains("\"loot\"") && village.contains("\"lootable_at\"")) {
+                    if (data.contains("\"loot\":")) {
                         if (farmingVillage != null) {
-                            farmingVillage.setResourcedLooted(Integer.parseInt(data.split(":")[1]));
+                            String lootData = data.split(":")[1];
+                            farmingVillage.setResourcesLooted(Integer.parseInt(lootData));
                         }
                     }
                     if (data.contains("\"lootable_at\"")) {

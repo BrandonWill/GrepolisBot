@@ -13,7 +13,7 @@ public class FarmingVillage {
     private int mood;
     private boolean lootable_human; //The time we can loot at again in regular time.
     private long loot = 0; //The time to loot in unix time!
-    private int resourcedLooted = 0;
+    private int resourcesLooted;
     private boolean rel; //is 1 if it's owned by the player
     private boolean canFarm;
     private boolean bootyResearched;
@@ -90,7 +90,8 @@ public class FarmingVillage {
         } else {
             if (loot > 0) {
                 if (battlePointFarmID != 0) {
-                    int nextLootAmount = resourcedLooted + amountWeLoot(intervalToFarm);
+                    int nextLootAmount = resourcesLooted + amountWeLoot(intervalToFarm);
+                    //System.out.println("Village can loot: " + getMaxLoot() +"- " +nextLootAmount + ">=  " +nextLootAmount);
                     if (getMaxLoot() - nextLootAmount >= nextLootAmount) {
                         return true;
                     }
@@ -289,11 +290,11 @@ public class FarmingVillage {
         return 0;
     }
 
-    public int getResourcedLooted() {
-        return resourcedLooted;
+    public int getResourcesLooted() {
+        return resourcesLooted;
     }
 
-    public void setResourcedLooted(int resourcedLooted) {
-        this.resourcedLooted = resourcedLooted;
+    public void setResourcesLooted(int resourcesLooted) {
+        this.resourcesLooted = resourcesLooted;
     }
 }

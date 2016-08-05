@@ -54,9 +54,17 @@ public class Research {
                     } else {
                         if (researchData.length() > 2) {
 //                            System.out.println("Research name: " + researchData.split(":")[0]);
-                            research.setResearchType(Researches.ResearchType.valueOf(researchData.split(":")[0]));
-                            research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
-                            researches.add(research);
+                            try {
+                                research.setResearchType(Researches.ResearchType.valueOf(researchData.split(":")[0]));
+                                research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
+                                researches.add(research);
+                            } catch(Exception ignored) {
+                                log("Error in finding research within the following data: " +researchData);
+                                if (researchTown != null) {
+                                    log("Please create an issue on github, including: " + " Academy null: " + (researchTown.getBuilding(Building.BuildingType.academy) != null)
+                                    + " Academy level: " +researchTown.getBuilding(Building.BuildingType.academy).getLevel() + " research data string: " +townResearch);
+                                }
+                            }
                         }
                     }
                 }
