@@ -39,30 +39,31 @@ public class Research {
                 for (String researchData : townResearch.split(",")) {
 
                     Researches research = new Researches();
-
-                    if (researchData.contains("nger")) {
-                        research.setResearchType(Researches.ResearchType.slinger);
-                        research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
-                        researches.add(research);
-                    } else if (researchData.contains("id:")) {
-                        int id = Integer.parseInt(researchData.split(":")[1].replaceAll("}", ""));
-                        for (Town town : GrepolisBot.getTowns()) {
-                            if (town.getId() == id) {
-                                researchTown = town;
+                    if (townResearch.contains("nger")) {
+                        if (researchData.contains("nger")) {
+                            research.setResearchType(Researches.ResearchType.slinger);
+                            research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
+                            researches.add(research);
+                        } else if (researchData.contains("id:")) {
+                            int id = Integer.parseInt(researchData.split(":")[1].replaceAll("}", ""));
+                            for (Town town : GrepolisBot.getTowns()) {
+                                if (town.getId() == id) {
+                                    researchTown = town;
+                                }
                             }
-                        }
-                    } else {
-                        if (researchData.length() > 2) {
+                        } else {
+                            if (researchData.length() > 2) {
 //                            System.out.println("Research name: " + researchData.split(":")[0]);
-                            try {
-                                research.setResearchType(Researches.ResearchType.valueOf(researchData.split(":")[0]));
-                                research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
-                                researches.add(research);
-                            } catch(Exception ignored) {
-                                log("Error in finding research within the following data: " +researchData);
-                                if (researchTown != null) {
-                                    log("Please create an issue on github, including: " + " Academy null: " + (researchTown.getBuilding(Building.BuildingType.academy) != null)
-                                    + " Academy level: " +researchTown.getBuilding(Building.BuildingType.academy).getLevel() + " research data string: " +townResearch);
+                                try {
+                                    research.setResearchType(Researches.ResearchType.valueOf(researchData.split(":")[0]));
+                                    research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
+                                    researches.add(research);
+                                } catch (Exception ignored) {
+                                    log("Error in finding research within the following data: " + researchData);
+                                    if (researchTown != null) {
+                                        log("Please create an issue on github, including: " + " Academy null: " + (researchTown.getBuilding(Building.BuildingType.academy) != null)
+                                                + " Academy level: " + researchTown.getBuilding(Building.BuildingType.academy).getLevel() + " research data string: " + townResearch);
+                                    }
                                 }
                             }
                         }

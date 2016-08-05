@@ -442,7 +442,7 @@ public class Farming {
                     }
                     if (data.contains("stage")) {
                         if (farmingVillage != null) {
-                            System.out.println("Stage : " + data);
+//                            System.out.println("Stage : " + data);
                             farmingVillage.setStage(Integer.parseInt(data.split(":")[1]));
                         }
                     }
