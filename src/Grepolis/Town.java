@@ -294,6 +294,14 @@ public class Town {
 
     private boolean canBuild(Building.BuildingType building) {
         Building actualBuilding = getBuilding(building);
+        if (actualBuilding != null) {
+            log("Building name: " + actualBuilding.getName() +
+                    " is building queue full: " + isBuildingQueueFull +
+                    " can building be upgraded: " + actualBuilding.canUpgrade() +
+                    " current level: " + actualBuilding.getLevel() +
+                    " level to build to: " + actualBuilding.getBuildTo() +
+                    " Can build: " + (actualBuilding != null && (!isBuildingQueueFull && actualBuilding.canUpgrade() && actualBuilding.getLevel() < actualBuilding.getBuildTo())));
+        }
         return actualBuilding != null && (!isBuildingQueueFull && actualBuilding.canUpgrade() && actualBuilding.getLevel() < actualBuilding.getBuildTo());
     }
 

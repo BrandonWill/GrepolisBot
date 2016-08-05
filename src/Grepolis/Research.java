@@ -39,7 +39,7 @@ public class Research {
                 for (String researchData : townResearch.split(",")) {
 
                     Researches research = new Researches();
-                    if (townResearch.contains("nger")) {
+                    if (researchData.contains("true") || researchData.contains("false")) {
                         if (researchData.contains("nger")) {
                             research.setResearchType(Researches.ResearchType.slinger);
                             research.setResearched(Boolean.parseBoolean(researchData.split(":")[1]));
