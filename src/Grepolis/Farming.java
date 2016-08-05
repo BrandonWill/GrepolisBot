@@ -805,5 +805,9 @@ public class Farming {
         Farming.gameSpeed = gameSpeed;
     }
 
+    public static boolean hasBattlePointVillages() {
+        return battlePointVillages;
+    }
+
 
 }

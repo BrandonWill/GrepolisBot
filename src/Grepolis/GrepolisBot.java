@@ -592,7 +592,7 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!builtTheBuildings);
 
-                if (town.getBuilding(Building.BuildingType.academy) != null && town.getBuilding(Building.BuildingType.academy).getLevel() > 0) {
+                if (Farming.hasBattlePointVillages() && town.getBuilding(Building.BuildingType.academy) != null && town.getBuilding(Building.BuildingType.academy).getLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
 
                     //Loads data exactly from the senate
