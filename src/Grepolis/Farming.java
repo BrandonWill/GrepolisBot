@@ -440,7 +440,7 @@ public class Farming {
                             farmingVillage.setName(data.split(":")[1]);
                         }
                     }
-                    if (data.contains("stage")) {
+                    if (data.contains("\"expansion_stage\"")) {
                         if (farmingVillage != null) {
 //                            System.out.println("Stage : " + data);
                             farmingVillage.setStage(Integer.parseInt(data.split(":")[1]));

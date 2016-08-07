@@ -587,7 +587,7 @@ public class GrepolisBot {
 
         public void run() {
             try {
-                //TODO Fix this so that BuildTheBuildings waits on this
+                //TODO This has to run every time, like everything else does. Only loads 1 town at a time.
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!builtTheBuildings);
@@ -1078,7 +1078,7 @@ public class GrepolisBot {
                             "    }\n" +
                             "}\n" +
                             "\n" +
-                            "xhr.open('GET', 'https://" + server + ".grepolis.com/game/index?action=switch_town&town_id=" + town.getId() + "&h=" + csrfToken + "&json=' +encodeURIComponent(JSON.stringify(" + townSwitcherJSON() + ")), true);\n" +
+                            "xhr.open('POST', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + town.getId() + "&action=execute&h=" + csrfToken + "&json=' +encodeURIComponent(JSON.stringify(" + townSwitcherJSON() + ")), true);\n" +
                             "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
                             "xhr.send(null);");
                     try {
@@ -1093,7 +1093,7 @@ public class GrepolisBot {
         }
 
         private String townSwitcherJSON() {
-            return "{\"town_id\":" + town.getId() + ",\"nl_init\":true}";
+            return "{\"model_url\":\"CommandsMenuBubble/1294219\",\"action_name\":\"forceUpdate\",\"arguments\":{},\"town_id\":" + town.getId() +",\"nl_init\":true}";
         }
     }
 
@@ -1535,22 +1535,24 @@ public class GrepolisBot {
 
         //Check to remove towns that have been lost!
         //Don't want to destroy every town if there's an error loading them!
-        if (townList.size() > 0) {
-            //Can't modify array lists while searching through them
-            ArrayList<Town> lostTowns = new ArrayList<>();
-            for (Town town : towns) {
-                if (!ownTheTown(town, townList)) {
-                    lostTowns.add(town);
-                }
-            }
-
-            for (Town lostTown : lostTowns) {
-                Town townToRemove = getLostTown(lostTown.getId());
-                if (townToRemove != null) {
-                    towns.remove(townToRemove);
-                    log(Level.WARNING, townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
+        if (!saidonce) {
+            if (townList.size() > 0) {
+                //Can't modify array lists while searching through them
+                ArrayList<Town> lostTowns = new ArrayList<>();
+                for (Town town : towns) {
+                    if (!ownTheTown(town, townList)) {
+                        lostTowns.add(town);
+                    }
                 }
 
+                for (Town lostTown : lostTowns) {
+                    Town townToRemove = getLostTown(lostTown.getId());
+                    if (townToRemove != null) {
+                        towns.remove(townToRemove);
+                        log(Level.WARNING, townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
+                    }
+
+                }
             }
         }
 

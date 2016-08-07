@@ -1,5 +1,7 @@
 package Grepolis;
 
+import static Grepolis.util.MyLogger.log;
+
 /**
  * @Author Brandon
  * Created by Brandon on 10/16/2015.
@@ -88,19 +90,14 @@ public class FarmingVillage {
         if (Farming.captainEnabled) {
             return canFarm;
         } else {
-            if (loot > 0) {
                 if (battlePointFarmID != 0) {
                     int nextLootAmount = resourcesLooted + amountWeLoot(intervalToFarm);
-                    //System.out.println("Village can loot: " + getMaxLoot() +"- " +nextLootAmount + ">=  " +nextLootAmount);
-                    if (getMaxLoot() - nextLootAmount >= nextLootAmount) {
-                        return true;
-                    }
+//                    log("Village (" + getName() + ") can loot: " + getMaxLoot() + "- " + nextLootAmount + ">=  " + nextLootAmount);
+                    return GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= nextLootAmount);
                 } else {
                     return true;
                 }
-            }
         }
-        return false;
     }
 
     public void setCanFarm(boolean canFarm) {
