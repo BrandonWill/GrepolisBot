@@ -90,14 +90,17 @@ public class FarmingVillage {
         if (Farming.captainEnabled) {
             return canFarm;
         } else {
+            if (rel) {
                 if (battlePointFarmID != 0) {
                     int nextLootAmount = resourcesLooted + amountWeLoot(intervalToFarm);
-//                    log("Village (" + getName() + ") can loot: " + getMaxLoot() + "- " + nextLootAmount + ">=  " + nextLootAmount);
-                    return GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= nextLootAmount);
+//                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "): " + getMaxLoot() + "- " + nextLootAmount + ">=  " + amountWeLoot(intervalToFarm));
+                    return GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm));
                 } else {
                     return true;
                 }
+            }
         }
+        return false;
     }
 
     public void setCanFarm(boolean canFarm) {

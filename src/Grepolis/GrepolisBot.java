@@ -798,6 +798,7 @@ public class GrepolisBot {
                         });
                     } else {
                         loadedVillagesFromMap = false;
+                        town.getFarming().getFarmingVillages().clear();
 
 //                        System.out.println("Loading farmers");
                         if (!town.hasFullStorage()) {
@@ -1532,7 +1533,9 @@ public class GrepolisBot {
                 if (!townAlreadyAdded(town)) {
                     towns.add(town);
                 } else {
-                    changeTownName(town.getName(), town.getId());
+                    if (!saidonce) {
+                        changeTownName(town.getName(), town.getId());
+                    }
                 }
             }
         }
