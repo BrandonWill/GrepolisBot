@@ -807,7 +807,7 @@ public class GrepolisBot {
                                 Thread.sleep(randInt(100, 500));
                             }
 
-//                        System.out.println("Going through all the farming villages. Total #: " +town.getFarming().getFarmingVillages().size());
+                            log("Farming beginning in: " +town.getName());
                             final List<FarmingVillage> farmingVillages = Collections.synchronizedList(town.getFarming().getFarmingVillages());
                             final int villageSize = farmingVillages.size();
                             for (int i = 0; i < villageSize; i++) {
@@ -831,6 +831,7 @@ public class GrepolisBot {
                         } else {
                             log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
                         }
+                        log("Farming ending in: " +town.getName());
                         farmedTheTown = true;
                     }
                 } else {
