@@ -36,6 +36,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -807,22 +808,24 @@ public class GrepolisBot {
                             }
 
 //                        System.out.println("Going through all the farming villages. Total #: " +town.getFarming().getFarmingVillages().size());
-                            for (final FarmingVillage farmingVillage : town.getFarming().getFarmingVillages()) {
+                            final List<FarmingVillage> farmingVillages = Collections.synchronizedList(town.getFarming().getFarmingVillages());
+                            final int villageSize = farmingVillages.size();
+                            for (int i = 0; i < villageSize; i++) {
                                 openedFarmInterface = false;
 
-                                town.getFarming().openFarmingVillageInterface(farmingVillage);
+                                town.getFarming().openFarmingVillageInterface(farmingVillages.get(i));
 
                                 while (!openedFarmInterface) {
                                     Thread.sleep(randInt(100, 500));
                                 }
 
-                                if (farmingVillage.canFarm()) {
-                                    if (town.getFarming().farmTheVillageFromMap(farmingVillage)) {
-                                        log("The farming village " + farmingVillage.getName() + " was farmed successfully!");
+                                if (farmingVillages.get(i).canFarm()) {
+                                    if (town.getFarming().farmTheVillageFromMap(farmingVillages.get(i))) {
+                                        log("The farming village " + farmingVillages.get(i).getName() + " was farmed successfully!");
                                         Thread.sleep(randInt(500, 1000));
                                     }
                                 } else {
-                                    log(Level.WARNING, "The farming village " + farmingVillage.getName() + " isn't ready to be farmed or is farmed to its' cap!");
+                                    log(Level.WARNING, "The farming village " + farmingVillages.get(i).getName() + " isn't ready to be farmed or is farmed to its' cap!");
                                 }
                             }
                         } else {
