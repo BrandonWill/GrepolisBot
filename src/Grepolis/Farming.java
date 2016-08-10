@@ -492,6 +492,16 @@ public class Farming {
                 }
             }
         }
+
+        int numToRemove  = 0;
+        if (farmingVillages.size() > 6) {
+            numToRemove = farmingVillages.size() - 6;
+        }
+        while (numToRemove > 0) {
+            farmingVillages.remove(6 + numToRemove - 1);
+            numToRemove--;
+        }
+
         return true;
     }
 
@@ -703,7 +713,7 @@ public class Farming {
     }
 
     public int getWood() {
-        return wood;
+        return wood > 0 ? wood : town.getLast_wood();
     }
 
     public void setWood(int wood) {
@@ -711,7 +721,7 @@ public class Farming {
     }
 
     public int getStone() {
-        return stone;
+        return stone > 0 ? stone : town.getLast_stone();
     }
 
     public void setStone(int stone) {
@@ -719,7 +729,7 @@ public class Farming {
     }
 
     public int getIron() {
-        return iron;
+        return iron > 0 ? iron : town.getLast_iron();
     }
 
     public void setIron(int iron) {

@@ -808,7 +808,7 @@ public class GrepolisBot {
                                 Thread.sleep(randInt(100, 500));
                             }
 
-                            log("Farming beginning in: " +town.getName());
+                            log("Farming beginning in: " + town.getName());
                             final List<FarmingVillage> farmingVillages = Collections.synchronizedList(town.getFarming().getFarmingVillages());
                             final int villageSize = farmingVillages.size();
                             for (int i = 0; i < villageSize; i++) {
@@ -832,7 +832,7 @@ public class GrepolisBot {
                         } else {
                             log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
                         }
-                        log("Farming ending in: " +town.getName());
+                        log("Farming ending in: " + town.getName());
                         farmedTheTown = true;
                     }
                 } else {
@@ -901,6 +901,9 @@ public class GrepolisBot {
                 town1.setIsland_x(town.getIsland_x());
                 town1.setIsland_y(town.getIsland_y());
                 town1.setFullStorage(town.hasFullStorage());
+                town1.setLast_wood(town.getLast_wood());
+                town1.setLast_stone(town.getLast_stone());
+                town1.setLast_iron(town.getLast_iron());
                 return true;
             }
         }
@@ -1098,7 +1101,7 @@ public class GrepolisBot {
         }
 
         private String townSwitcherJSON() {
-            return "{\"model_url\":\"CommandsMenuBubble/1294219\",\"action_name\":\"forceUpdate\",\"arguments\":{},\"town_id\":" + town.getId() +",\"nl_init\":true}";
+            return "{\"model_url\":\"CommandsMenuBubble/1294219\",\"action_name\":\"forceUpdate\",\"arguments\":{},\"town_id\":" + town.getId() + ",\"nl_init\":true}";
         }
     }
 
@@ -1530,10 +1533,14 @@ public class GrepolisBot {
 
                 townList.add(town);
 
-                if (!townAlreadyAdded(town)) {
-                    towns.add(town);
-                } else {
-                    if (!saidonce) {
+                //this will find the town and update the resources after the first run.
+                townAlreadyAdded(town);
+
+
+                if (!saidonce) {
+                    if (!townAlreadyAdded(town)) {
+                        towns.add(town);
+                    } else {
                         changeTownName(town.getName(), town.getId());
                     }
                 }
