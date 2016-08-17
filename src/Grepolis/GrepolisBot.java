@@ -720,28 +720,28 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!researchedTheTown);
 
-                if (town.getCulture().canStartParty()) {
-                    Thread.sleep(randInt(1250, 2500));
+//                if (town.getCulture().canStartParty()) {
+                Thread.sleep(randInt(1250, 2500));
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
-                                    "var cultureData;\n" +
-                                    "xhr.onreadystatechange = function() {\n" +
-                                    "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                                    "        cultureData = xhr.responseText\n" +
-                                    "        alert(\"CultureData:\" +xhr.status +readBody(xhr));\n" +
-                                    "    }\n" +
-                                    "}\n" +
-                                    "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_place?town_id=" + town.getId() + "&action=culture&h=" + csrfToken + "', true);\n" +
-                                    "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
-                                    "xhr.send(null);\n");
-                        }
-                    });
-                } else {
-                    obtainedCultureData = true;
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
+                                "var cultureData;\n" +
+                                "xhr.onreadystatechange = function() {\n" +
+                                "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
+                                "        cultureData = xhr.responseText\n" +
+                                "        alert(\"CultureData:\" +xhr.status +readBody(xhr));\n" +
+                                "    }\n" +
+                                "}\n" +
+                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_place?town_id=" + town.getId() + "&action=culture&h=" + csrfToken + "', true);\n" +
+                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
+                                "xhr.send(null);\n");
+                    }
+                });
+//                } else {
+                obtainedCultureData = true;
+//                }
             } catch (InterruptedException e) {
                 logError(e);
             }
@@ -814,19 +814,27 @@ public class GrepolisBot {
                             for (int i = 0; i < villageSize; i++) {
                                 openedFarmInterface = false;
 
-                                town.getFarming().openFarmingVillageInterface(farmingVillages.get(i));
+                                if (i < farmingVillages.size()) {
+                                    town.getFarming().openFarmingVillageInterface(farmingVillages.get(i));
+                                } else {
+                                    break;
+                                }
 
                                 while (!openedFarmInterface) {
                                     Thread.sleep(randInt(100, 500));
                                 }
 
-                                if (farmingVillages.get(i).canFarm()) {
-                                    if (town.getFarming().farmTheVillageFromMap(farmingVillages.get(i))) {
-                                        log("The farming village " + farmingVillages.get(i).getName() + " was farmed successfully!");
+                                if (i < farmingVillages.size() && farmingVillages.get(i).canFarm()) {
+                                    if (i < farmingVillages.size() && town.getFarming().farmTheVillageFromMap(farmingVillages.get(i))) {
+//                                        log("The farming village " + farmingVillages.get(i).getName() + " was farmed successfully!");
                                         Thread.sleep(randInt(500, 1000));
                                     }
                                 } else {
-                                    log(Level.WARNING, "The farming village " + farmingVillages.get(i).getName() + " isn't ready to be farmed or is farmed to its' cap!");
+                                    if (i < farmingVillages.size()) {
+                                        log(Level.WARNING, "The farming village " + farmingVillages.get(i).getName() + " isn't ready to be farmed or is farmed to its' cap!");
+                                    } else {
+                                        break;
+                                    }
                                 }
                             }
                         } else {
@@ -1315,6 +1323,57 @@ public class GrepolisBot {
 //                            }
 
                         }
+                        //checks the farming village return data.
+                        if (data.contains("FarmedTheVillage:")) {
+                            if (data.contains("FarmedTheVillage:200")) {
+
+                                int townID = 0;
+                                int battlePointID = 0;
+                                int farmingVillage = 0;
+                                String name = null;
+                                String[] dataPoints = data.split(":");
+                                for (String dataPoint : dataPoints) {
+                                    if (dataPoint.contains("TownID,")) {
+                                        townID = Integer.parseInt(dataPoint.split(",")[1]);
+                                    }
+                                    if (dataPoint.contains("FarmingVillageID,")) {
+                                        farmingVillage = Integer.parseInt(dataPoint.split(",")[1]);
+                                    }
+                                    if (dataPoint.contains("battlePointID,")) {
+                                        battlePointID = Integer.parseInt(dataPoint.split(",")[1]);
+                                    }
+//                                    if (dataPoint.contains("farmVillageName,")) {
+//                                        name = dataPoint.split(",")[1];
+//                                    }
+                                }
+                                for (FarmingVillage village : currentTown.getFarming().getFarmingVillages()) {
+                                    if (village.getBattlePointFarmID() == battlePointID) {
+                                        name = village.getName();
+                                    }
+                                }
+
+//                                if (data.contains("error")) {
+//                                    log("inside of error log:townID," +townID + ":farmingVillageID," +farmingVillage +
+//                                            ":battlePointID," + battlePointID + ":name," +name + ":" + data);
+//                                }
+
+                                if (townID > 0 && battlePointID > 0 && farmingVillage > 0 && data.contains("error")) {
+                                    Town town = getLostTown(townID);
+                                    if (town != null) {
+                                        town.getFarming().getNotMyVillages().put(battlePointID, farmingVillage);
+                                        log(Level.SEVERE, "Detected a farming village in the wrong location. Will fix on next run through!");
+                                    }
+                                } else {
+                                    log(Level.INFO, name + " has been successfully farmed!");
+                                }
+
+
+                            } else {
+                                log(Level.WARNING, "Error receiving farm town data! Pausing bot");
+                                pauseBot();
+                            }
+                        }
+
 //                      Adds a check for towns with farmers
                         if (data.contains("TownFarmingData:")) {
                             if (data.contains("TownFarmingData:200")) {
@@ -1514,6 +1573,7 @@ public class GrepolisBot {
                 town.setLast_wood(wood);
                 town.setLast_stone(iron);
                 town.setLast_stone(stone);
+                town.setStorage(storage);
                 town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
 
 //                String importantData[] = aTownData.split(",");

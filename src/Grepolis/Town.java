@@ -32,6 +32,7 @@ public class Town {
     private int last_wood;
     private int last_stone;
     private int last_iron;
+    private int storage;
 
 
     public boolean parseHTML(String html) {
@@ -461,5 +462,13 @@ public class Town {
 
     public void setLast_iron(int last_iron) {
         this.last_iron = last_iron;
+    }
+
+    public int getStorage() {
+        return storage;
+    }
+
+    public void setStorage(int storage) {
+        this.storage = storage;
     }
 }

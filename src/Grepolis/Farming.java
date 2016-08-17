@@ -3,6 +3,8 @@ package Grepolis;
 import javafx.application.Platform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
@@ -35,6 +37,8 @@ public class Farming {
 
     private static boolean battlePointVillages = false;
     private static int gameSpeed = 1;
+    private HashMap<Integer, Integer> notMyVillages = new HashMap<>();
+
 
 
     public Farming(Town town) {
@@ -334,7 +338,7 @@ public class Farming {
                         "var xhr = new XMLHttpRequest();\n" +
                         "xhr.onreadystatechange = function() {\n" +
                         "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                        "        alert(\"FarmedTheVillage:\" +xhr.status +readBody(xhr));\n" +
+                        "        alert(\"TownID," + town.getId() + ":FarmingVillageID," + farmingVillage.getFarm_town_id() + ":battlePointID," + farmingVillage.getBattlePointFarmID() + ":FarmedTheVillage:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
                         "xhr.open('POST', 'https://" + town.getServer() + ".grepolis.com/game/" + getFarmingVillageJSON(farmingVillage) + ", true);\n" +
@@ -492,15 +496,29 @@ public class Farming {
                 }
             }
         }
+        for (Map.Entry<Integer, Integer> entry : notMyVillages.entrySet()) {
+            int battleVillageID = entry.getKey();
+            int farmingVillageID = entry.getValue();
 
-        int numToRemove  = 0;
-        if (farmingVillages.size() > 6) {
-            numToRemove = farmingVillages.size() - 6;
+
+            for (FarmingVillage farmingVillage : farmingVillages) {
+                if (farmingVillage.getFarm_town_id() == farmingVillageID && farmingVillage.getBattlePointFarmID() == battleVillageID)  {
+                    farmingVillages.remove(farmingVillage);
+                    break;
+                }
+            }
+            // ...
         }
-        while (numToRemove > 0) {
-            farmingVillages.remove(6 + numToRemove - 1);
-            numToRemove--;
-        }
+
+
+//        int numToRemove  = 0;
+//        if (farmingVillages.size() > 6) {
+//            numToRemove = farmingVillages.size() - 6;
+//        }
+//        while (numToRemove > 0) {
+//            farmingVillages.remove(6 + numToRemove - 1);
+//            numToRemove--;
+//        }
 
         return true;
     }
@@ -705,7 +723,7 @@ public class Farming {
     }
 
     public int getStorage() {
-        return storage;
+        return storage > 0 ? storage : town.getStorage();
     }
 
     public void setStorage(int storage) {
@@ -817,6 +835,14 @@ public class Farming {
 
     public static boolean hasBattlePointVillages() {
         return battlePointVillages;
+    }
+
+    public HashMap<Integer, Integer> getNotMyVillages() {
+        return notMyVillages;
+    }
+
+    public void setNotMyVillages(HashMap<Integer, Integer> notMyVillages) {
+       this.notMyVillages = notMyVillages;
     }
 
 
