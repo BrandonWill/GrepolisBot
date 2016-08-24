@@ -395,6 +395,20 @@ public class Farming {
         return sb.toString();
     }
 
+
+    /* Incorrect but functional way to parse all the villages...
+     * Functions by obtaining all the villages IDs and attempts for farm them all
+     * Bot will remove the ones it can't farm
+     * However, we can find the farming village island_x and island_y and compare this to the town's island_x & island_y
+     * This is correct way to handle it in the future so towns aren't farming 50+ villages on their first run through
+     *
+     * This function is confusing. It handles 2 entirely different calls from the game!
+     * The first to originally get the village ids, which is required to find out more data
+     * The second to actually get the mood, update the "id" given above to farm_town_id because "id" in this call is actually the battlepoint village ID (which is unique?)
+     * Farm_town_id used to be unique, but it isn't anymore. 
+     */
+    //
+
     public boolean parseVillagesFromMap(String villageData) {
         //"id":????,"name":"Rosta","dir":"n","expansion_stage":1,"x":???,"y":???,"ox":???,"oy":???,"offer":"iron",
         // "demand":"stone","mood":84,"relation_status":1,"ratio":1.25,"loot":1469053323,

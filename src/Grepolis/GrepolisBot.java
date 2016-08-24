@@ -74,13 +74,15 @@ public class GrepolisBot {
 
     public static void main(String... args) {
         double javaVersion = Double.parseDouble(Runtime.class.getPackage().getSpecificationVersion());
+        //Checks to see if Java version is higher than 8.
         if (javaVersion >= 1.8) {
-            new MyLogger();
-            Loader.load();
+            new MyLogger(); //initiates the logger. This logs into the bot and the console
+            Loader.load(); //Load all the towns, if they exist
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     try {
+                        //Uses the system's look and feel. Without this, sometimes Nimbus theme appears for no reason and nothing is aligned.
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     } catch (Exception ignored) {
                     }
@@ -100,6 +102,9 @@ public class GrepolisBot {
     private void initComponents() {
         jfxPanel = new JFXPanel();
 
+        //Custom browser zooming. WebView doesn't currently have this.
+
+        //Resets the zoom to 1:1 ratio
         Action resetZoom = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -118,6 +123,7 @@ public class GrepolisBot {
         jfxPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.CTRL_DOWN_MASK), "resetZoom");
         jfxPanel.getActionMap().put("resetZoom", resetZoom);
 
+        //Zooms in by a factor of 1.1
         Action zoomIn = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -136,6 +142,7 @@ public class GrepolisBot {
         jfxPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK), "zoomIn");
         jfxPanel.getActionMap().put("zoomIn", zoomIn);
 
+        //zooms out by a factor of 1.1
         Action zoomOut = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -194,6 +201,8 @@ public class GrepolisBot {
         } catch (GeneralSecurityException ignored) {
         }
 
+        //Browser code
+
         PlatformImpl.startup(new Runnable() {
             @Override
             public void run() {
@@ -209,10 +218,14 @@ public class GrepolisBot {
 
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
+                //Every request received is handled by alerts!
                 addAlerts();
                 engine.documentProperty().addListener(new ChangeListener<Document>() {
                     @Override
                     public void changed(ObservableValue<? extends Document> ov, Document oldDoc, Document doc) {
+                        //Every time a new page is loaded, this XHR request listener is added.
+                        //It does take a small amount of time to be attached sadly, which means it misses 3 requests on the initial login.
+                        //Perhaps this could be fixed by writing my own WebView class?
                         engine.executeScript("var s_ajaxListener = new Object();\n" +
                                 "s_ajaxListener.tempOpen = window.XMLHttpRequest.prototype.open;\n" +
                                 "s_ajaxListener.tempSend = window.XMLHttpRequest.prototype.send;\n" +
@@ -263,6 +276,8 @@ public class GrepolisBot {
                                 "}\n" +
                                 "window.XMLHttpRequest = newXHR;");
                         if (doc != null && !loginAttempted.get()) {
+                            //Checks the page to see if the login form is there.
+                            //Will function if a user accidentally right clicks "go back"
                             if (doc.getElementsByTagName("form").getLength() > 0) {
                                 HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
                                 if ("/glps/login_check".equals(form.getAttribute("action"))) {
@@ -290,6 +305,8 @@ public class GrepolisBot {
                                     });
                                 }
                             }
+                            //Selects the world if the user is already logged in.
+                            //Will function if a user accidentally right clicks "go back"
                             if (doc.getElementById("worlds") != null) {
                                 log("Selecting world");
                                 Platform.runLater(new Runnable() {
@@ -302,12 +319,15 @@ public class GrepolisBot {
                         }
                     }
                 });
+                //This is a developer tool. If we suck at JS and there's an error executing, it'll tell us.
                 engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
                     @Override
                     public void changed(ObservableValue<? extends Throwable> ov, Throwable oldException, Throwable exception) {
                         logError(exception);
                     }
                 });
+
+                //Java FX beginning. Self-explanatory buttons
 
                 GridPane inputGrid = new GridPane();
                 inputGrid.setHgap(10);
@@ -344,6 +364,7 @@ public class GrepolisBot {
                     }
                 });
 
+                //Loads firebug directly from their website so we can see errors in real time.
                 Button botDebugger = new Button("Bot debugger");
                 botDebugger.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
                     @Override
@@ -391,11 +412,13 @@ public class GrepolisBot {
                 );
 
                 final VBox layout = new VBox(10);
+                //CSS styling for the login layout
                 layout.setStyle("-fx-background-color: cornsilk; -fx-padding: 10;");
                 layout.getChildren().addAll(
                         loginPane,
                         webView
                 );
+                //Ensures it will resize with the frame
                 VBox.setVgrow(webView, Priority.ALWAYS);
                 Scene scene = new Scene(layout);
 
@@ -413,6 +436,10 @@ public class GrepolisBot {
         });
     }
 
+    /**
+     * Pauses the bot
+     * Prefer to keep it public because I may reorganize everything one day.
+     */
     public static void pauseBot() {
         Platform.runLater(new Runnable() {
             @Override
@@ -428,11 +455,22 @@ public class GrepolisBot {
         return s != null && !"".equals(s);
     }
 
+    /**
+     *
+     * @param min minimum number
+     * @param max maximum number
+     * @return a random integer between min and max
+     */
     public static int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;
     }
 
+    /**
+     * This was used for printing enums before using strings
+     * @param word Text to capitalize.
+     * @return Text with the first letter capitalized.
+     */
     private String capitalize(String word) {
         if (word.contains("_")) {
             String[] holder = word.split("_");
@@ -463,9 +501,16 @@ public class GrepolisBot {
         GrepolisBot.botFrame = botFrame;
     }
 
+    /**
+     * Sends the request to begin building troops in the barracks
+     */
     public class BuildBarracksTroops implements Runnable {
         Town town;
 
+        /**
+         * This is used in case it's moved outside of GrepolisBot. We can technically use currentTown here.
+         * @param town sets the town here
+         */
         public BuildBarracksTroops(Town town) {
             this.town = town;
         }
@@ -477,6 +522,7 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!obtainedCultureData);
 
+                //Barracks can be null if it isn't built yet. Normally isn't a problem, but required before trying to obtain its' level.
                 if (town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
@@ -588,15 +634,16 @@ public class GrepolisBot {
 
         public void run() {
             try {
-                //TODO This has to run every time, like everything else does. Only loads 1 town at a time.
+                //TODO This has to run every time, like everything else does. Only loads 1 town's research.
                 do {
                     Thread.sleep(randInt(250, 500));
                 } while (!builtTheBuildings);
 
+                //Only works on newer servers with battle point villages. Not sure why, but it isn't a good idea to support the older servers.
                 if (Farming.hasBattlePointVillages() && town.getBuilding(Building.BuildingType.academy) != null && town.getBuilding(Building.BuildingType.academy).getLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
 
-                    //Loads data exactly from the senate
+                    //Loads data exactly from the Academy
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -749,7 +796,7 @@ public class GrepolisBot {
     }
 
     private boolean farmedTheTown = false;
-    long currentTime;
+    private long currentTime;
 
     public class FarmTheTown implements Runnable {
         Town town;
@@ -804,6 +851,7 @@ public class GrepolisBot {
                         if (!town.hasFullStorage()) {
                             town.getFarming().loadVillagesFromMap();
 
+                            //Threaded so must wait for them to load
                             while (!loadedVillagesFromMap) {
                                 Thread.sleep(randInt(100, 500));
                             }
@@ -837,18 +885,16 @@ public class GrepolisBot {
                                     }
                                 }
                             }
+                            log("Farming ending in: " + town.getName());
                         } else {
                             log(currentTown.getName() + " Farmers disabled. Warehouse is full.");
                         }
-                        log("Farming ending in: " + town.getName());
                         farmedTheTown = true;
                     }
                 } else {
                     log(town.getName() + " Farmers aren't ready!");
                     farmedTheTown = true;
                 }
-
-
             } catch (InterruptedException e) {
                 logError(e);
             }
@@ -868,7 +914,6 @@ public class GrepolisBot {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-//                    webView.getEngine().load("https://" + server + ".grepolis.com/game/farm_town_overviews?town_id=" + townID + "&action=index&h=" + csrfToken);
                         webView.getEngine().executeScript("function readBody(xhr) {\n" +
                                 "    var data;\n" +
                                 "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
@@ -903,6 +948,11 @@ public class GrepolisBot {
         //
     }
 
+    /**
+     * Updates the town if it's already added.
+     * @param town Town to check if it's already added.
+     * @return
+     */
     private boolean townAlreadyAdded(Town town) {
         for (Town town1 : towns) {
             if (town1.getId() == town.getId()) {
@@ -918,6 +968,12 @@ public class GrepolisBot {
         return false;
     }
 
+    /**
+     * Update town names based on their townID.
+     * @param name town name that was found.
+     * @param townID townID that the name belongs to.
+     * @return <b>true</b> if the town name was updated.
+     */
     private boolean changeTownName(String name, int townID) {
         for (Town town1 : towns) {
             town1.setServer(server);
@@ -935,6 +991,9 @@ public class GrepolisBot {
     private volatile boolean canContinue;
     private Town currentTown;
 
+    /**
+     * The bot actually running through the towns.
+     */
     public class ActualBot implements Runnable {
         public void run() {
             try {
@@ -1050,6 +1109,10 @@ public class GrepolisBot {
         }
     }
 
+    /**
+     * This adds a variance to the update time so it isn't farming at exactly every 5 minutes.
+     * @return the time to update from the GUI.
+     */
     private long getUpdateTime() {
         String time = SettingsPanel.getUpdateTimeField().getText();
         String intervals[] = time.split(":");
@@ -1180,6 +1243,9 @@ public class GrepolisBot {
         }
     }
 
+    /**
+     * Captchas are currently removed from the game.
+     */
     private void checkForCaptcha() {
         Platform.runLater(new Runnable() {
             @Override
@@ -1289,7 +1355,8 @@ public class GrepolisBot {
                                                         String expiresAt = string.split(":")[1];
                                                         if (isStringDigit(expiresAt)) {
                                                             long expires = Long.parseLong(expiresAt);
-                                                            if (getServerUnixTime() >= expires) {
+                                                            //100 is the gold cost of the captain
+                                                            if (expires != 100 && getServerUnixTime() >= expires) {
                                                                 Farming.setCaptainEnabled(false);
                                                                 log(Level.SEVERE, "--------Captain detected as expired!-----");
                                                             }
