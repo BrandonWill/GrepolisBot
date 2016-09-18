@@ -238,7 +238,12 @@ public class Town {
     }
 
     public boolean buildABuilding() {
-        if (canBuild(Building.BuildingType.theater)) {
+        //Check so that towns can build docks faster
+
+        if (rushDocksBuildings()) {
+            Building.BuildingType buildingType = docksBuildingRequirementRush();
+            return build(buildingType, getBuilding(buildingType).getBuildTo());
+        }else if (canBuild(Building.BuildingType.theater)) {
             return build(Building.BuildingType.theater, getBuilding(Building.BuildingType.theater).getBuildTo());
         }else if (canBuild(Building.BuildingType.thermal)) {
             return build(Building.BuildingType.thermal, getBuilding(Building.BuildingType.thermal).getBuildTo());
@@ -293,6 +298,29 @@ public class Town {
         return false;
     }
 
+    private boolean rushDocksBuildings() {
+        if (canBuild(Building.BuildingType.lumber) && getBuilding(Building.BuildingType.lumber).getLevel() < 15 && getBuilding(Building.BuildingType.lumber).getBuildTo() >= 15) {
+            return true;
+        } else if (canBuild(Building.BuildingType.ironer) && getBuilding(Building.BuildingType.ironer).getLevel() < 10 && getBuilding(Building.BuildingType.ironer).getBuildTo() >= 10) {
+            return true;
+        }
+
+        //Senate is the first small building that's attempted to be built, so no need to add it here!
+        return false;
+    }
+
+    private Building.BuildingType docksBuildingRequirementRush() {
+        if (canBuild(Building.BuildingType.lumber) && getBuilding(Building.BuildingType.lumber).getLevel() < 15) {
+            return Building.BuildingType.lumber;
+        } else if (canBuild(Building.BuildingType.ironer) && getBuilding(Building.BuildingType.ironer).getLevel() < 10) {
+            return Building.BuildingType.ironer;
+        }
+
+        return null;
+    }
+
+
+
     private boolean canBuild(Building.BuildingType building) {
         Building actualBuilding = getBuilding(building);
 //        if (actualBuilding != null) {
@@ -326,6 +354,8 @@ public class Town {
         });
         return true;
     }
+
+
 
     public Culture getCulture() {
         return culture;

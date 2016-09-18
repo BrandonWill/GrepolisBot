@@ -16,18 +16,17 @@ import java.util.ArrayList;
 
 import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
+
 import Grepolis.*;
 import Grepolis.IO.Loader;
 import Grepolis.IO.Saver;
 
 /**
- *
  * @author Brandon
  */
 public class QueuePanel extends JPanel {
     private ArrayList<Town> towns;
-    private static int currentTownIndex = 0; //Used only for updating the buildings/troops when the tab is clicked
-    private static int currentTemplateIndex = 0;
+    private static int currentTownIndex; //Used only for updating the buildings/troops when the tab is clicked
     private static ArrayList<Town> templateTowns;
 
     public QueuePanel(ArrayList<Town> townList) {
@@ -39,8 +38,8 @@ public class QueuePanel extends JPanel {
         jComboBox1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentTownIndex = jComboBox1.getSelectedIndex();
-                if (towns.size() > 0 && jComboBox1.getSelectedIndex() >= 0) {
+                if (towns.size() > 0 && jComboBox1.getItemCount() == towns.size() && jComboBox1.getSelectedIndex() >= 0) {
+                    currentTownIndex = jComboBox1.getSelectedIndex();
                     changeTown(towns.get(jComboBox1.getSelectedIndex()));
                 }
             }
@@ -53,11 +52,10 @@ public class QueuePanel extends JPanel {
             }
         }
         initComponents();
-        if (currentTownIndex != 0) {
+
+        if (towns.size() > 0) {
             jComboBox1.setSelectedIndex(currentTownIndex);
             changeTown(towns.get(currentTownIndex));
-        }else if (towns.size() > 0) {
-            changeTown(towns.get(0));
         }
     }
 
@@ -72,11 +70,9 @@ public class QueuePanel extends JPanel {
                 templateComboBox.addItem(town.getName());
             }
         }
-        if (currentTownIndex != -1) {
+        if (towns.size() > 0) {
             jComboBox1.setSelectedIndex(currentTownIndex);
             changeTown(towns.get(currentTownIndex));
-        }else if (towns.size() > 0) {
-            changeTown(towns.get(0));
         }
     }
 
@@ -275,7 +271,7 @@ public class QueuePanel extends JPanel {
         try {
             swordToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getBuildTo());
             swordPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getTotalTroops()));
-            swordPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getInQueue() +" in queue)")));
+            swordPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.sword).getInQueue() + " in queue)")));
             swordPic.setForeground(Color.black);
         } catch (Exception ignored) {
             swordPic.setText(String.valueOf(0));
@@ -286,7 +282,7 @@ public class QueuePanel extends JPanel {
         try {
             slingerToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getBuildTo());
             slingerPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getTotalTroops()));
-            slingerPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getInQueue() +" in queue)")));
+            slingerPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.slinger).getInQueue() + " in queue)")));
             slingerPic.setForeground(Color.black);
         } catch (Exception ignored) {
             slingerPic.setText(String.valueOf(0));
@@ -297,7 +293,7 @@ public class QueuePanel extends JPanel {
         try {
             archerToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getBuildTo());
             archerPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getTotalTroops()));
-            archerPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getInQueue() +" in queue)")));
+            archerPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.archer).getInQueue() + " in queue)")));
             archerPic.setForeground(Color.black);
         } catch (Exception ignored) {
             archerPic.setText(String.valueOf(0));
@@ -308,7 +304,7 @@ public class QueuePanel extends JPanel {
         try {
             hopliteToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getBuildTo());
             hoplitePic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getTotalTroops()));
-            hoplitePic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getInQueue() +" in queue)")));
+            hoplitePic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.hoplite).getInQueue() + " in queue)")));
             hoplitePic.setForeground(Color.black);
         } catch (Exception ignored) {
             hoplitePic.setText(String.valueOf(0));
@@ -319,7 +315,7 @@ public class QueuePanel extends JPanel {
         try {
             riderToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getBuildTo());
             riderPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getTotalTroops()));
-            riderPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getInQueue() +" in queue)")));
+            riderPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.rider).getInQueue() + " in queue)")));
             riderPic.setForeground(Color.black);
         } catch (Exception ignored) {
             riderPic.setText(String.valueOf(0));
@@ -330,7 +326,7 @@ public class QueuePanel extends JPanel {
         try {
             chariotToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getBuildTo());
             chariotPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getTotalTroops()));
-            chariotPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getInQueue() +" in queue)")));
+            chariotPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.chariot).getInQueue() + " in queue)")));
             chariotPic.setForeground(Color.black);
         } catch (Exception ignored) {
             chariotPic.setText(String.valueOf(0));
@@ -341,7 +337,7 @@ public class QueuePanel extends JPanel {
         try {
             catapultToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getBuildTo());
             catapultPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getTotalTroops()));
-            catapultPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getInQueue() +" in queue)")));
+            catapultPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.catapult).getInQueue() + " in queue)")));
             catapultPic.setForeground(Color.black);
         } catch (Exception ignored) {
             catapultPic.setText(String.valueOf(0));
@@ -352,7 +348,7 @@ public class QueuePanel extends JPanel {
         try {
             minotaurToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getBuildTo());
             minotaurPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getTotalTroops()));
-            minotaurPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getInQueue() +" in queue)")));
+            minotaurPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.minotaur).getInQueue() + " in queue)")));
             minotaurPic.setForeground(Color.black);
         } catch (Exception ignored) {
             minotaurPic.setText(String.valueOf(0));
@@ -363,7 +359,7 @@ public class QueuePanel extends JPanel {
         try {
             manticoreToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getBuildTo());
             manticorePic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getTotalTroops()));
-            manticorePic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getInQueue() +" in queue)")));
+            manticorePic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.manticore).getInQueue() + " in queue)")));
             manticorePic.setForeground(Color.black);
         } catch (Exception ignored) {
             manticorePic.setText(String.valueOf(0));
@@ -374,7 +370,7 @@ public class QueuePanel extends JPanel {
         try {
             centaurToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getBuildTo());
             centaurPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getTotalTroops()));
-            centaurPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getInQueue() +" in queue)")));
+            centaurPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.centaur).getInQueue() + " in queue)")));
             centaurPic.setForeground(Color.black);
         } catch (Exception ignored) {
             centaurPic.setText(String.valueOf(0));
@@ -385,7 +381,7 @@ public class QueuePanel extends JPanel {
         try {
             pegasusToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getBuildTo());
             pegasusPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getTotalTroops()));
-            pegasusPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getInQueue() +" in queue)")));
+            pegasusPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.pegasus).getInQueue() + " in queue)")));
             pegasusPic.setForeground(Color.black);
         } catch (Exception ignored) {
             pegasusPic.setText(String.valueOf(0));
@@ -396,7 +392,7 @@ public class QueuePanel extends JPanel {
         try {
             harpyToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getBuildTo());
             harpyPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getTotalTroops()));
-            harpyPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getInQueue() +" in queue)")));
+            harpyPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.harpy).getInQueue() + " in queue)")));
             harpyPic.setForeground(Color.black);
         } catch (Exception ignored) {
             harpyPic.setText(String.valueOf(0));
@@ -407,7 +403,7 @@ public class QueuePanel extends JPanel {
         try {
             medusaToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getBuildTo());
             medusaPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getTotalTroops()));
-            medusaPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getInQueue() +" in queue)")));
+            medusaPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.medusa).getInQueue() + " in queue)")));
             medusaPic.setForeground(Color.black);
         } catch (Exception ignored) {
             medusaPic.setText(String.valueOf(0));
@@ -418,7 +414,7 @@ public class QueuePanel extends JPanel {
         try {
             zyklopToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getBuildTo());
             zyklopPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getTotalTroops()));
-            zyklopPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getInQueue() +" in queue)")));
+            zyklopPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.zyklop).getInQueue() + " in queue)")));
             zyklopPic.setForeground(Color.black);
         } catch (Exception ignored) {
             zyklopPic.setText(String.valueOf(0));
@@ -429,7 +425,7 @@ public class QueuePanel extends JPanel {
         try {
             cerberusToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getBuildTo());
             cerberusPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getTotalTroops()));
-            cerberusPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getInQueue() +" in queue)")));
+            cerberusPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.cerberus).getInQueue() + " in queue)")));
             cerberusPic.setForeground(Color.black);
         } catch (Exception ignored) {
             cerberusPic.setText(String.valueOf(0));
@@ -440,7 +436,7 @@ public class QueuePanel extends JPanel {
         try {
             furyToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getBuildTo());
             furyPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getTotalTroops()));
-            furyPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getInQueue() +" in queue)")));
+            furyPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.fury).getInQueue() + " in queue)")));
             furyPic.setForeground(Color.black);
         } catch (Exception ignored) {
             furyPic.setText(String.valueOf(0));
@@ -451,7 +447,7 @@ public class QueuePanel extends JPanel {
         try {
             griffinToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getBuildTo());
             griffinPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getTotalTroops()));
-            griffinPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getInQueue() +" in queue)")));
+            griffinPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.griffin).getInQueue() + " in queue)")));
             griffinPic.setForeground(Color.black);
         } catch (Exception ignored) {
             griffinPic.setText(String.valueOf(0));
@@ -462,7 +458,7 @@ public class QueuePanel extends JPanel {
         try {
             calydonian_boarToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getBuildTo());
             calydonian_boarPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getTotalTroops()));
-            calydonian_boarPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getInQueue() +" in queue)")));
+            calydonian_boarPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.calydonian_boar).getInQueue() + " in queue)")));
             calydonian_boarPic.setForeground(Color.black);
         } catch (Exception ignored) {
             calydonian_boarPic.setText(String.valueOf(0));
@@ -473,7 +469,7 @@ public class QueuePanel extends JPanel {
         try {
             godsentToBuild.setValue(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getBuildTo());
             godsentPic.setText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getTotalTroops()));
-            godsentPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getInQueue() +" in queue)")));
+            godsentPic.setToolTipText(String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getTotalTroops() + "(" + String.valueOf(town.getBarracks().getUnit(BarracksUnit.UnitType.godsent).getInQueue() + " in queue)")));
             godsentPic.setForeground(Color.black);
         } catch (Exception ignored) {
             godsentPic.setText(String.valueOf(0));
@@ -484,7 +480,7 @@ public class QueuePanel extends JPanel {
         try {
             big_transporterToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getBuildTo());
             big_transporterPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getTotalTroops()));
-            big_transporterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getInQueue() +" in queue)")));
+            big_transporterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.big_transporter).getInQueue() + " in queue)")));
             big_transporterPic.setForeground(Color.black);
         } catch (Exception ignored) {
             big_transporterPic.setText(String.valueOf(0));
@@ -495,7 +491,7 @@ public class QueuePanel extends JPanel {
         try {
             biremeToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getBuildTo());
             biremePic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getTotalTroops()));
-            biremePic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getInQueue() +" in queue)")));
+            biremePic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.bireme).getInQueue() + " in queue)")));
             biremePic.setForeground(Color.black);
         } catch (Exception ignored) {
             biremePic.setText(String.valueOf(0));
@@ -506,7 +502,7 @@ public class QueuePanel extends JPanel {
         try {
             attack_shipToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getBuildTo());
             attack_shipPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getTotalTroops()));
-            attack_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getInQueue() +" in queue)")));
+            attack_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.attack_ship).getInQueue() + " in queue)")));
             attack_shipPic.setForeground(Color.black);
         } catch (Exception ignored) {
             attack_shipPic.setText(String.valueOf(0));
@@ -517,7 +513,7 @@ public class QueuePanel extends JPanel {
         try {
             demolition_shipToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getBuildTo());
             demolition_shipPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getTotalTroops()));
-            demolition_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getInQueue() +" in queue)")));
+            demolition_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.demolition_ship).getInQueue() + " in queue)")));
             demolition_shipPic.setForeground(Color.black);
         } catch (Exception ignored) {
             demolition_shipPic.setText(String.valueOf(0));
@@ -528,7 +524,7 @@ public class QueuePanel extends JPanel {
         try {
             small_transporterToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getBuildTo());
             small_transporterPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getTotalTroops()));
-            small_transporterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getInQueue() +" in queue)")));
+            small_transporterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.small_transporter).getInQueue() + " in queue)")));
             small_transporterPic.setForeground(Color.black);
         } catch (Exception ignored) {
             small_transporterPic.setText(String.valueOf(0));
@@ -539,7 +535,7 @@ public class QueuePanel extends JPanel {
         try {
             triremeToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getBuildTo());
             triremePic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getTotalTroops()));
-            triremePic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getInQueue() +" in queue)")));
+            triremePic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.trireme).getInQueue() + " in queue)")));
             triremePic.setForeground(Color.black);
         } catch (Exception ignored) {
             triremePic.setText(String.valueOf(0));
@@ -550,7 +546,7 @@ public class QueuePanel extends JPanel {
         try {
             colonize_shipToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getBuildTo());
             colonize_shipPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getTotalTroops()));
-            colonize_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getInQueue() +" in queue)")));
+            colonize_shipPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.colonize_ship).getInQueue() + " in queue)")));
             colonize_shipPic.setForeground(Color.black);
         } catch (Exception ignored) {
             colonize_shipPic.setText(String.valueOf(0));
@@ -561,7 +557,7 @@ public class QueuePanel extends JPanel {
         try {
             sea_monsterToBuild.setValue(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getBuildTo());
             sea_monsterPic.setText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getTotalTroops()));
-            sea_monsterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getInQueue() +" in queue)")));
+            sea_monsterPic.setToolTipText(String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getTotalTroops() + "(" + String.valueOf(town.getDocks().getUnit(DocksUnit.UnitType.sea_monster).getInQueue() + " in queue)")));
             sea_monsterPic.setForeground(Color.black);
         } catch (Exception ignored) {
             sea_monsterPic.setText(String.valueOf(0));
@@ -1168,10 +1164,10 @@ public class QueuePanel extends JPanel {
         swordPic.setPreferredSize(new java.awt.Dimension(40, 60));
         swordPic.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         swordToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         slingerToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         slingerPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1190,7 +1186,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         archerToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         archerPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1209,7 +1205,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         hopliteToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         hoplitePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1228,7 +1224,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         riderToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         riderPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1247,7 +1243,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         chariotToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         chariotPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1266,7 +1262,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         catapultToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         catapultPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1285,7 +1281,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         minotaurToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         minotaurPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1304,7 +1300,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         manticoreToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         manticorePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1323,7 +1319,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         centaurToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         centaurPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1342,7 +1338,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         pegasusToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         pegasusPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1361,7 +1357,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         harpyToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         harpyPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1380,7 +1376,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         medusaToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         medusaPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1399,7 +1395,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         zyklopToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         zyklopPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1418,7 +1414,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         cerberusToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         cerberusPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1437,7 +1433,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         furyToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         furyPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1456,7 +1452,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         griffinToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         griffinPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1475,7 +1471,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         calydonian_boarToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         calydonian_boarPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1494,7 +1490,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         godsentToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         godsentPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1513,7 +1509,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         big_transporterToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         big_transporterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1532,7 +1528,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         biremeToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         biremePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1551,7 +1547,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         attack_shipToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         attack_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1570,7 +1566,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         demolition_shipToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         demolition_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1589,7 +1585,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         small_transporterToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         small_transporterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1608,7 +1604,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         triremeToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         triremePic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1627,7 +1623,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         colonize_shipToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         colonize_shipPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -1646,7 +1642,7 @@ public class QueuePanel extends JPanel {
         swordPic.setOpaque(true);
         swordPic.setText("1200");
 
-        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild,"#"));
+        swordToBuild.setEditor(new JSpinner.NumberEditor(swordToBuild, "#"));
         sea_monsterToBuild.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
 
         sea_monsterPic.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -2022,19 +2018,19 @@ public class QueuePanel extends JPanel {
     private void nextTownButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int size = jComboBox1.getItemCount();
         int currentIndex = jComboBox1.getSelectedIndex();
-        if (currentIndex+1 < size) {
-            jComboBox1.setSelectedIndex(currentIndex+1);
-            currentTownIndex = currentIndex+1;
-            changeTown(towns.get(currentIndex+1));
+        if (currentIndex + 1 < size) {
+            jComboBox1.setSelectedIndex(currentIndex + 1);
+            currentTownIndex = currentIndex + 1;
+            changeTown(towns.get(currentIndex + 1));
         }
     }
 
     private void previousTownButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int currentIndex = jComboBox1.getSelectedIndex();
-        if (currentIndex-1 >= 0) {
-            jComboBox1.setSelectedIndex(currentIndex-1);
-            currentTownIndex = currentIndex-1;
-            changeTown(towns.get(currentIndex-1));
+        if (currentIndex - 1 >= 0) {
+            jComboBox1.setSelectedIndex(currentIndex - 1);
+            currentTownIndex = currentIndex - 1;
+            changeTown(towns.get(currentIndex - 1));
         }
     }
 
@@ -2131,15 +2127,11 @@ public class QueuePanel extends JPanel {
 
     private void templateSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {
         String fileName = JOptionPane.showInputDialog(this, "This saves your current town as a template you can load for other towns.\n" +
-                                                            "Make sure you saved your town before saving it as a template! \n" +
-                                                            "Enter in your desired template name:");
+                "Make sure you saved your town before saving it as a template! \n" +
+                "Enter in your desired template name:");
         if (fileName != null) {
             //System.out.println("Saving file");
-            if (currentTownIndex == -1) {
-                Saver.saveTemplate(towns.get(0), fileName);
-            } else {
-                Saver.saveTemplate(towns.get(currentTownIndex), fileName);
-            }
+            Saver.saveTemplate(towns.get(currentTownIndex), fileName);
         }
 
         Loader.loadTemplateTowns();
@@ -2149,15 +2141,15 @@ public class QueuePanel extends JPanel {
     private void templateNextButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int size = templateComboBox.getItemCount();
         int currentIndex = templateComboBox.getSelectedIndex();
-        if (currentIndex+1 < size) {
-            templateComboBox.setSelectedIndex(currentIndex+1);
+        if (currentIndex + 1 < size) {
+            templateComboBox.setSelectedIndex(currentIndex + 1);
         }
     }
 
     private void templatePreviousButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int currentIndex = templateComboBox.getSelectedIndex();
-        if (currentIndex-1 >= 0) {
-            templateComboBox.setSelectedIndex(currentIndex-1);
+        if (currentIndex - 1 >= 0) {
+            templateComboBox.setSelectedIndex(currentIndex - 1);
         }
     }
 
