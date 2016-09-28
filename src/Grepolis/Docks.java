@@ -198,4 +198,9 @@ public class Docks {
     public ArrayList<DocksUnit> getDocksUnits() {
         return docksUnits;
     }
+
+    public void setTown(Town town) {
+        this.town = town;
+    }
+
 }

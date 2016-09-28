@@ -859,5 +859,7 @@ public class Farming {
        this.notMyVillages = notMyVillages;
     }
 
-
+    public void setTown(Town town) {
+        this.town = town;
+    }
 }

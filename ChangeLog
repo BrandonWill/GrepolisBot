@@ -2,6 +2,9 @@ Version 0.20
 * Work began on automatic research.
 * Fixed a bug that caused the current city to not be the same if you left the queue panel
 * The bot will now rush lumber camp 15 and silver mine 10 so that you can build docks faster. Before, you'd have to wait until the town was almost fully built.
+* Fixed the bug where you'd have to restart after loading a template
+* Backend changes. Working on changing over to JavaFX!
+
 
 Version 0.19
 * Templates will now automatically load/save without you having to change the tab.

@@ -115,4 +115,8 @@ public class Research {
     public void setResearches(ArrayList<Researches> researches) {
         this.researches = researches;
     }
+
+    public void setTown(Town town) {
+        this.town = town;
+    }
 }

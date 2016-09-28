@@ -205,4 +205,8 @@ public class Barracks {
     public void setIsQueueFull(boolean isQueueFull) {
         this.isQueueFull = isQueueFull;
     }
+
+    public void setTown(Town town) {
+        this.town = town;
+    }
 }

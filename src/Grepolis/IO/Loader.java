@@ -3,8 +3,10 @@ package Grepolis.IO;
 import Grepolis.*;
 import Grepolis.GUI.QueuePanel;
 import Grepolis.GUI.SettingsPanel;
+import com.sun.javafx.application.PlatformImpl;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
@@ -53,7 +55,7 @@ public class Loader {
             if (!new File(jarDir + File.separator + "Saves").exists()) {
                 if (!(new File(jarDir + File.separator + "Saves").mkdir())) {
                     log(Level.SEVERE, "Unable to create a save directory!");
-					System.out.println("Unable to create a save directory!");
+                    System.out.println("Unable to create a save directory!");
                     return false;
                 }
             }
@@ -66,35 +68,35 @@ public class Loader {
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith("Username:") && line.split(":").length > 1) {
                         final String finalLine = line;
-                        SwingUtilities.invokeLater(new Runnable() {
+                        PlatformImpl.startup(new Runnable() {
                             @Override
                             public void run() {
-                                SettingsPanel.setUsernameField(new JTextField(finalLine.split(":")[1]));
+                                SettingsPanel.setUsernameField(new TextField(finalLine.split(":")[1]));
                             }
                         });
                     } else if (line.startsWith("Password:") && line.split(":").length > 1) {
                         final String finalLine1 = line;
-                        SwingUtilities.invokeLater(new Runnable() {
+                        PlatformImpl.startup(new Runnable() {
                             @Override
                             public void run() {
-                                SettingsPanel.setPasswordField(new JPasswordField(finalLine1.split(":")[1]));
+                                SettingsPanel.setPasswordField(new PasswordField(), finalLine1.split(":")[1]);
                             }
                         });
 
                     } else if (line.startsWith("Server:") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        SwingUtilities.invokeLater(new Runnable() {
+                        PlatformImpl.startup(new Runnable() {
                             @Override
                             public void run() {
-                                SettingsPanel.setWorldField(new JTextField(finalLine2.split(":")[1]));
+                                SettingsPanel.setWorldField(new TextField(finalLine2.split(":")[1]));
                             }
                         });
                     } else if (line.startsWith("RefreshTime-") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        SwingUtilities.invokeLater(new Runnable() {
+                        PlatformImpl.startup(new Runnable() {
                             @Override
                             public void run() {
-                                SettingsPanel.setUpdateTimeField(new JTextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
+                                SettingsPanel.setUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
                             }
                         });
                     }
@@ -427,12 +429,12 @@ public class Loader {
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                        String path = "Saves" + File.separator + "Templates" + File.separator + file.getName();
+                    String path = "Saves" + File.separator + "Templates" + File.separator + file.getName();
 //                        System.out.println("Loading template at: " +path);
-                        loadBuildings(path);
-                        loadBarrackTroops(path);
-                        loadDocksTroops(path);
-                        loadFarmers(path);
+                    loadBuildings(path);
+                    loadBarrackTroops(path);
+                    loadDocksTroops(path);
+                    loadFarmers(path);
                 }
             }
         }

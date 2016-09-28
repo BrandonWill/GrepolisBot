@@ -1144,7 +1144,7 @@ public class QueuePanel extends JPanel {
             }
         });
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(1096, 130));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(1100, 130));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -2159,9 +2159,12 @@ public class QueuePanel extends JPanel {
         Town currentTown = towns.get(currentTownIndex);
         Town templateTown = templateTowns.get(currentTemplateIndex);
         currentTown.setBarracks(templateTown.getBarracks());
+        currentTown.getBarracks().setTown(currentTown);
         currentTown.setDocks(templateTown.getDocks());
+        currentTown.getDocks().setTown(currentTown);
         currentTown.setBuildingList(templateTown.getBuildingList());
         currentTown.setFarming(templateTown.getFarming());
+        currentTown.getFarming().setTown(currentTown);
         changeTown(currentTown);
     }
 
