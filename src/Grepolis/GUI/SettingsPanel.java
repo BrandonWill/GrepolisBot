@@ -84,8 +84,6 @@ public class SettingsPanel extends JFXPanel {
 
                 setScene(scene);
 
-                System.out.println("set the scene");
-
             }
         });
     }

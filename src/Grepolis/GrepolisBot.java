@@ -65,6 +65,7 @@ public class GrepolisBot {
     private static volatile boolean botIsRunning = true;
     private static volatile boolean loadedVillagesFromMap = false;
     private static volatile boolean openedFarmInterface = false;
+    private static volatile boolean restartBot = false;
 
     private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
 
@@ -451,12 +452,19 @@ public class GrepolisBot {
         });
     }
 
+    private void restartBot() {
+        botIsRunning = true;
+        restartBot = false;
+
+        new Thread(new Startup()).start();
+        new Thread(new TitleUpdater()).start();
+    }
+
     private boolean notEmpty(String s) {
         return s != null && !"".equals(s);
     }
 
     /**
-     *
      * @param min minimum number
      * @param max maximum number
      * @return a random integer between min and max
@@ -468,6 +476,7 @@ public class GrepolisBot {
 
     /**
      * This was used for printing enums before using strings
+     *
      * @param word Text to capitalize.
      * @return Text with the first letter capitalized.
      */
@@ -509,6 +518,7 @@ public class GrepolisBot {
 
         /**
          * This is used in case it's moved outside of GrepolisBot. We can technically use currentTown here.
+         *
          * @param town sets the town here
          */
         public BuildBarracksTroops(Town town) {
@@ -950,6 +960,7 @@ public class GrepolisBot {
 
     /**
      * Updates the town if it's already added.
+     *
      * @param town Town to check if it's already added.
      * @return
      */
@@ -970,7 +981,8 @@ public class GrepolisBot {
 
     /**
      * Update town names based on their townID.
-     * @param name town name that was found.
+     *
+     * @param name   town name that was found.
      * @param townID townID that the name belongs to.
      * @return <b>true</b> if the town name was updated.
      */
@@ -1027,6 +1039,13 @@ public class GrepolisBot {
                                 webView.setDisable(false);
                             }
                             Thread.sleep(300);
+                            if (restartBot) {
+                                break;
+                            }
+                        }
+
+                        if (restartBot) {
+                            break;
                         }
 
                         currentTown = towns.get(i);
@@ -1065,9 +1084,10 @@ public class GrepolisBot {
 //                                }
                                 farmedTheTown = true;
                             }
-                            if (!researchedTheTown) {
-                                (new Thread(new Researcher(towns.get(i)))).start();
-                            }
+                            researchedTheTown = true;
+//                            if (!researchedTheTown) {
+//                                (new Thread(new Researcher(towns.get(i)))).start();
+//                            }
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
                             culture[0].start();
                             builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
@@ -1101,7 +1121,41 @@ public class GrepolisBot {
                         } while (!canContinue);
 
                     }
+                    if (restartBot) {
+                        break;
+                    }
+
                     updateTime = getUpdateTime();
+                }
+
+
+
+                if (restartBot) {
+                    botIsRunning = false;
+                    log("An error has been detected. The bot will now try to restart!");
+
+                    updateTime = getUpdateTime();
+
+                    do {
+                        Thread.sleep(250);
+                    } while (System.currentTimeMillis() < updateTime);
+
+                    final boolean[] reloaded = {false};
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().reload();
+                            reloaded[0] = true;
+                        }
+                    });
+
+                    while (!reloaded[0]) {
+                        Thread.sleep(250);
+                    }
+
+                    Thread.sleep(30000);
+
+                    restartBot();
                 }
             } catch (InterruptedException e) {
                 logError(e);
@@ -1111,6 +1165,7 @@ public class GrepolisBot {
 
     /**
      * This adds a variance to the update time so it isn't farming at exactly every 5 minutes.
+     *
      * @return the time to update from the GUI.
      */
     private long getUpdateTime() {
@@ -1206,7 +1261,7 @@ public class GrepolisBot {
         public void run() {
             long timeToUpdate = 0;
             long pauseTime = 0;
-            while (botIsRunning) {
+            while (botIsRunning || restartBot) {
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
@@ -1437,7 +1492,7 @@ public class GrepolisBot {
 
                             } else {
                                 log(Level.WARNING, "Error receiving farm town data! Pausing bot");
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
 
@@ -1457,7 +1512,7 @@ public class GrepolisBot {
                                 currentTown.parseTownSwitchData(data);
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the town switcher data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         if (data.contains("AcademyData:")) {
@@ -1467,7 +1522,7 @@ public class GrepolisBot {
                             } else {
                                 researchedTheTown = true;
                                 log(Level.SEVERE, "Error! Can't find the Academy data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
 
@@ -1485,7 +1540,7 @@ public class GrepolisBot {
                             } else {
                                 builtTheBuildings = true;
                                 log(Level.SEVERE, "Error! Can't find the Buildings! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         //Starts a culture event
@@ -1497,7 +1552,7 @@ public class GrepolisBot {
                             } else {
                                 obtainedCultureData = true;
                                 log(Level.SEVERE, "Error! Can't find the culture data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         //reads the docks data and builds a unit
@@ -1509,7 +1564,7 @@ public class GrepolisBot {
                             } else {
                                 builtDocksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the docks data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         //reads the barracks data and builds a unit
@@ -1521,7 +1576,7 @@ public class GrepolisBot {
                             } else {
                                 builtBarracksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the barracks data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         //Update the farm data
@@ -1530,7 +1585,7 @@ public class GrepolisBot {
                                 currentTown.getFarming().parseHTML(data);
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the farm data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         //loads the farming villages and farms them
@@ -1553,7 +1608,7 @@ public class GrepolisBot {
 
                             } else {
                                 log(Level.SEVERE, "Error! Can't find the farming villages data! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         if (data.contains("FarmingInterfaceOpened:")) {
@@ -1563,7 +1618,7 @@ public class GrepolisBot {
                                 }
                             } else {
                                 log(Level.SEVERE, "Error! Can't open the farming interface! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                         if (data.contains("LoadedVillagesFromMap:")) {
@@ -1573,7 +1628,7 @@ public class GrepolisBot {
                                 }
                             } else {
                                 log(Level.SEVERE, "Error! Was unable to load the farming villages from the map! Error log: " + event.getData());
-                                pauseBot();
+                                restartBot = true;
                             }
                         }
                     }

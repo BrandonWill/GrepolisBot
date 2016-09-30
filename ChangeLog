@@ -4,6 +4,7 @@ Version 0.20
 * The bot will now rush lumber camp 15 and silver mine 10 so that you can build docks faster. Before, you'd have to wait until the town was almost fully built.
 * Fixed the bug where you'd have to restart after loading a template
 * Backend changes. Working on changing over to JavaFX!
+* Bot will now restart if it encounters an error!
 
 
 Version 0.19
