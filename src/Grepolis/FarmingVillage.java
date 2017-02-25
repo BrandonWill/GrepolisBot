@@ -94,6 +94,7 @@ public class FarmingVillage {
                 if (battlePointFarmID != 0) {
                     int nextLootAmount = resourcesLooted + amountWeLoot(intervalToFarm);
 //                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "): " + getMaxLoot() + "- " + nextLootAmount + ">=  " + amountWeLoot(intervalToFarm));
+                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "):Calculated by (village level:" +stage + "* 1000 * " + Farming.getGameSpeed() + "(game server speed))=" + getMaxLoot() + "- " + "(my calculated next loot amount):" + nextLootAmount + ">=  (my calculated next amount that we loot) " + amountWeLoot(intervalToFarm));
                     return GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm));
                 } else {
                     return true;

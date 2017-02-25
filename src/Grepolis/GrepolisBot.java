@@ -453,11 +453,11 @@ public class GrepolisBot {
     }
 
     private void restartBot() {
-        botIsRunning = true;
-        restartBot = false;
-
-        new Thread(new Startup()).start();
-        new Thread(new TitleUpdater()).start();
+//        botIsRunning = true;
+//        restartBot = false;
+//
+//        new Thread(new Startup()).start();
+//        new Thread(new TitleUpdater()).start();
     }
 
     private boolean notEmpty(String s) {
@@ -1009,6 +1009,7 @@ public class GrepolisBot {
     public class ActualBot implements Runnable {
         public void run() {
             try {
+                restartBot = false;
                 farmedTheTown = true;
                 builtTheBuildings = true;
                 obtainedCultureData = true;
@@ -1097,6 +1098,9 @@ public class GrepolisBot {
                             docksQueue[0] = (new Thread(new BuildDocksTroops(towns.get(i))));
                             docksQueue[0].start();
                             while (!farmedTheTown || !obtainedCultureData || !builtTheBuildings || !builtBarracksTroops || !builtDocksTroops) {
+                                if (restartBot) {
+                                    break;
+                                }
                                 Thread.sleep(200);
                             }
                         } else {
@@ -1132,30 +1136,17 @@ public class GrepolisBot {
 
                 if (restartBot) {
                     botIsRunning = false;
-                    log("An error has been detected. The bot will now try to restart!");
+                    log("An error has been detected. The bot has stopped.");
 
-                    updateTime = getUpdateTime();
-
-                    do {
-                        Thread.sleep(250);
-                    } while (System.currentTimeMillis() < updateTime);
-
-                    final boolean[] reloaded = {false};
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            webView.getEngine().reload();
-                            reloaded[0] = true;
-                        }
-                    });
-
-                    while (!reloaded[0]) {
-                        Thread.sleep(250);
-                    }
-
-                    Thread.sleep(30000);
-
-                    restartBot();
+//                    updateTime = getUpdateTime();
+//
+//                    do {
+//                        Thread.sleep(250);
+//                    } while (System.currentTimeMillis() < updateTime);
+//
+//                    Thread.sleep(30000);
+//
+//                    restartBot();
                 }
             } catch (InterruptedException e) {
                 logError(e);
@@ -1538,7 +1529,7 @@ public class GrepolisBot {
                                 }
 
                             } else {
-                                builtTheBuildings = true;
+                                //builtTheBuildings = true;
                                 log(Level.SEVERE, "Error! Can't find the Buildings! Error log: " + event.getData());
                                 restartBot = true;
                             }
@@ -1550,7 +1541,7 @@ public class GrepolisBot {
                                 currentTown.getCulture().startACultureEvent();
                                 obtainedCultureData = true;
                             } else {
-                                obtainedCultureData = true;
+                                //obtainedCultureData = true;
                                 log(Level.SEVERE, "Error! Can't find the culture data! Error log: " + event.getData());
                                 restartBot = true;
                             }
@@ -1562,7 +1553,7 @@ public class GrepolisBot {
                                 currentTown.getDocks().buildADocksUnit();
                                 builtDocksTroops = true;
                             } else {
-                                builtDocksTroops = true;
+                                //builtDocksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the docks data! Error log: " + event.getData());
                                 restartBot = true;
                             }
@@ -1574,7 +1565,7 @@ public class GrepolisBot {
                                 currentTown.getBarracks().buildABarrackUnit();
                                 builtBarracksTroops = true;
                             } else {
-                                builtBarracksTroops = true;
+                                //builtBarracksTroops = true;
                                 log(Level.SEVERE, "Error! Can't find the barracks data! Error log: " + event.getData());
                                 restartBot = true;
                             }
