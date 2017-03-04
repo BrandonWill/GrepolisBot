@@ -31,7 +31,8 @@ public class Saver {
             writer.println("Username:" + SettingsPanel.getUsernameField().getText());
             writer.println("Password:" + SettingsPanel.getPasswordField().getText());
             writer.println("Server:" + SettingsPanel.getWorldField().getText());
-            writer.println("RefreshTime:" + SettingsPanel.getUpdateTimeField().getText().replaceAll(":", "-"));
+            writer.println("RefreshTime:" + SettingsPanel.getBotUpdateTimeField().getText().replaceAll(":", "-"));
+            writer.println("TroopRefreshTime:" + SettingsPanel.getTroopUpdateTimeField().getText().replaceAll(":", "-"));
             writer.close();
         }
     }

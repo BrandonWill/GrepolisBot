@@ -470,6 +470,15 @@ public class Town {
         this.research = research;
     }
 
+    public boolean isResearched(Researches research) {
+        for (Researches researches : this.research.getResearches()) {
+            if (researches.equals(research)) {
+                return researches.isResearched();
+            }
+        }
+        return false;
+    }
+
     public int getLast_wood() {
         return last_wood;
     }

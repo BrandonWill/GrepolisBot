@@ -1,7 +1,14 @@
 package Grepolis;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.application.Platform;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +43,7 @@ public class Farming {
     public static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
 
     private static boolean battlePointVillages = false;
-    private static int gameSpeed = 1;
+    private static double gameSpeed = 1;
     private HashMap<Integer, Integer> notMyVillages = new HashMap<>();
 
 
@@ -50,89 +57,116 @@ public class Farming {
     }
 
     public void parseHTML(String townData) {
-//        log("Town Data: " + townData);
-        String townString = townData.substring(townData.indexOf(town.getId() + ""));
-        String storageString = townString.substring(townString.indexOf("\"storage_volume\":"));
+        townData = townData.replaceAll("FarmData:200", "");
 
-        String currentTownData = null;
-//        log("Town string: " +townString);
-        for (String data : townString.split("\"id\"")) {
-            if (data.contains(String.valueOf(town.getId()))) {
-                currentTownData = data;
-                break;
+        JsonElement jElement = new JsonParser().parse(townData);
+        JsonObject jObject = jElement.getAsJsonObject();
+        JsonObject json = jObject.getAsJsonObject("json");
+        JsonArray towns = json.getAsJsonArray("towns");
+
+        JsonObject currentTown = null;
+        for (JsonElement jsonElement : towns) {
+            int townID = jsonElement.getAsJsonObject().get("id").getAsInt();
+            if (townID == town.getId()) {
+                currentTown = jsonElement.getAsJsonObject();
             }
         }
 
-        if (currentTownData != null) {
-//            log("Current town data: " +currentTownData);
-            for (String data : currentTownData.split(",")) {
-                /* Not needed anymore. We load this at the start of the bot.
-                if (data.contains("\"island_x\":")) {
-                    island_x = Integer.parseInt(data.split(":")[1]);
-//                    log("island_x:" +island_x);
-                }
-                if (data.contains("\"island_y\":")) {
-                    island_y = Integer.parseInt(data.split(":")[1]);
-//                    log("island_y:" +island_y);
-                }
-                */
-                if (data.contains("\"booty\":")) {
-                    booty = Boolean.parseBoolean(data.split(":")[1]);
-//                    log("booty researched: " +booty);
-                }
-                if (data.contains("\"diplomacy_researched\":")) {
-                    diplomacy = Boolean.parseBoolean(data.split(":")[1]);
-//                    log("diplomacy researched: " +diplomacy);
-                }
-                if (data.contains("\"trade_office\":")) {
-                    trade_office = Integer.parseInt(data.split(":")[1]);
-//                    log("trade_office level: " +trade_office);
-                }
-            }
-        }
-
-        wood = 0;
-        stone = 0;
-        iron = 0;
-        try {
-
-            String resourceString = townString.substring(townString.indexOf("\"resources\":{"), townString.indexOf(",\"production\""));
-            resourceString = resourceString.substring(resourceString.indexOf(":") + 1);
-            resourceString = resourceString.replaceAll("\"", "").replaceAll("}", "").replaceAll("\\{", "");
-            //.substring(resources[0].indexOf("resources_last_update"), resources[0].indexOf("island_id"))
-//                        log("Resource string: " +resourceString);
-
-            for (String resource : resourceString.split(",")) {
-
-                if (resource.contains("wood")) {
-                    wood = Integer.parseInt(resource.split(":")[1]);
-//                                log("Wood: " + wood);
-                }
-                if (resource.contains("stone")) {
-                    stone = Integer.parseInt(resource.split(":")[1]);
-//                                log("Stone: " + stone);
-                }
-                if (resource.contains("iron")) {
-                    iron = Integer.parseInt(resource.split(":")[1]);
-//                                log("Iron: " + iron);
-                }
-            }
-        } catch (Exception e) {
-            logError(e);
-            log("Can't load town resources");
-        }
-//                        log("Storage string: " +storageString);
-
-
-        try {
-            storageString = storageString.substring(0, storageString.indexOf(","));
-            storage = Integer.parseInt(storageString.split(":")[1]);
+        if (currentTown != null) {
+            storage = currentTown.get("storage_volume").getAsInt();
+            booty = currentTown.get("booty").getAsBoolean();
+            diplomacy = currentTown.get("diplomacy_researched").getAsBoolean();
+            trade_office = currentTown.get("trade_office").getAsInt();
+            JsonObject resources = currentTown.getAsJsonObject("resources");
+            wood = resources.get("wood").getAsInt();
+            stone = resources.get("stone").getAsInt();
+            iron = resources.get("iron").getAsInt();
             town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
-//
-        } catch (Exception e) {
-            logError(e);
-            log("Can't load town storage");
+
         }
+////        log("Town Data: " + townData);
+//        String townString = townData.substring(townData.indexOf(town.getId() + ""));
+//        String storageString = townString.substring(townString.indexOf("\"storage_volume\":"));
+//
+//        String currentTownData = null;
+////        log("Town string: " +townString);
+//        for (String data : townString.split("\"id\"")) {
+//            if (data.contains(String.valueOf(town.getId()))) {
+//                currentTownData = data;
+//                break;
+//            }
+//        }
+//
+//        if (currentTownData != null) {
+////            log("Current town data: " +currentTownData);
+//            for (String data : currentTownData.split(",")) {
+//                /* Not needed anymore. We load this at the start of the bot.
+//                if (data.contains("\"island_x\":")) {
+//                    island_x = Integer.parseInt(data.split(":")[1]);
+////                    log("island_x:" +island_x);
+//                }
+//                if (data.contains("\"island_y\":")) {
+//                    island_y = Integer.parseInt(data.split(":")[1]);
+////                    log("island_y:" +island_y);
+//                }
+//                */
+//                if (data.contains("\"booty\":")) {
+//                    booty = Boolean.parseBoolean(data.split(":")[1]);
+////                    log("booty researched: " +booty);
+//                }
+//                if (data.contains("\"diplomacy_researched\":")) {
+//                    diplomacy = Boolean.parseBoolean(data.split(":")[1]);
+////                    log("diplomacy researched: " +diplomacy);
+//                }
+//                if (data.contains("\"trade_office\":")) {
+//                    trade_office = Integer.parseInt(data.split(":")[1]);
+////                    log("trade_office level: " +trade_office);
+//                }
+//            }
+//        }
+//
+//        wood = 0;
+//        stone = 0;
+//        iron = 0;
+//        try {
+//
+//            String resourceString = townString.substring(townString.indexOf("\"resources\":{"), townString.indexOf(",\"production\""));
+//            resourceString = resourceString.substring(resourceString.indexOf(":") + 1);
+//            resourceString = resourceString.replaceAll("\"", "").replaceAll("}", "").replaceAll("\\{", "");
+//            //.substring(resources[0].indexOf("resources_last_update"), resources[0].indexOf("island_id"))
+////                        log("Resource string: " +resourceString);
+//
+//            for (String resource : resourceString.split(",")) {
+//
+//                if (resource.contains("wood")) {
+//                    wood = Integer.parseInt(resource.split(":")[1]);
+////                                log("Wood: " + wood);
+//                }
+//                if (resource.contains("stone")) {
+//                    stone = Integer.parseInt(resource.split(":")[1]);
+////                                log("Stone: " + stone);
+//                }
+//                if (resource.contains("iron")) {
+//                    iron = Integer.parseInt(resource.split(":")[1]);
+////                                log("Iron: " + iron);
+//                }
+//            }
+//        } catch (Exception e) {
+//            logError(e);
+//            log("Can't load town resources");
+//        }
+////                        log("Storage string: " +storageString);
+//
+//
+//        try {
+//            storageString = storageString.substring(0, storageString.indexOf(","));
+//            storage = Integer.parseInt(storageString.split(":")[1]);
+//            town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
+////
+//        } catch (Exception e) {
+//            logError(e);
+//            log("Can't load town storage");
+//        }
         loadFarmingVillages();
     }
 
@@ -200,6 +234,11 @@ public class Farming {
     }
 
     public void parseVillageData(String villagesData) {
+        //relation_status": 1
+
+
+
+
 //        log("In village data! " +villagesData);
         if (villagesData.contains("[{")) {
             String allData = villagesData;
@@ -413,126 +452,185 @@ public class Farming {
         //"id":????,"name":"Rosta","dir":"n","expansion_stage":1,"x":???,"y":???,"ox":???,"oy":???,"offer":"iron",
         // "demand":"stone","mood":84,"relation_status":1,"ratio":1.25,"loot":1469053323,
         // "lootable_human":"on 2016-07-20 at 23:22 ","looted":1469053023},"80":
-        String[] parsed = villageData.split("\\{");
-        //farmingVillages.clear();
-        for (String village : parsed) {
-            if (village.contains("\"id\"") && village.contains("\"relation_status\":1")) {
-//                System.out.println("Parsed: " +village);
-                FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
+//        System.out.println("VillageData: " +villageData);
+        if (villageData.contains("LoadedVillagesFromMap:200")) {
+            farmingVillages.clear();
+            int requiredVillageX = town.getIsland_x();
+            int requiredVillageY = town.getIsland_y();
+            villageData = villageData.replaceAll("LoadedVillagesFromMap:200", "");
 
-                for (String data : village.split(",")) {
-                    if (data.contains("farm_town_id")) {
-                        String id = data.split(":")[1];
-                        if (isStringDigit(id)) {
-                            int actualID = Integer.parseInt(id);
-                            if (getFarmingVillage(actualID) != null) {
-                                farmingVillage = getFarmingVillage(actualID);
-                            } else {
-                                if (farmingVillage != null) {
-                                    farmingVillage.setFarm_town_id(actualID);
-                                }
-                            }
-                        } else {
-                            break;
-                        }
-//                        System.out.println("id:" + farmingVillage.getFarm_town_id());
-                    }
-                    if (data.contains("\"id\"")) {
-                        String id = data.split(":")[1];
-                        if (isStringDigit(id)) {
-                            int actualID = Integer.parseInt(id);
-                            if (getFarmingVillage(actualID) != null) {
-                                farmingVillage = getFarmingVillage(actualID);
-                            } else {
-                                if (farmingVillage != null) {
-                                    farmingVillage.setBattlePointFarmID(actualID);
-                                }
-                            }
-                        } else {
-                            break;
-                        }
-//                        System.out.println("id:" + farmingVillage.getFarm_town_id());
-                    }
-                    if (data.contains("name")) {
-                        if (farmingVillage != null) {
-                            farmingVillage.setName(data.split(":")[1]);
-                        }
-                    }
-                    if (data.contains("\"expansion_stage\"")) {
-                        if (farmingVillage != null) {
-//                            System.out.println("Stage : " + data);
-                            farmingVillage.setStage(Integer.parseInt(data.split(":")[1]));
-                        }
-                    }
-                    if (data.contains("mood")) {
-                        if (farmingVillage != null) {
-                            farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
-                        }
-//                        System.out.println("mood:" + farmingVillage.getMood());
-                    }
-                    if (data.contains("\"loot\":")) {
-                        if (farmingVillage != null) {
-                            String lootData = data.split(":")[1];
-                            farmingVillage.setResourcesLooted(Integer.parseInt(lootData));
-                        }
-                    }
-                    if (data.contains("\"lootable_at\"")) {
-                        String holder = data.split(":")[1];
-                        if (holder != null) {
-                            if (isStringDigit(holder)) {
-                                long timeToFarm = Long.parseLong(holder);
-                                if (farmingVillage != null) {
-                                    farmingVillage.setLoot(timeToFarm);
-                                }
-                                town.setTimeToFarm(timeToFarm);
-                            }
+            JsonElement jElement = new JsonParser().parse(villageData);
+            JsonObject jObject = jElement.getAsJsonObject();
+            JsonObject json = jObject.getAsJsonObject("json");
+            JsonArray data = json.getAsJsonArray("data");
+            JsonObject dataObject = data.get(0).getAsJsonObject();
+            JsonObject townObject = dataObject.get("towns").getAsJsonObject();
 
+            //Alright so whoever programmed this thing made them all objects instead of array... so this is my solution
+            for (int i = 0; i < 10000; i++) {
+                if (townObject.get("" +i) != null) {
+                    JsonObject villageObject = townObject.get("" + i).getAsJsonObject();
+                    //This list contains not only towns, but farming villages! Only villages have relation_status
+                    if (villageObject.has("relation_status")) {
+                        int relationStatus = villageObject.get("relation_status").getAsInt();
+                        int island_x = villageObject.get("x").getAsInt();
+                        int island_y = villageObject.get("y").getAsInt();
+                        //If we own the village, then it will be 1
+                        if (relationStatus == 1 && island_x == requiredVillageX && island_y == requiredVillageY) {
+                            FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
+                            farmingVillage.setFarm_town_id(villageObject.get("id").getAsInt());
+                            farmingVillage.setIsland_x(island_x);
+                            farmingVillage.setIsland_y(island_y);
+                            farmingVillage.setName(villageObject.get("name").getAsString());
+                            farmingVillage.setStage(villageObject.get("expansion_stage").getAsInt());
+                            farmingVillage.setMood(villageObject.get("mood").getAsInt());
+                            farmingVillages.add(farmingVillage);
                         }
                     }
-                    if (data.contains("\"relation_status\":")) {
-                        if (farmingVillage != null) {
-                            farmingVillage.setRel(data.contains("\"relation_status\":1"));
-                        }
-//                        System.out.println("relation_status: " + farmingVillage.isRel());
-                    }
-                }
-                if (farmingVillage != null && farmingVillage.getFarm_town_id() != 0) {
-                    boolean notAdded = true;
-                    for (FarmingVillage village1 : farmingVillages) {
-                        if (village1.getFarm_town_id() == farmingVillage.getFarm_town_id()) {
-                            notAdded = false;
-                        }
-                    }
-                    if (notAdded) {
-//                        System.out.println("Added to the villages!");
-                        farmingVillages.add(farmingVillage);
-                    }
-                }
-            }
-        }
-        for (Map.Entry<Integer, Integer> entry : notMyVillages.entrySet()) {
-            int battleVillageID = entry.getKey();
-            int farmingVillageID = entry.getValue();
-
-
-            for (FarmingVillage farmingVillage : farmingVillages) {
-                if (farmingVillage.getFarm_town_id() == farmingVillageID && farmingVillage.getBattlePointFarmID() == battleVillageID)  {
-                    farmingVillages.remove(farmingVillage);
+                } else {
                     break;
                 }
             }
-            // ...
+        } else if (villageData.contains("FarmingInterfaceOpened:200")) {
+            villageData = villageData.replaceAll("FarmingInterfaceOpened:200", "");
+
+            JsonElement jElement = new JsonParser().parse(villageData);
+            JsonObject jObject = jElement.getAsJsonObject();
+            JsonObject json = jObject.getAsJsonObject("json");
+            JsonObject collections = json.getAsJsonObject("collections");
+            JsonObject farmTownPlayerRelations = collections.getAsJsonObject("FarmTownPlayerRelations");
+            JsonArray data = farmTownPlayerRelations.getAsJsonArray("data");
+
+            for (JsonElement jsonElement : data) {
+                JsonObject farmingVillageObject = jsonElement.getAsJsonObject().get("d").getAsJsonObject();
+                int id = farmingVillageObject.get("id").getAsInt();
+                int farm_town_id = farmingVillageObject.get("farm_town_id").getAsInt();
+                FarmingVillage farmingVillage = getFarmingVillage(farm_town_id);
+                if (farmingVillage != null) {
+                    farmingVillage.setRel(true);
+                    long timeToFarm = farmingVillageObject.get("lootable_at").getAsLong();
+                    farmingVillage.setLoot(timeToFarm);
+                    town.setTimeToFarm(timeToFarm);
+                    farmingVillage.setBattlePointFarmID(id);
+                    farmingVillage.setResourcesLooted(farmingVillageObject.get("loot").getAsInt());
+//                    log("Lootable at: " +timeToFarm);
+//                    log("can farm: " +farmingVillage.canFarm());
+//                    log("Farming village found in " +town.getName() + " with the name of: " +farmingVillage.getName());
+
+                }
+            }
+
         }
-
-
-//        int numToRemove  = 0;
-//        if (farmingVillages.size() > 6) {
-//            numToRemove = farmingVillages.size() - 6;
+//        String[] parsed = villageData.split("\\{");
+//        //farmingVillages.clear();
+//        for (String village : parsed) {
+//            if (village.contains("\"id\"") && village.contains("\"relation_status\":1")) {
+////                System.out.println("Parsed: " +village);
+//                FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
+//
+//                for (String data : village.split(",")) {
+//                    if (data.contains("farm_town_id")) {
+//                        String id = data.split(":")[1];
+//                        if (isStringDigit(id)) {
+//                            int actualID = Integer.parseInt(id);
+//                            if (getFarmingVillage(actualID) != null) {
+//                                farmingVillage = getFarmingVillage(actualID);
+//                            } else {
+//                                if (farmingVillage != null) {
+//                                    farmingVillage.setFarm_town_id(actualID);
+//                                }
+//                            }
+//                        } else {
+//                            break;
+//                        }
+////                        System.out.println("id:" + farmingVillage.getFarm_town_id());
+//                    }
+//                    if (data.contains("\"id\"")) {
+//                        String id = data.split(":")[1];
+//                        if (isStringDigit(id)) {
+//                            int actualID = Integer.parseInt(id);
+//                            if (getFarmingVillage(actualID) != null) {
+//                                farmingVillage = getFarmingVillage(actualID);
+//                            } else {
+//                                if (farmingVillage != null) {
+//                                    farmingVillage.setBattlePointFarmID(actualID);
+//                                }
+//                            }
+//                        } else {
+//                            break;
+//                        }
+////                        System.out.println("id:" + farmingVillage.getFarm_town_id());
+//                    }
+//                    if (data.contains("name")) {
+//                        if (farmingVillage != null) {
+//                            farmingVillage.setName(data.split(":")[1]);
+//                        }
+//                    }
+//                    if (data.contains("\"expansion_stage\"")) {
+//                        if (farmingVillage != null) {
+////                            System.out.println("Stage : " + data);
+//                            farmingVillage.setStage(Integer.parseInt(data.split(":")[1]));
+//                        }
+//                    }
+//                    if (data.contains("mood")) {
+//                        if (farmingVillage != null) {
+//                            farmingVillage.setMood(Integer.parseInt(data.split(":")[1]));
+//                        }
+////                        System.out.println("mood:" + farmingVillage.getMood());
+//                    }
+//                    if (data.contains("\"loot\":")) {
+//                        if (farmingVillage != null) {
+//                            String lootData = data.split(":")[1];
+//                            farmingVillage.setResourcesLooted(Integer.parseInt(lootData));
+//                        }
+//                    }
+//                    if (data.contains("\"lootable_at\"")) {
+//                        String holder = data.split(":")[1];
+//                        if (holder != null) {
+//                            if (isStringDigit(holder)) {
+//                                long timeToFarm = Long.parseLong(holder);
+//                                if (farmingVillage != null) {
+//                                    farmingVillage.setLoot(timeToFarm);
+//                                }
+//                                town.setTimeToFarm(timeToFarm);
+//                            }
+//
+//                        }
+//                    }
+//                    if (data.contains("\"relation_status\":")) {
+//                        if (farmingVillage != null) {
+//                            farmingVillage.setRel(data.contains("\"relation_status\":1"));
+//                        }
+////                        System.out.println("relation_status: " + farmingVillage.isRel());
+//                    }
+//                }
+//                if (farmingVillage != null && farmingVillage.getFarm_town_id() != 0) {
+//                    boolean notAdded = true;
+//                    for (FarmingVillage village1 : farmingVillages) {
+//                        if (village1.getFarm_town_id() == farmingVillage.getFarm_town_id()) {
+//                            notAdded = false;
+//                        }
+//                    }
+//                    if (notAdded) {
+////                        System.out.println("Added to the villages!");
+//                        farmingVillages.add(farmingVillage);
+//                    }
+//                }
+//            }
 //        }
-//        while (numToRemove > 0) {
-//            farmingVillages.remove(6 + numToRemove - 1);
-//            numToRemove--;
+//        for (Map.Entry<Integer, Integer> entry : notMyVillages.entrySet()) {
+//            int battleVillageID = entry.getKey();
+//            int farmingVillageID = entry.getValue();
+//
+//
+//            for (FarmingVillage farmingVillage : farmingVillages) {
+//                if (farmingVillage.getFarm_town_id() == farmingVillageID && farmingVillage.getBattlePointFarmID() == battleVillageID)  {
+//                    farmingVillages.remove(farmingVillage);
+//                    break;
+//                }
+//            }
 //        }
+
 
         return true;
     }
@@ -686,7 +784,7 @@ public class Farming {
     private boolean hasAFarmerAvailable() {
         for (FarmingVillage farmingVillage : farmingVillages) {
             if (farmingVillage.canFarm()) {
-                    return true;
+                return true;
             }
         }
         return false;
@@ -839,11 +937,11 @@ public class Farming {
         Farming.battlePointVillages = battlePointVillages;
     }
 
-    public static int getGameSpeed() {
+    public static double getGameSpeed() {
         return gameSpeed;
     }
 
-    public static void setGameSpeed(int gameSpeed) {
+    public static void setGameSpeed(double gameSpeed) {
         Farming.gameSpeed = gameSpeed;
     }
 
@@ -856,10 +954,18 @@ public class Farming {
     }
 
     public void setNotMyVillages(HashMap<Integer, Integer> notMyVillages) {
-       this.notMyVillages = notMyVillages;
+        this.notMyVillages = notMyVillages;
     }
 
     public void setTown(Town town) {
         this.town = town;
+    }
+
+    public boolean isBooty() {
+        return booty;
+    }
+
+    public void setBooty(boolean booty) {
+        this.booty = booty;
     }
 }

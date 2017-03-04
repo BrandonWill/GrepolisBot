@@ -39,8 +39,10 @@ public class SettingsPanel extends JFXPanel {
                 passwordLabel.setFont(defaultFont);
                 Text worldLabel = new Text("World:");
                 worldLabel.setFont(defaultFont);
-                Text updateTimeLabel = new Text("Update Time:");
-                updateTimeLabel.setFont(Font.font("Arial", 12));
+                Text botUpdateTimeLabel = new Text("Bot Update Time:");
+                botUpdateTimeLabel.setFont(Font.font("Arial", 12));
+                Text troopUpdateTimeLabel = new Text("Troop Update Time:");
+                troopUpdateTimeLabel.setFont(Font.font("Arial", 12));
 
                 //Column 2 components - these check to see if any data was loaded beforehand!
                 if (usernameField == null) {
@@ -58,23 +60,28 @@ public class SettingsPanel extends JFXPanel {
                 }
                 worldField.setPrefSize(100, 20);
                 worldField.setFont(defaultFont);
-                if (updateTimeField == null) {
-                    updateTimeField = new TextField("00:06:00");
+                if (botUpdateTimeField == null) {
+                    botUpdateTimeField = new TextField("00:06:00");
                 }
-                updateTimeField.setPrefSize(100, 20);
-                updateTimeField.setFont(defaultFont);
+                botUpdateTimeField.setPrefSize(100, 20);
+                botUpdateTimeField.setFont(defaultFont);
+                if (troopUpdateTimeField == null) {
+                    troopUpdateTimeField = new TextField("00:06:00");
+                }
 
                 //column 1
                 grid.add(usernameLabel, 0 , 0);
                 grid.add(passwordLabel, 0, 1);
                 grid.add(worldLabel, 0, 2);
-                grid.add(updateTimeLabel, 0, 3);
+                grid.add(botUpdateTimeLabel, 0, 3);
+                grid.add(troopUpdateTimeLabel, 0, 4);
 
                 //column 2
                 grid.add(usernameField, 1, 0);
                 grid.add(passwordField, 1, 1);
                 grid.add(worldField, 1, 2);
-                grid.add(updateTimeField, 1, 3);
+                grid.add(botUpdateTimeField, 1, 3);
+                grid.add(troopUpdateTimeField, 1, 4);
 
 
                 grid.setPrefSize(1100, 130); // Default width and height
@@ -98,9 +105,10 @@ public class SettingsPanel extends JFXPanel {
 //    }
 
     private static volatile PasswordField passwordField;
-    private static volatile TextField updateTimeField;
+    private static volatile TextField botUpdateTimeField;
     private static volatile TextField usernameField;
     private static volatile TextField worldField;
+    private static volatile TextField troopUpdateTimeField;
 
     public static TextField getPasswordField() {
         return passwordField;
@@ -111,12 +119,12 @@ public class SettingsPanel extends JFXPanel {
         passwordField.setText(password);
     }
 
-    public static TextField getUpdateTimeField() {
-        return updateTimeField;
+    public static TextField getBotUpdateTimeField() {
+        return botUpdateTimeField;
     }
 
-    public static void setUpdateTimeField(TextField updateTimeField) {
-        SettingsPanel.updateTimeField = updateTimeField;
+    public static void setBotUpdateTimeField(TextField botUpdateTimeField) {
+        SettingsPanel.botUpdateTimeField = botUpdateTimeField;
     }
 
     public static TextField getUsernameField() {
@@ -133,5 +141,13 @@ public class SettingsPanel extends JFXPanel {
 
     public static void setWorldField(TextField worldField) {
         SettingsPanel.worldField = worldField;
+    }
+
+    public static TextField getTroopUpdateTimeField() {
+        return troopUpdateTimeField;
+    }
+
+    public static void setTroopUpdateTimeField(TextField troopUpdateTimeField) {
+        SettingsPanel.troopUpdateTimeField = troopUpdateTimeField;
     }
 }

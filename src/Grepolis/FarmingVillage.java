@@ -20,6 +20,9 @@ public class FarmingVillage {
     private boolean canFarm;
     private boolean bootyResearched;
     private Farming.IntervalToFarm intervalToFarm;
+    private long lootcap_reset_at;
+    private int island_x;
+    private int island_y;
 
     public FarmingVillage(boolean bootyResearched, Farming.IntervalToFarm intervalToFarm) {
         this.bootyResearched = bootyResearched;
@@ -94,7 +97,7 @@ public class FarmingVillage {
                 if (battlePointFarmID != 0) {
                     int nextLootAmount = resourcesLooted + amountWeLoot(intervalToFarm);
 //                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "): " + getMaxLoot() + "- " + nextLootAmount + ">=  " + amountWeLoot(intervalToFarm));
-                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "):Calculated by (village level:" +stage + "* 1000 * " + Farming.getGameSpeed() + "(game server speed))=" + getMaxLoot() + "- " + "(my calculated next loot amount):" + nextLootAmount + ">=  (my calculated next amount that we loot) " + amountWeLoot(intervalToFarm));
+//                    log("Village (" + getName() + ") can loot (" + (GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm))) + "):Calculated by (village level:" +stage + "* 1000 * " + Farming.getGameSpeed() + "(game server speed))=" + getMaxLoot() + "- " + "(my calculated next loot amount):" + nextLootAmount + ">=  (my calculated next amount that we loot) " + amountWeLoot(intervalToFarm));
                     return GrepolisBot.getServerUnixTime() >= loot && (getMaxLoot() - nextLootAmount >= amountWeLoot(intervalToFarm));
                 } else {
                     return true;
@@ -102,6 +105,14 @@ public class FarmingVillage {
             }
         }
         return false;
+    }
+
+    public long getLootcap_reset_at() {
+        return lootcap_reset_at;
+    }
+
+    public void setLootcap_reset_at(long lootcap_reset_at) {
+        this.lootcap_reset_at = lootcap_reset_at;
     }
 
     public void setCanFarm(boolean canFarm) {
@@ -116,179 +127,216 @@ public class FarmingVillage {
         this.battlePointFarmID = battlePointFarmID;
     }
 
-    public int getMaxLoot() {
-        return stage * 1000 * Farming.getGameSpeed();
+    public double getMaxLoot() {
+        switch (stage) {
+            case 1:
+                return 2500 * Farming.getGameSpeed();
+
+            case 2:
+                return 3000 * Farming.getGameSpeed();
+
+            case 3:
+                return 3500 * Farming.getGameSpeed();
+
+            case 4:
+                return 4000 * Farming.getGameSpeed();
+
+            case 5:
+                return 4500 * Farming.getGameSpeed();
+
+            case 6:
+                return 5000 * Farming.getGameSpeed();
+
+            default:
+                return 0;
+        }
     }
 
     public int amountWeLoot(Farming.IntervalToFarm intervalToFarm) {
         if (battlePointFarmID != 0) {
-            if (bootyResearched) {
+            if (!bootyResearched) {
                 if (intervalToFarm.option == 1) {
                     switch (stage) {
                         case 1:
-                            return 12 * Farming.getGameSpeed();
+                            return (int) (13 * Farming.getGameSpeed());
 
                         case 2:
-                            return 15 * Farming.getGameSpeed();
+                            return (int) (16 * Farming.getGameSpeed());
 
                         case 3:
-                            return 17 * Farming.getGameSpeed();
+                            return (int) (18 * Farming.getGameSpeed());
 
                         case 4:
-                            return 20 * Farming.getGameSpeed();
+                            return (int) (21 * Farming.getGameSpeed());
 
                         case 5:
-                            return 22 * Farming.getGameSpeed();
+                            return (int) (24 * Farming.getGameSpeed());
 
                         case 6:
-                            return 12 * Farming.getGameSpeed();
+                            return (int) (26 * Farming.getGameSpeed());
                     }
                 } else if (intervalToFarm.option == 2) {
                     switch (stage) {
                         case 1:
-                            return 29 * Farming.getGameSpeed();
+                            return (int) (31 * Farming.getGameSpeed());
 
                         case 2:
-                            return 34 * Farming.getGameSpeed();
+                            return (int) (36 * Farming.getGameSpeed());
 
                         case 3:
-                            return 39 * Farming.getGameSpeed();
+                            return (int) (41 * Farming.getGameSpeed());
 
                         case 4:
-                            return 44 * Farming.getGameSpeed();
+                            return (int) (47 * Farming.getGameSpeed());
 
                         case 5:
-                            return 49 * Farming.getGameSpeed();
+                            return (int) (52 * Farming.getGameSpeed());
 
                         case 6:
-                            return 54 * Farming.getGameSpeed();
+                            return (int) (57 * Farming.getGameSpeed());
                     }
                 } else if (intervalToFarm.option == 3) {
                     switch (stage) {
                         case 1:
-                            return 64 * Farming.getGameSpeed();
+                            return (int) (68 * Farming.getGameSpeed());
 
                         case 2:
-                            return 75 * Farming.getGameSpeed();
+                            return (int) (79 * Farming.getGameSpeed());
 
                         case 3:
-                            return 85 * Farming.getGameSpeed();
+                            return (int) (91 * Farming.getGameSpeed());
 
                         case 4:
-                            return 95 * Farming.getGameSpeed();
+                            return (int) (102 * Farming.getGameSpeed());
 
                         case 5:
-                            return 106 * Farming.getGameSpeed();
+                            return (int) (113 * Farming.getGameSpeed());
 
                         case 6:
-                            return 116 * Farming.getGameSpeed();
+                            return (int) (124 * Farming.getGameSpeed());
                     }
                 } else if (intervalToFarm.option == 4) {
                     switch (stage) {
                         case 1:
-                            return 125 * Farming.getGameSpeed();
+                            return (int) (133 * Farming.getGameSpeed());
 
                         case 2:
-                            return 145 * Farming.getGameSpeed();
+                            return (int) (155 * Farming.getGameSpeed());
 
                         case 3:
-                            return 166 * Farming.getGameSpeed();
+                            return (int) (177 * Farming.getGameSpeed());
 
                         case 4:
-                            return 187 * Farming.getGameSpeed();
+                            return (int) (200 * Farming.getGameSpeed());
 
                         case 5:
-                            return 208 * Farming.getGameSpeed();
+                            return (int) (222 * Farming.getGameSpeed());
 
                         case 6:
-                            return 229 * Farming.getGameSpeed();
+                            return (int) (244 * Farming.getGameSpeed());
                     }
                 }
             } else {
                 if (intervalToFarm.option == 1) {
                     switch (stage) {
                         case 1:
-                            return 25 * Farming.getGameSpeed();
+                            return (int) (28 * Farming.getGameSpeed());
 
                         case 2:
-                            return 32 * Farming.getGameSpeed();
+                            return (int) (34 * Farming.getGameSpeed());
 
                         case 3:
-                            return 36 * Farming.getGameSpeed();
+                            return (int) (40 * Farming.getGameSpeed());
 
                         case 4:
-                            return 43 * Farming.getGameSpeed();
+                            return (int) (45 * Farming.getGameSpeed());
 
                         case 5:
-                            return 47 * Farming.getGameSpeed();
+                            return (int) (51 * Farming.getGameSpeed());
 
                         case 6:
-                            return 53 * Farming.getGameSpeed();
+                            return (int) (57 * Farming.getGameSpeed());
                     }
                 } else if(intervalToFarm.option == 2) {
                     switch (stage) {
                         case 1:
-                            return 62 * Farming.getGameSpeed();
+                            return (int) (66 * Farming.getGameSpeed());
 
                         case 2:
-                            return 73 * Farming.getGameSpeed();
+                            return (int) (78 * Farming.getGameSpeed());
 
                         case 3:
-                            return 83 * Farming.getGameSpeed();
+                            return (int) (89 * Farming.getGameSpeed());
 
                         case 4:
-                            return 94 * Farming.getGameSpeed();
+                            return (int) (101 * Farming.getGameSpeed());
 
                         case 5:
-                            return 105 * Farming.getGameSpeed();
+                            return (int) (112 * Farming.getGameSpeed());
 
                         case 6:
-                            return 116 * Farming.getGameSpeed();
+                            return (int) (124 * Farming.getGameSpeed());
                     }
                 } else if(intervalToFarm.option == 3) {
                     switch (stage) {
                         case 1:
-                            return 137 * Farming.getGameSpeed();
+                            return (int) (148 * Farming.getGameSpeed());
 
                         case 2:
-                            return 161 * Farming.getGameSpeed();
+                            return (int) (171 * Farming.getGameSpeed());
 
                         case 3:
-                            return 182 * Farming.getGameSpeed();
+                            return (int) (195 * Farming.getGameSpeed());
 
                         case 4:
-                            return 204 * Farming.getGameSpeed();
+                            return (int) (219 * Farming.getGameSpeed());
 
                         case 5:
-                            return 227 * Farming.getGameSpeed();
+                            return (int) (243 * Farming.getGameSpeed());
 
                         case 6:
-                            return 249 * Farming.getGameSpeed();
+                            return (int) (267 * Farming.getGameSpeed());
                     }
                 } else if(intervalToFarm.option == 4) {
                     switch (stage) {
                         case 1:
-                            return 268 * Farming.getGameSpeed();
+                            return (int) (286 * Farming.getGameSpeed());
 
                         case 2:
-                            return 311 * Farming.getGameSpeed();
+                            return (int) (334 * Farming.getGameSpeed());
 
                         case 3:
-                            return 356 * Farming.getGameSpeed();
+                            return (int) (382 * Farming.getGameSpeed());
 
                         case 4:
-                            return 402 * Farming.getGameSpeed();
+                            return (int) (430 * Farming.getGameSpeed());
 
                         case 5:
-                            return 447 * Farming.getGameSpeed();
+                            return (int) (477 * Farming.getGameSpeed());
 
                         case 6:
-                            return 492 * Farming.getGameSpeed();
+                            return (int) (525 * Farming.getGameSpeed());
                     }
                 }
             }
         }
         return 0;
+    }
+
+    public int getIsland_x() {
+        return island_x;
+    }
+
+    public void setIsland_x(int island_x) {
+        this.island_x = island_x;
+    }
+
+    public int getIsland_y() {
+        return island_y;
+    }
+
+    public void setIsland_y(int island_y) {
+        this.island_y = island_y;
     }
 
     public int getResourcesLooted() {

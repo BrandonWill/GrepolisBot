@@ -1,3 +1,12 @@
+Version 0.21
+* Bot rework is starting -- GSON library is now being used
+* Academy is now being accessed by the bot on the first run through. This was done because there wasn't any way to figure out if booty was researched without captain. This also means if you research booty without captain, you have to restart the bot for it to take effect.
+* Farming values now work with decimals! Didn't think I'd see a world with 3.5 speed, but there is one!
+* Farming has been reworked for captain-less farming!
+    * Farming villages should now farm all the resources that they can
+    * No more removing farming villages that don't belong to the town
+* A new timer for building Troops has been added. If you want the bot to work as before, then have the same values for the bot and troop timers
+
 Version 0.20
 * Work began on automatic research.
 * Fixed a bug that caused the current city to not be the same if you left the queue panel

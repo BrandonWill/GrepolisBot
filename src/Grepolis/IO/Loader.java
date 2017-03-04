@@ -91,12 +91,20 @@ public class Loader {
                                 SettingsPanel.setWorldField(new TextField(finalLine2.split(":")[1]));
                             }
                         });
-                    } else if (line.startsWith("RefreshTime-") && line.split(":").length > 1) {
+                    } else if (line.startsWith("RefreshTime") && line.split(":").length > 1) {
                         final String finalLine2 = line;
                         PlatformImpl.startup(new Runnable() {
                             @Override
                             public void run() {
-                                SettingsPanel.setUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
+                                SettingsPanel.setBotUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
+                            }
+                        });
+                    } else if (line.startsWith("TroopRefreshTime") && line.split(":").length > 1) {
+                        final String finalLine2 = line;
+                        PlatformImpl.startup(new Runnable() {
+                            @Override
+                            public void run() {
+                                SettingsPanel.setTroopUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
                             }
                         });
                     }

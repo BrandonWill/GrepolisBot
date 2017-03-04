@@ -1,14 +1,18 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="GrepolisBot_0.20">
+  <artifact type="jar" build-on-make="true" name="GrepolisBot_0.21">
     <output-path>$PROJECT_DIR$/</output-path>
     <properties id="ant-postprocessing">
       <options enabled="true" />
     </properties>
-    <root id="archive" name="GrepolisBot_0.20.jar">
+    <properties id="ant-preprocessing">
+      <options enabled="true" />
+    </properties>
+    <root id="archive" name="GrepolisBot_0.21.jar">
       <element id="module-output" name="Grepolis" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
       </element>
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/gson-2.6.2.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

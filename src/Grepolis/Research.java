@@ -20,7 +20,7 @@ public class Research {
         this.town = town;
     }
 
-    public static void parseHTML(String townData) {
+    public void parseHTML(String townData) {
         String townResearches = townData.substring(0, townData.indexOf("}}]}"));
         townResearches = townResearches.replaceAll("\"", "");
 
@@ -70,7 +70,11 @@ public class Research {
                     }
                 }
 
-
+                for (Researches researches1 : researches) {
+                    if (researches1.getResearchType().equals(Researches.ResearchType.booty)) {
+                        town.getFarming().setBooty(researches1.isResearched());
+                    }
+                }
 
                 //Currently, there are 39 researchers. And there will always be one "0" here
                 if (researches.size() != 39 && researches.size() != 0) {

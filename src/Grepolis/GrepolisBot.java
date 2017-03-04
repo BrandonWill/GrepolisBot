@@ -51,8 +51,11 @@ public class GrepolisBot {
     public static WebView webView;
 
     private static String csrfToken = null;
+    private long botUpdateTime = 0;
+    private long troopUpdateTime = 0;
 
     private static ArrayList<Town> towns = new ArrayList<>();
+
 
     private static String server;
     private int defaultTown;
@@ -66,6 +69,7 @@ public class GrepolisBot {
     private static volatile boolean loadedVillagesFromMap = false;
     private static volatile boolean openedFarmInterface = false;
     private static volatile boolean restartBot = false;
+    private static volatile int currentTownIndex = 0;
 
     private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
 
@@ -215,8 +219,8 @@ public class GrepolisBot {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36");
-
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                webView.getEngine().setJavaScriptEnabled(true);
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
                 //Every request received is handled by alerts!
@@ -391,6 +395,8 @@ public class GrepolisBot {
                                 String GRC = BrowserExtension.loadGRC();
                                 if (GRC != null) {
                                     webView.getEngine().executeScript(GRC);
+                                } else {
+                                    log(Level.SEVERE, "GRC returned null");
                                 }
                             }
                         });
@@ -533,7 +539,8 @@ public class GrepolisBot {
                 } while (!obtainedCultureData);
 
                 //Barracks can be null if it isn't built yet. Normally isn't a problem, but required before trying to obtain its' level.
-                if (town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
+                if (System.currentTimeMillis() >= troopUpdateTime && town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
+
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
                         @Override
@@ -629,11 +636,7 @@ public class GrepolisBot {
         }
     }
 
-    private static boolean researchedTheTown = false;
-
-    public void setResearchedTheTown(boolean researchedTheTown) {
-        GrepolisBot.researchedTheTown = researchedTheTown;
-    }
+    private static boolean[] researchedTheTown;
 
     public class Researcher implements Runnable {
         Town town;
@@ -681,7 +684,7 @@ public class GrepolisBot {
                         }
                     });
                 } else {
-                    researchedTheTown = true;
+                    researchedTheTown[currentTownIndex] = true;
                 }
 
             } catch (InterruptedException e) {
@@ -775,7 +778,7 @@ public class GrepolisBot {
 
                 do {
                     Thread.sleep(randInt(250, 500));
-                } while (!researchedTheTown);
+                } while (!researchedTheTown[currentTownIndex]);
 
 //                if (town.getCulture().canStartParty()) {
                 Thread.sleep(randInt(1250, 2500));
@@ -999,7 +1002,7 @@ public class GrepolisBot {
         return false;
     }
 
-    private long updateTime = 0;
+
     private volatile boolean canContinue;
     private Town currentTown;
 
@@ -1020,7 +1023,7 @@ public class GrepolisBot {
 
                     do {
                         Thread.sleep(250);
-                    } while (System.currentTimeMillis() < updateTime);
+                    } while (System.currentTimeMillis() < botUpdateTime);
 
                     //disables input. Decreases chance of a ban
                     webView.setDisable(true);
@@ -1085,10 +1088,11 @@ public class GrepolisBot {
 //                                }
                                 farmedTheTown = true;
                             }
-                            researchedTheTown = true;
-//                            if (!researchedTheTown) {
-//                                (new Thread(new Researcher(towns.get(i)))).start();
-//                            }
+//                            researchedTheTown[i] = true;
+                            currentTownIndex = i;
+                            if (!researchedTheTown[i]) {
+                                (new Thread(new Researcher(towns.get(i)))).start();
+                            }
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
                             culture[0].start();
                             builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
@@ -1129,7 +1133,8 @@ public class GrepolisBot {
                         break;
                     }
 
-                    updateTime = getUpdateTime();
+                    botUpdateTime = getBotUpdateTime();
+                    troopUpdateTime = getTroopUpdateTime();
                 }
 
 
@@ -1138,11 +1143,11 @@ public class GrepolisBot {
                     botIsRunning = false;
                     log("An error has been detected. The bot has stopped.");
 
-//                    updateTime = getUpdateTime();
+//                    botUpdateTime = getBotUpdateTime();
 //
 //                    do {
 //                        Thread.sleep(250);
-//                    } while (System.currentTimeMillis() < updateTime);
+//                    } while (System.currentTimeMillis() < botUpdateTime);
 //
 //                    Thread.sleep(30000);
 //
@@ -1159,8 +1164,8 @@ public class GrepolisBot {
      *
      * @return the time to update from the GUI.
      */
-    private long getUpdateTime() {
-        String time = SettingsPanel.getUpdateTimeField().getText();
+    private long getBotUpdateTime() {
+        String time = SettingsPanel.getBotUpdateTimeField().getText();
         String intervals[] = time.split(":");
         int hours = Integer.parseInt(intervals[0]);
         int minutes = Integer.parseInt(intervals[1]);
@@ -1169,6 +1174,24 @@ public class GrepolisBot {
         double variance = ((double) timeToUpdate) * 0.1;
         timeToUpdate = ThreadLocalRandom.current().nextLong(timeToUpdate - (long) variance, timeToUpdate + (long) variance);
         return System.currentTimeMillis() + timeToUpdate;
+    }
+
+    private long getTroopUpdateTime() {
+        String botUpdatetime = SettingsPanel.getBotUpdateTimeField().getText();
+        String troopUpdateTime = SettingsPanel.getTroopUpdateTimeField().getText();
+        //If they have the same interval, we want them to update at the time same!
+        if (botUpdatetime.equals(troopUpdateTime)) {
+            return this.botUpdateTime;
+        } else {
+            String intervals[] = troopUpdateTime.split(":");
+            int hours = Integer.parseInt(intervals[0]);
+            int minutes = Integer.parseInt(intervals[1]);
+            int seconds = Integer.parseInt(intervals[2]);
+            long timeToUpdate = TimeUnit.HOURS.toMillis(hours) + TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.SECONDS.toMillis(seconds);
+            double variance = ((double) timeToUpdate) * 0.1;
+            timeToUpdate = ThreadLocalRandom.current().nextLong(timeToUpdate - (long) variance, timeToUpdate + (long) variance);
+            return System.currentTimeMillis() + timeToUpdate;
+        }
     }
 
     public class TownSwitcher implements Runnable {
@@ -1250,7 +1273,8 @@ public class GrepolisBot {
 
         @Override
         public void run() {
-            long timeToUpdate = 0;
+            long botTimeToUpdate = 0;
+            long troopTimeToUpdate = 0;
             long pauseTime = 0;
             while (botIsRunning || restartBot) {
                 try {
@@ -1258,23 +1282,28 @@ public class GrepolisBot {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (updateTime > 0) {
+                if (botUpdateTime > 0) {
                     if (!botIsPaused) {
                         if (pauseTime > 0) {
-                            updateTime += System.currentTimeMillis() - pauseTime;
+                            botUpdateTime += System.currentTimeMillis() - pauseTime;
+                            troopUpdateTime += System.currentTimeMillis() - pauseTime;
                             pauseTime = 0;
                         }
-                        timeToUpdate = updateTime - System.currentTimeMillis();
+                        botTimeToUpdate = botUpdateTime - System.currentTimeMillis();
+                        troopTimeToUpdate = troopUpdateTime - System.currentTimeMillis();
                     } else {
                         if (pauseTime == 0) {
                             pauseTime = System.currentTimeMillis();
                         }
                     }
-                    if (!botIsPaused && timeToUpdate > 0) {
-                        long second = (timeToUpdate / 1000) % 60;
-                        long minute = (timeToUpdate / (1000 * 60)) % 60;
-                        long hour = (timeToUpdate / (1000 * 60 * 60)) % 24;
-                        final String remainingTime = String.format("Update time: %02d:%02d:%02d", hour, minute, second);
+                    if (!botIsPaused && botTimeToUpdate > 0) {
+                        long botSecond = (botTimeToUpdate / 1000) % 60;
+                        long botMinute = (botTimeToUpdate / (1000 * 60)) % 60;
+                        long botHour = (botTimeToUpdate / (1000 * 60 * 60)) % 24;
+                        long troopSecond = (troopTimeToUpdate / 1000) % 60;
+                        long troopMinute = (troopTimeToUpdate / (1000 * 60)) % 60;
+                        long troopHour = (troopTimeToUpdate / (1000 * 60 * 60)) % 24;
+                        final String remainingTime = String.format("Bot Update Time: %02d:%02d:%02d Troop Update Time: %02d:%02d:%02d", botHour, botMinute, botSecond, troopHour, troopMinute, troopSecond);
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -1417,9 +1446,7 @@ public class GrepolisBot {
                                             }
                                             if (string.contains("\"game_speed\"")) {
                                                 String gameSpeed = string.split(":")[1];
-                                                if (isStringDigit(gameSpeed)) {
-                                                    Farming.setGameSpeed(Integer.parseInt(gameSpeed));
-                                                }
+                                                    Farming.setGameSpeed(Double.parseDouble(gameSpeed));
                                             }
                                         }
                                         getAllTownData();
@@ -1508,10 +1535,10 @@ public class GrepolisBot {
                         }
                         if (data.contains("AcademyData:")) {
                             if (data.contains("AcademyData:200")) {
-                                Research.parseHTML(data);
-                                researchedTheTown = true;
+                                currentTown.getResearch().parseHTML(data);
+                                researchedTheTown[currentTownIndex] = true;
                             } else {
-                                researchedTheTown = true;
+                                researchedTheTown[currentTownIndex] = true;
                                 log(Level.SEVERE, "Error! Can't find the Academy data! Error log: " + event.getData());
                                 restartBot = true;
                             }
@@ -1752,6 +1779,7 @@ public class GrepolisBot {
         });
         if (!saidonce) {
             log("Towns found: " + towns.size());
+            researchedTheTown = new boolean[towns.size()];
             saidonce = true;
         }
 
