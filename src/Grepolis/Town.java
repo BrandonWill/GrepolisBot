@@ -1,10 +1,23 @@
 package Grepolis;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.application.Platform;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.CookieManager;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static Grepolis.util.MyLogger.log;
+import static Grepolis.util.MyLogger.logError;
 
 /**
  * @Author Brandon
@@ -33,6 +46,7 @@ public class Town {
     private int last_stone;
     private int last_iron;
     private int storage;
+    private HashMap<Integer, Long> buildingFinishingTimes = new HashMap<>();
 
 
     public boolean parseHTML(String html) {
@@ -238,8 +252,27 @@ public class Town {
     }
 
     public boolean buildABuilding() {
-        //Check so that towns can build docks faster
+//        if (isBuildingQueueFull) {
+        HashMap<Integer, Long> holder = new HashMap<>(buildingFinishingTimes);
+        for (Map.Entry<Integer, Long> entry : holder.entrySet()) {
+            Integer key = entry.getKey();
+            long value = entry.getValue();
+            long secondsRemaining = value - GrepolisBot.getServerUnixTime();
+//            System.out.println("Time remaining on " +key + " is " +secondsRemaining + " seconds");
+//            System.out.println("Value: " +value + " current server time: " +GrepolisBot.getServerUnixTime());
+            if (secondsRemaining < 0) {
+                buildingFinishingTimes.remove(key);
+            } else if (secondsRemaining > 10 && secondsRemaining <= 300) {
+                System.out.println(getName() +" automatically finished up a building that was below 5 minutes!");
+                if (completeBuildingEarly(key)) {
+                    buildingFinishingTimes.remove(key);
+                }
+            }
+        }
+//        }
 
+
+        //Check so that towns can build docks faster
         if (rushDocksBuildings()) {
             Building.BuildingType buildingType = docksBuildingRequirementRush();
             return build(buildingType, getBuilding(buildingType).getBuildTo());
@@ -287,6 +320,93 @@ public class Town {
             return build(Building.BuildingType.ironer, getBuilding(Building.BuildingType.ironer).getBuildTo());
         }
         return false;
+    }
+
+    private boolean completeBuildingEarly(int orderID) {
+        //{"model_url":"BuildingOrder/1210570","action_name":"buyInstant","arguments":{"order_id":1210570},"town_id":16762,"nl_init":true}
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                GrepolisBot.webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
+                        "xhr.onreadystatechange = function() {\n" +
+                        "    if (xhr.readyState == 4) {\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "xhr.open('POST', 'https://" + server + ".grepolis.com/game/" + completeBuildingEarlyJSON(orderID) +", true);\n" +
+                        "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                        "xhr.send(null);");
+//                GrepolisBot.webView.getEngine().executeScript("BuildingMain.buildBuilding('" + building.getName() + "'," + buildingLevel + ")");
+                isBuildingQueueFull = false;
+            }
+        });
+        return true;
+    }
+
+    private String completeBuildingEarlyJSON(int orderID) {
+        //{"model_url":"BuildingOrder/1210570","action_name":"buyInstant","arguments":{"order_id":1210570},"town_id":16762,"nl_init":true}
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("frontend_bridge?town_id=").append(getId()).append("&action=execute&h=").append(getCsrftoken()).append("&json=' +encodeURIComponent(JSON.stringify(");
+
+        sb.append("{\"model_url\":\"BuildingOrder/" + orderID + "\",");
+
+        sb.append("\"action_name\":\"buyInstant\",\"arguments\":{\"order_id\":" + orderID + "},\"town_id\":" + getId());
+
+        sb.append(",\"nl_init\":true}");
+
+        sb.append("))");
+
+        return  sb.toString();
+    }
+
+    public boolean parseBuildingInQueueData(String data) {
+//            final Building building = getBuilding(buildingType);
+//            CookieManager cm = new CookieManager();
+//            URL url = new URL("https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + getId() + "&action=execute&h=" +csrftoken + "&json=%7B%22model_url%22%3A%22BuildingOrder%22%2C%22action_name%22%3A%22buildUp%22%2C%22arguments%22%3A%7B%22building_id%22%3A%22" + building.getName() + "%22%7D%2C%22town_id%22%3A" + getId() + "%2C%22nl_init%22%3Atrue%7D");
+//            URLConnection conn = url.openConnection();
+//            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+//            conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+//            conn.setRequestProperty("Cookie", GrepolisBot.getCookie());
+//
+//            conn.connect();
+//
+//            Reader reader = new InputStreamReader(conn.getInputStream());
+
+        data = data.replace("BuildingInQueueData:200", "");
+        JsonElement jElement = new JsonParser().parse(data);
+        JsonObject jObject = jElement.getAsJsonObject();
+        System.out.println("jObject: " +jObject.toString());
+        JsonObject json = jObject.getAsJsonObject("json");
+        JsonArray notifications = json.getAsJsonArray("notifications");
+
+
+        int order_param_id = -1;
+        String param_str = null;
+        if (notifications != null && !notifications.isJsonNull()) {
+            for (int i = 0; i < notifications.size(); i++) {
+                JsonObject jsonObject = notifications.get(i).getAsJsonObject();
+                if (jsonObject != null) {
+                    if (jsonObject.has("subject")) {
+                        if (jsonObject.get("subject").getAsString().equals("BuildingOrder")) {
+                            order_param_id = jsonObject.get("param_id").getAsInt();
+                            param_str = jsonObject.get("param_str").getAsString();
+                        }
+                    }
+                }
+            }
+
+            if (order_param_id != -1 && param_str != null) {
+                JsonElement jsonElement = new JsonParser().parse(param_str.replaceAll("\\\\", ""));
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                JsonObject BuildingOrder = jsonObject.getAsJsonObject("BuildingOrder");
+                long completionTime = BuildingOrder.get("to_be_completed_at").getAsLong();
+                buildingFinishingTimes.put(order_param_id, completionTime);
+                System.out.println("Putting in order: " + order_param_id + " to be completed at: " + completionTime);
+            }
+        }
+
+
+        return true;
     }
 
     public boolean canBuildAnything() {
@@ -341,8 +461,8 @@ public class Town {
             public void run() {
                 GrepolisBot.webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
                         "xhr.onreadystatechange = function() {\n" +
-                        "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                        "        console.log(xhr.responseText);\n" +
+                        "    if (xhr.readyState == 4) {\n" +
+                        "        alert(\"BuildingInQueueData:\" +xhr.status +readBody(xhr));\n" +
                         "    }\n" +
                         "}\n" +
                         "xhr.open('POST', 'https://" + server + ".grepolis.com/game/frontend_bridge?town_id=" + getId() + "&action=execute&h=" +csrftoken + "&json=%7B%22model_url%22%3A%22BuildingOrder%22%2C%22action_name%22%3A%22buildUp%22%2C%22arguments%22%3A%7B%22building_id%22%3A%22" + building.getName() + "%22%7D%2C%22town_id%22%3A" + getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +

@@ -508,9 +508,11 @@ public class Farming {
                 FarmingVillage farmingVillage = getFarmingVillage(farm_town_id);
                 if (farmingVillage != null) {
                     farmingVillage.setRel(true);
-                    long timeToFarm = farmingVillageObject.get("lootable_at").getAsLong();
-                    farmingVillage.setLoot(timeToFarm);
-                    town.setTimeToFarm(timeToFarm);
+                    if (!farmingVillageObject.get("lootable_at").isJsonNull()) {
+                        long timeToFarm = farmingVillageObject.get("lootable_at").getAsLong();
+                        farmingVillage.setLoot(timeToFarm);
+                        town.setTimeToFarm(timeToFarm);
+                    }
                     farmingVillage.setBattlePointFarmID(id);
                     farmingVillage.setResourcesLooted(farmingVillageObject.get("loot").getAsInt());
 //                    log("Lootable at: " +timeToFarm);

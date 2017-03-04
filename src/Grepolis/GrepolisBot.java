@@ -70,6 +70,7 @@ public class GrepolisBot {
     private static volatile boolean openedFarmInterface = false;
     private static volatile boolean restartBot = false;
     private static volatile int currentTownIndex = 0;
+    private static volatile String cookie;
 
     private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
 
@@ -1411,6 +1412,7 @@ public class GrepolisBot {
                                     @Override
                                     public void run() {
                                         String html = (String) webView.getEngine().executeScript("document.documentElement.outerHTML");
+                                        cookie = (String) webView.getEngine().executeScript("document.cookie");
                                         //                                       CreateResearchEnum.parseHTML(html);
                                         for (String string : html.split(",")) {
                                             if (string.contains("csrfToken") && csrfToken == null) {
@@ -1649,6 +1651,15 @@ public class GrepolisBot {
                                 restartBot = true;
                             }
                         }
+                        if (data.contains("BuildingInQueueData")) {
+                            if (data.contains("BuildingInQueueData:200")) {
+                                System.out.println("data: " +data);
+                                currentTown.parseBuildingInQueueData(data);
+                            } else {
+                                log(Level.SEVERE, "Error! Was unable to load the data after putting a building in queue! Error log: " + event.getData());
+                                restartBot = true;
+                            }
+                        }
                     }
                 });
             }
@@ -1827,5 +1838,11 @@ public class GrepolisBot {
         return true;
     }
 
+    public static String getCookie() {
+        return cookie;
+    }
 
+    public static void setCookie(String cookie) {
+        GrepolisBot.cookie = cookie;
+    }
 }

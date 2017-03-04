@@ -6,6 +6,7 @@ Version 0.21
     * Farming villages should now farm all the resources that they can
     * No more removing farming villages that don't belong to the town
 * A new timer for building Troops has been added. If you want the bot to work as before, then have the same values for the bot and troop timers
+* Any building that is built by the bot will now be finished automatically if there's less than 5 minutes.
 
 Version 0.20
 * Work began on automatic research.
