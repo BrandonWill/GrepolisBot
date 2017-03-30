@@ -25,7 +25,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import org.w3c.dom.Document;
+import org.w3c.dom.html.HTMLCollection;
 import org.w3c.dom.html.HTMLFormElement;
+import org.w3c.dom.html.HTMLInputElement;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -51,6 +53,7 @@ public class GrepolisBot {
     public static WebView webView;
 
     private static String csrfToken = null;
+    private static int playerID;
     private long botUpdateTime = 0;
     private long troopUpdateTime = 0;
 
@@ -220,7 +223,7 @@ public class GrepolisBot {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
                 webView.getEngine().setJavaScriptEnabled(true);
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);
@@ -288,27 +291,27 @@ public class GrepolisBot {
                                 HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
                                 if ("/glps/login_check".equals(form.getAttribute("action"))) {
 
-                                    Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            //enter in username
-                                            engine.executeScript("var loginElement = document.getElementById(\"login_userid\");\n" +
-                                                    "var element = angular.element(loginElement);\n" +
-                                                    "element.val('" + SettingsPanel.getUsernameField().getText() + "');\n" +
-                                                    "element.triggerHandler('input');");
-
-                                            //enter in password
-                                            engine.executeScript("var passwordElement = document.getElementById(\"login_password\");\n" +
-                                                    "var element = angular.element(passwordElement);\n" +
-                                                    "element.val('" + SettingsPanel.getPasswordField().getText() + "');\n" +
-                                                    "element.triggerHandler('input');");
-
-                                            //click the login button
-                                            engine.executeScript("var buttonElement = document.getElementById(\"login_Login\");\n" +
-                                                    "var element = angular.element(buttonElement);\n" +
-                                                    "element.click();");
-                                        }
-                                    });
+//                                    Platform.runLater(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            //enter in username
+//                                            engine.executeScript("var loginElement = document.getElementById(\"login_userid\");\n" +
+//                                                    "var element = angular.element(loginElement);\n" +
+//                                                    "element.val('" + SettingsPanel.getUsernameField().getText() + "');\n" +
+//                                                    "element.triggerHandler('input');");
+//
+//                                            //enter in password
+//                                            engine.executeScript("var passwordElement = document.getElementById(\"login_password\");\n" +
+//                                                    "var element = angular.element(passwordElement);\n" +
+//                                                    "element.val('" + SettingsPanel.getPasswordField().getText() + "');\n" +
+//                                                    "element.triggerHandler('input');");
+//
+//                                            //click the login button
+//                                            engine.executeScript("var buttonElement = document.getElementById(\"login_Login\");\n" +
+//                                                    "var element = angular.element(buttonElement);\n" +
+//                                                    "element.click();");
+//                                        }
+//                                    });
                                 }
                             }
                             //Selects the world if the user is already logged in.
@@ -1450,6 +1453,9 @@ public class GrepolisBot {
                                                 String gameSpeed = string.split(":")[1];
                                                     Farming.setGameSpeed(Double.parseDouble(gameSpeed));
                                             }
+                                            if (string.contains("player_id")) {
+                                                playerID = Integer.parseInt(string.split("\"player_id\":")[1]);
+                                            }
                                         }
                                         getAllTownData();
                                     }
@@ -1653,7 +1659,7 @@ public class GrepolisBot {
                         }
                         if (data.contains("BuildingInQueueData")) {
                             if (data.contains("BuildingInQueueData:200")) {
-                                System.out.println("data: " +data);
+//                                System.out.println("data: " +data);
                                 currentTown.parseBuildingInQueueData(data);
                             } else {
                                 log(Level.SEVERE, "Error! Was unable to load the data after putting a building in queue! Error log: " + event.getData());

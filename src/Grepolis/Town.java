@@ -47,6 +47,7 @@ public class Town {
     private int last_iron;
     private int storage;
     private HashMap<Integer, Long> buildingFinishingTimes = new HashMap<>();
+    private ArrayList<BuildingInQueue> buildingInQueues = new ArrayList<>();
 
 
     public boolean parseHTML(String html) {
@@ -375,7 +376,7 @@ public class Town {
         data = data.replace("BuildingInQueueData:200", "");
         JsonElement jElement = new JsonParser().parse(data);
         JsonObject jObject = jElement.getAsJsonObject();
-        System.out.println("jObject: " +jObject.toString());
+//        System.out.println("jObject: " +jObject.toString());
         JsonObject json = jObject.getAsJsonObject("json");
         JsonArray notifications = json.getAsJsonArray("notifications");
 
@@ -400,8 +401,9 @@ public class Town {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 JsonObject BuildingOrder = jsonObject.getAsJsonObject("BuildingOrder");
                 long completionTime = BuildingOrder.get("to_be_completed_at").getAsLong();
+                buildingInQueues.add(new BuildingInQueue(order_param_id, completionTime));
                 buildingFinishingTimes.put(order_param_id, completionTime);
-                System.out.println("Putting in order: " + order_param_id + " to be completed at: " + completionTime);
+//                System.out.println("Putting in order: " + order_param_id + " to be completed at: " + completionTime);
             }
         }
 
@@ -629,5 +631,31 @@ public class Town {
 
     public void setStorage(int storage) {
         this.storage = storage;
+    }
+
+    private class BuildingInQueue {
+        int param_id;
+        long finishTime;
+
+        BuildingInQueue(int param_id, long finishTime) {
+            this.param_id = param_id;
+            this.finishTime = finishTime;
+        }
+
+        public int getParam_id() {
+            return param_id;
+        }
+
+        public void setParam_id(int param_id) {
+            this.param_id = param_id;
+        }
+
+        public long getFinishTime() {
+            return finishTime;
+        }
+
+        public void setFinishTime(long finishTime) {
+            this.finishTime = finishTime;
+        }
     }
 }
