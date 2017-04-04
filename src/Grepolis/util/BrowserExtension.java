@@ -33,7 +33,6 @@ public class BrowserExtension {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(sb.toString());
         return sb.toString();
     }
 
