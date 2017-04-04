@@ -291,10 +291,27 @@ public class GrepolisBot {
                                 HTMLFormElement form = (HTMLFormElement) doc.getElementsByTagName("form").item(0);
                                 if ("/glps/login_check".equals(form.getAttribute("action"))) {
 
-//                                    Platform.runLater(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            //enter in username
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //They've switched to Vue.js, why this over angular? Who knows. My guess is a new developer
+                                            engine.executeScript("vmLogin.$data.formData.userid.value = '" + SettingsPanel.getUsernameField().getText() + "';\n" +
+                                                    "vmLogin.$data.formData.password.value = '" + SettingsPanel.getPasswordField().getText() + "';\n" +
+                                                    "document.getElementById('login_Login').click();");
+//
+//                                            //enter in password
+//                                            engine.executeScript("var passwordElement = document.getElementById(\"login_password\");\n" +
+//                                                    "var element = angular.element(passwordElement);\n" +
+//                                                    "element.val('" + SettingsPanel.getPasswordField().getText() + "');\n" +
+//                                                    "element.triggerHandler('input');");
+//
+//                                            //click the login button
+//                                            engine.executeScript("var buttonElement = document.getElementById(\"login_Login\");\n" +
+//                                                    "var element = angular.element(buttonElement);\n" +
+//                                                    "element.click();");
+
+                                            /* This is the old angular login code. In case they go back! */
+                                            //enter in username
 //                                            engine.executeScript("var loginElement = document.getElementById(\"login_userid\");\n" +
 //                                                    "var element = angular.element(loginElement);\n" +
 //                                                    "element.val('" + SettingsPanel.getUsernameField().getText() + "');\n" +
@@ -310,8 +327,8 @@ public class GrepolisBot {
 //                                            engine.executeScript("var buttonElement = document.getElementById(\"login_Login\");\n" +
 //                                                    "var element = angular.element(buttonElement);\n" +
 //                                                    "element.click();");
-//                                        }
-//                                    });
+                                        }
+                                    });
                                 }
                             }
                             //Selects the world if the user is already logged in.
