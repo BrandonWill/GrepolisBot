@@ -36,6 +36,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.List;
@@ -224,6 +225,7 @@ public class GrepolisBot {
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
                 webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                webView.getEngine().setUserDataDirectory(new File("localStorage"));
                 webView.getEngine().setJavaScriptEnabled(true);
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
                 webView.getEngine().getHistory().setMaxSize(3);

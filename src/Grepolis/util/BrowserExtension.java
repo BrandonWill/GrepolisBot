@@ -19,22 +19,22 @@ public class BrowserExtension {
      */
 
     public static String loadGRC() {
-        String GCRData = null;
+        StringBuilder sb = new StringBuilder();
         try {
             URL GCR = new URL("https://www.grcrt.net/scripts/GrepolisReportConverterV2.user.js");
             URLConnection connection = GCR.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                if (!inputLine.startsWith("//")) {
-                    GCRData = inputLine;
-                }
+                sb.append(inputLine);
+                sb.append("\n");
             }
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return GCRData;
+        System.out.println(sb.toString());
+        return sb.toString();
     }
 
 }
