@@ -515,6 +515,7 @@ public class Farming {
                     }
                     farmingVillage.setBattlePointFarmID(id);
                     farmingVillage.setResourcesLooted(farmingVillageObject.get("loot").getAsInt());
+                    farmingVillage.setStage(farmingVillageObject.get("expansion_stage").getAsInt());
 //                    log("Lootable at: " +timeToFarm);
 //                    log("can farm: " +farmingVillage.canFarm());
 //                    log("Farming village found in " +town.getName() + " with the name of: " +farmingVillage.getName());
