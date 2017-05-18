@@ -76,6 +76,7 @@ public class Farming {
             storage = currentTown.get("storage_volume").getAsInt();
             booty = currentTown.get("booty").getAsBoolean();
             diplomacy = currentTown.get("diplomacy_researched").getAsBoolean();
+            updateFarmIntervals();
             trade_office = currentTown.get("trade_office").getAsInt();
             JsonObject resources = currentTown.getAsJsonObject("resources");
             wood = resources.get("wood").getAsInt();
@@ -397,7 +398,7 @@ public class Farming {
             sb.append("&json=' +encodeURIComponent(JSON.stringify(");
 
             sb.append("{\"model_url\":\"FarmTownPlayerRelation/" + farmingVillage.getBattlePointFarmID() +"\",\"action_name\":\"claim\",\"arguments\":" +
-                    "{\"farm_town_id\":" + farmingVillage.getFarm_town_id() +",\"type\":\"resources\",\"option\":1},\"town_id\":" + town.getId() + ",\"nl_init\":true}");
+                    "{\"farm_town_id\":" + farmingVillage.getFarm_town_id() +",\"type\":\"resources\",\"option\":" + getOptionNumberFromInterval() + "},\"town_id\":" + town.getId() + ",\"nl_init\":true}");
 
             sb.append("))");
 
@@ -899,6 +900,77 @@ public class Farming {
 
     public static void setAllIntervalToFarm(IntervalToFarm allIntervalToFarm) {
         Farming.allIntervalToFarm = allIntervalToFarm;
+    }
+
+    private int getOptionNumberFromInterval() {
+        switch (intervalToFarm) {
+            case MINUTES_FIVE:
+                return 1;
+
+            case MINUTES_TWENTY:
+                return 2;
+
+            case MINUTES_NINETY:
+                return 3;
+
+            case MINUTES_TWO_HUNDRED_FORTY:
+                return 4;
+
+            default:
+                return 1;
+        }
+    }
+
+    private void updateFarmIntervals() {
+        switch (intervalToFarm) {
+            case MINUTES_FIVE:
+                if (diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_TEN;
+                }
+                break;
+
+            case MINUTES_TEN:
+                if (!diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_FIVE;
+                }
+                break;
+
+            case MINUTES_TWENTY:
+                if (diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_FORTY;
+                }
+                break;
+
+            case MINUTES_FORTY:
+                if (!diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_TWENTY;
+                }
+                break;
+
+            case MINUTES_NINETY:
+                if (diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_ONE_HUNDRED_EIGHTY;
+                }
+                break;
+
+            case MINUTES_ONE_HUNDRED_EIGHTY:
+                if (!diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_NINETY;
+                }
+                break;
+
+            case MINUTES_TWO_HUNDRED_FORTY:
+                if (diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_FOUR_HUNDRED_EIGHTY;
+                }
+                break;
+
+            case MINUTES_FOUR_HUNDRED_EIGHTY:
+                if (!diplomacy) {
+                    intervalToFarm = IntervalToFarm.MINUTES_TWO_HUNDRED_FORTY;
+                }
+                break;
+        }
     }
 
     public enum IntervalToFarm {
