@@ -75,6 +75,7 @@ public class GrepolisBot {
     private static volatile boolean restartBot = false;
     private static volatile int currentTownIndex = 0;
     private static volatile String cookie;
+    private static volatile boolean buildTroops = true;
 
     private HashMap<Integer, Boolean> townHasFarms = new HashMap<>();
 
@@ -562,7 +563,7 @@ public class GrepolisBot {
                 } while (!obtainedCultureData);
 
                 //Barracks can be null if it isn't built yet. Normally isn't a problem, but required before trying to obtain its' level.
-                if (System.currentTimeMillis() >= troopUpdateTime && town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
+                if (buildTroops && town.getBuilding(Building.BuildingType.barracks) != null && town.getBuilding(Building.BuildingType.barracks).getCurrentLevel() > 0) {
 
                     Thread.sleep(randInt(1250, 2500));
                     Platform.runLater(new Runnable() {
@@ -1048,6 +1049,8 @@ public class GrepolisBot {
                         Thread.sleep(250);
                     } while (System.currentTimeMillis() < botUpdateTime);
 
+                    buildTroops = System.currentTimeMillis() > troopUpdateTime;
+
                     //disables input. Decreases chance of a ban
                     webView.setDisable(true);
 
@@ -1161,7 +1164,6 @@ public class GrepolisBot {
                 }
 
 
-
                 if (restartBot) {
                     botIsRunning = false;
                     log("An error has been detected. The bot has stopped.");
@@ -1205,7 +1207,7 @@ public class GrepolisBot {
         //If they have the same interval, we want them to update at the time same!
         if (botUpdatetime.equals(troopUpdateTime)) {
             return this.botUpdateTime;
-        } else {
+        } else if (buildTroops) {
             String intervals[] = troopUpdateTime.split(":");
             int hours = Integer.parseInt(intervals[0]);
             int minutes = Integer.parseInt(intervals[1]);
@@ -1214,6 +1216,8 @@ public class GrepolisBot {
             double variance = ((double) timeToUpdate) * 0.1;
             timeToUpdate = ThreadLocalRandom.current().nextLong(timeToUpdate - (long) variance, timeToUpdate + (long) variance);
             return System.currentTimeMillis() + timeToUpdate;
+        } else {
+            return this.troopUpdateTime;
         }
     }
 
@@ -1305,7 +1309,7 @@ public class GrepolisBot {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (botUpdateTime > 0) {
+                if (botUpdateTime > 0 || troopTimeToUpdate > 0) {
                     if (!botIsPaused) {
                         if (pauseTime > 0) {
                             botUpdateTime += System.currentTimeMillis() - pauseTime;
@@ -1326,6 +1330,12 @@ public class GrepolisBot {
                         long troopSecond = (troopTimeToUpdate / 1000) % 60;
                         long troopMinute = (troopTimeToUpdate / (1000 * 60)) % 60;
                         long troopHour = (troopTimeToUpdate / (1000 * 60 * 60)) % 24;
+                        troopSecond = troopSecond < 0 ? 0 : troopSecond;
+                        troopMinute = troopMinute < 0 ? 0 : troopMinute;
+                        troopHour = troopHour < 0 ? 0 : troopHour;
+                        if (troopHour < 0) {
+                            troopHour = 0;
+                        }
                         final String remainingTime = String.format("Bot Update Time: %02d:%02d:%02d Troop Update Time: %02d:%02d:%02d", botHour, botMinute, botSecond, troopHour, troopMinute, troopSecond);
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
@@ -1470,7 +1480,7 @@ public class GrepolisBot {
                                             }
                                             if (string.contains("\"game_speed\"")) {
                                                 String gameSpeed = string.split(":")[1];
-                                                    Farming.setGameSpeed(Double.parseDouble(gameSpeed));
+                                                Farming.setGameSpeed(Double.parseDouble(gameSpeed));
                                             }
                                             if (string.contains("player_id")) {
                                                 playerID = Integer.parseInt(string.split("\"player_id\":")[1]);

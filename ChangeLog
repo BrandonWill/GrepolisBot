@@ -8,6 +8,7 @@ Version 0.21
 * A new timer for building Troops has been added. If you want the bot to work as before, then have the same values for the bot and troop timers
 * Any building that is built by the bot will now be finished automatically if there's less than 5 minutes.
 * Farming for other times outside of 5 or 10 minutes is now fixed.
+* Fixed troop timers so that they work the way they should.
 
 Version 0.20
 * Work began on automatic research.
