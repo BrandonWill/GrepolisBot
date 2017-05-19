@@ -1,3 +1,8 @@
+Version 0.22
+* Farming for other times outside of 5 or 10 minutes is now fixed.
+* Fixed troop timers so that they work the way they should.
+* Added a checkbox for selecting whether you want city festivals to be done by the bot.
+
 Version 0.21
 * Bot rework is starting -- GSON library is now being used
 * Academy is now being accessed by the bot on the first run through. This was done because there wasn't any way to figure out if booty was researched without captain. This also means if you research booty without captain, you have to restart the bot for it to take effect.
@@ -7,8 +12,6 @@ Version 0.21
     * No more removing farming villages that don't belong to the town
 * A new timer for building Troops has been added. If you want the bot to work as before, then have the same values for the bot and troop timers
 * Any building that is built by the bot will now be finished automatically if there's less than 5 minutes.
-* Farming for other times outside of 5 or 10 minutes is now fixed.
-* Fixed troop timers so that they work the way they should.
 
 Version 0.20
 * Work began on automatic research.

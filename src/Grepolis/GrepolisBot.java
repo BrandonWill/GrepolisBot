@@ -804,28 +804,28 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!researchedTheTown[currentTownIndex]);
 
-//                if (town.getCulture().canStartParty()) {
-                Thread.sleep(randInt(1250, 2500));
+                if (SettingsPanel.hasAutomaticFestivals()) {
+                    Thread.sleep(randInt(1250, 2500));
 
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
-                                "var cultureData;\n" +
-                                "xhr.onreadystatechange = function() {\n" +
-                                "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
-                                "        cultureData = xhr.responseText\n" +
-                                "        alert(\"CultureData:\" +xhr.status +readBody(xhr));\n" +
-                                "    }\n" +
-                                "}\n" +
-                                "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_place?town_id=" + town.getId() + "&action=culture&h=" + csrfToken + "', true);\n" +
-                                "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
-                                "xhr.send(null);\n");
-                    }
-                });
-//                } else {
-                obtainedCultureData = true;
-//                }
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.getEngine().executeScript("var xhr = new XMLHttpRequest();\n" +
+                                    "var cultureData;\n" +
+                                    "xhr.onreadystatechange = function() {\n" +
+                                    "    if (xhr.readyState == 4 && typeof xhr !='undefined') {\n" +
+                                    "        cultureData = xhr.responseText\n" +
+                                    "        alert(\"CultureData:\" +xhr.status +readBody(xhr));\n" +
+                                    "    }\n" +
+                                    "}\n" +
+                                    "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_place?town_id=" + town.getId() + "&action=culture&h=" + csrfToken + "', true);\n" +
+                                    "xhr.setRequestHeader(\"X-Requested-With\", \"XMLHttpRequest\");" +
+                                    "xhr.send(null);\n");
+                        }
+                    });
+                } else {
+                    obtainedCultureData = true;
+                }
             } catch (InterruptedException e) {
                 logError(e);
             }
@@ -1333,9 +1333,6 @@ public class GrepolisBot {
                         troopSecond = troopSecond < 0 ? 0 : troopSecond;
                         troopMinute = troopMinute < 0 ? 0 : troopMinute;
                         troopHour = troopHour < 0 ? 0 : troopHour;
-                        if (troopHour < 0) {
-                            troopHour = 0;
-                        }
                         final String remainingTime = String.format("Bot Update Time: %02d:%02d:%02d Troop Update Time: %02d:%02d:%02d", botHour, botMinute, botSecond, troopHour, troopMinute, troopSecond);
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override

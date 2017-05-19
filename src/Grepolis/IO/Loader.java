@@ -107,6 +107,14 @@ public class Loader {
                                 SettingsPanel.setTroopUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
                             }
                         });
+                    } else if (line.startsWith("Automatic City Festivals:") && line.split(":").length > 1) {
+                        final String finalLine2 = line;
+                        PlatformImpl.startup(new Runnable() {
+                            @Override
+                            public void run() {
+                                SettingsPanel.setHasAutomaticFestivals(Boolean.parseBoolean(finalLine2.split(":")[1]));
+                            }
+                        });
                     }
                 }
             }

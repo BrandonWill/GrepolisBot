@@ -33,6 +33,7 @@ public class Saver {
             writer.println("Server:" + SettingsPanel.getWorldField().getText());
             writer.println("RefreshTime:" + SettingsPanel.getBotUpdateTimeField().getText().replaceAll(":", "-"));
             writer.println("TroopRefreshTime:" + SettingsPanel.getTroopUpdateTimeField().getText().replaceAll(":", "-"));
+            writer.println("Automatic City Festivals:" + SettingsPanel.getAutomaticFestivals().isSelected());
             writer.close();
         }
     }
