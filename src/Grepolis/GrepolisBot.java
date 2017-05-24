@@ -381,13 +381,13 @@ public class GrepolisBot {
                     @Override
                     public void handle(javafx.event.ActionEvent t) {
                         if (!startedBot) {
-                            botIsRunning = true;
+                            startedBot = true;
                             log("Bot enabled");
                             new Thread(new Startup()).start();
                             new Thread(new TitleUpdater()).start();
 //                            startBot.setDisable(true);
                             startBot.setText("Pause bot");
-                            startedBot = true;
+
                         } else {
                             pauseBot();
                         }
@@ -623,33 +623,29 @@ public class GrepolisBot {
 
                 if (town.getBuilding(Building.BuildingType.docks) != null && town.getBuilding(Building.BuildingType.docks).getCurrentLevel() > 0) {
                     Thread.sleep(randInt(1250, 2500));
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
+                    Platform.runLater(() ->
                             webView.getEngine().executeScript("function readBody(xhr) {\n" +
-                                    "    var data;\n" +
-                                    "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
-                                    "        data = xhr.responseText;\n" +
-                                    "    } else if (xhr.responseType === \"document\") {\n" +
-                                    "        data = xhr.responseXML;\n" +
-                                    "    } else {\n" +
-                                    "        data = xhr.response;\n" +
-                                    "    }\n" +
-                                    "    return data;\n" +
-                                    "}\n" +
-                                    "\n" +
-                                    "var xhr = new XMLHttpRequest();\n" +
-                                    "var docksData;\n" +
-                                    "xhr.onreadystatechange = function() {\n" +
-                                    "    if (xhr.readyState == 4) {\n" +
-                                    "        docksData = readBody(xhr);\n" +
-                                    "        alert(\"DocksData:\" +xhr.status +readBody(xhr));\n" +
-                                    "    }\n" +
-                                    "}\n" +
-                                    "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_docks?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "&json=%7B%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
-                                    "xhr.send(null);");
-                        }
-                    });
+                            "    var data;\n" +
+                            "    if (!xhr.responseType || xhr.responseType === \"text\") {\n" +
+                            "        data = xhr.responseText;\n" +
+                            "    } else if (xhr.responseType === \"document\") {\n" +
+                            "        data = xhr.responseXML;\n" +
+                            "    } else {\n" +
+                            "        data = xhr.response;\n" +
+                            "    }\n" +
+                            "    return data;\n" +
+                            "}\n" +
+                            "\n" +
+                            "var xhr = new XMLHttpRequest();\n" +
+                            "var docksData;\n" +
+                            "xhr.onreadystatechange = function() {\n" +
+                            "    if (xhr.readyState == 4) {\n" +
+                            "        docksData = readBody(xhr);\n" +
+                            "        alert(\"DocksData:\" +xhr.status +readBody(xhr));\n" +
+                            "    }\n" +
+                            "}\n" +
+                            "xhr.open('GET', 'https://" + server + ".grepolis.com/game/building_docks?town_id=" + town.getId() + "&action=index&h=" + csrfToken + "&json=%7B%22town_id%22%3A" + town.getId() + "%2C%22nl_init%22%3Atrue%7D', true);\n" +
+                            "xhr.send(null);"));
                 } else {
                     builtDocksTroops = true;
                 }
@@ -1310,11 +1306,10 @@ public class GrepolisBot {
 
         @Override
         public void run() {
-            botIsRunning = true;
             long botTimeToUpdate = 0;
             long troopTimeToUpdate = 0;
             long pauseTime = 0;
-            while (botIsRunning || restartBot) {
+            while (startedBot || restartBot) {
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
@@ -1424,13 +1419,17 @@ public class GrepolisBot {
 //                System.out.println("Town data: " +aTownData);
 
                 String importantData[] = aTownData.split(",");
-                System.out.println("Important data: " + Arrays.toString(importantData));
+//                System.out.println("Important data: " + Arrays.toString(importantData));
                 int townID = Integer.parseInt(importantData[0].replaceAll(":", ""));
                 townHasFarms.put(townID, true);
             }
         }
         log("Towns with farms found: " + townHasFarms.size());
-        new Thread(new ActualBot()).start();
+
+        if (!botIsRunning) {
+            botIsRunning = true;
+            new Thread(new ActualBot()).start();
+        }
     }
 
     private void addAlerts() {
@@ -1578,7 +1577,9 @@ public class GrepolisBot {
                             } else {
                                 log(Level.WARNING, "Error! Can't find the towns with farms! Error log: " + event.getData());
                                 log(Level.WARNING, "Captain either not enabled or catastrophic error occurred!");
-                                new Thread(new ActualBot()).start();
+                                if (!botIsRunning) {
+                                    new Thread(new ActualBot()).start();
+                                }
                             }
                         }
                         //Checks for conqueror in the town
