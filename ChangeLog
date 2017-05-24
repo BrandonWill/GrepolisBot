@@ -2,6 +2,9 @@ Version 0.22
 * Farming for other times outside of 5 or 10 minutes is now fixed.
 * Fixed troop timers so that they work the way they should.
 * Added a checkbox for selecting whether you want city festivals to be done by the bot.
+* Can now refresh for the bot to detect if captain was re-enabled rather than restart the whole bot
+* Bot will now switch to the old farming style if captain is near expiration rather than crashing
+* Bot now detects current time zone
 
 Version 0.21
 * Bot rework is starting -- GSON library is now being used

@@ -37,10 +37,11 @@ public class Farming {
     private int moodToLootTo = 80;
     private IntervalToFarm intervalToFarm = IntervalToFarm.MINUTES_FIVE;
 
-    public static boolean captainEnabled = true;
-    public static int allMoodToLootTo = 80;
-    public static boolean allEnabled;
-    public static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
+    private static boolean captainEnabled = true;
+    private static int allMoodToLootTo = 80;
+    private static boolean allEnabled;
+    private static IntervalToFarm allIntervalToFarm = IntervalToFarm.MINUTES_FIVE;
+    private static long captainExpiresAt;
 
     private static boolean battlePointVillages = false;
     private static double gameSpeed = 1;
@@ -1042,5 +1043,21 @@ public class Farming {
 
     public void setBooty(boolean booty) {
         this.booty = booty;
+    }
+
+    public static long getCaptainExpiresAt() {
+        return captainExpiresAt;
+    }
+
+    public static void setCaptainExpiresAt(long captainExpiresAt) {
+        Farming.captainExpiresAt = captainExpiresAt;
+    }
+
+    public boolean isDiplomacy() {
+        return diplomacy;
+    }
+
+    public void setDiplomacy(boolean diplomacy) {
+        this.diplomacy = diplomacy;
     }
 }

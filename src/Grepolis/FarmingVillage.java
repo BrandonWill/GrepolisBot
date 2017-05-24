@@ -90,7 +90,7 @@ public class FarmingVillage {
     }
 
     public boolean canFarm() {
-        if (Farming.captainEnabled) {
+        if (Farming.isCaptainEnabled()) {
             return canFarm;
         } else {
             if (rel) {

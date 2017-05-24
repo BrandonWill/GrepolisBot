@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class BotFrame extends javax.swing.JFrame {
     private ArrayList<Town> towns;
-    private QueuePanel queueTab;
+    private QueuePanel_V2 queueTab;
     private FarmingPanel farmingTab;
 
     public BotFrame(ArrayList<Town> townList) {
@@ -91,7 +91,7 @@ public class BotFrame extends javax.swing.JFrame {
         );
 
 
-        queueTab = new QueuePanel(towns);
+        queueTab = new QueuePanel_V2(towns);
         jTabbedPane1.addTab("Queue", new JScrollPane(queueTab, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 
         javax.swing.GroupLayout farmingPanelLayout = new javax.swing.GroupLayout(farmingPanel);

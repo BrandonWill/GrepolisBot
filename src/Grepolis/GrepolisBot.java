@@ -69,7 +69,7 @@ public class GrepolisBot {
     private static boolean startedBot = false;
 
     private static volatile boolean botIsPaused = false;
-    private static volatile boolean botIsRunning = true;
+    private static volatile boolean botIsRunning = false;
     private static volatile boolean loadedVillagesFromMap = false;
     private static volatile boolean openedFarmInterface = false;
     private static volatile boolean restartBot = false;
@@ -381,6 +381,7 @@ public class GrepolisBot {
                     @Override
                     public void handle(javafx.event.ActionEvent t) {
                         if (!startedBot) {
+                            botIsRunning = true;
                             log("Bot enabled");
                             new Thread(new Startup()).start();
                             new Thread(new TitleUpdater()).start();
@@ -845,6 +846,12 @@ public class GrepolisBot {
         public void run() {
             try {
 
+                long minuteInMilliseconds = 60000;
+                if (Farming.isCaptainEnabled() && (getServerUnixTime() + minuteInMilliseconds) > Farming.getCaptainExpiresAt()) {
+                    log("Captain detected as expiring soon, so bot is changing to farming without captain");
+                    Farming.setCaptainEnabled(false);
+                }
+
 
                 Thread.sleep(3000);
 
@@ -852,7 +859,7 @@ public class GrepolisBot {
 
                 if (currentTime > town.getTimeToFarm()) {
 
-                    if (Farming.captainEnabled) {
+                    if (Farming.isCaptainEnabled()) {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
@@ -946,7 +953,7 @@ public class GrepolisBot {
 
         @Override
         public void run() {
-            if (Farming.captainEnabled) {
+            if (Farming.isCaptainEnabled()) {
                 final int townID = defaultTown;
                 Platform.runLater(new Runnable() {
                     @Override
@@ -979,7 +986,9 @@ public class GrepolisBot {
                     }
                 });
             } else {
-                new Thread(new ActualBot()).start();
+                if (!botIsRunning) {
+                    new Thread(new ActualBot()).start();
+                }
             }
         }
         //
@@ -1036,6 +1045,7 @@ public class GrepolisBot {
     public class ActualBot implements Runnable {
         public void run() {
             try {
+                botIsRunning = true;
                 restartBot = false;
                 farmedTheTown = true;
                 builtTheBuildings = true;
@@ -1102,7 +1112,7 @@ public class GrepolisBot {
                                 docksQueue[0].interrupt();
                             }
 
-                            if (towns.get(i).getFarming().isEnabled() && (townHasFarms.get(towns.get(i).getId()) != null || !Farming.captainEnabled)) {
+                            if (towns.get(i).getFarming().isEnabled() && (townHasFarms.get(towns.get(i).getId()) != null || !Farming.isCaptainEnabled())) {
                                 farmer[0] = (new Thread(new FarmTheTown(towns.get(i))));
                                 farmer[0].start();
                             } else {
@@ -1300,6 +1310,7 @@ public class GrepolisBot {
 
         @Override
         public void run() {
+            botIsRunning = true;
             long botTimeToUpdate = 0;
             long troopTimeToUpdate = 0;
             long pauseTime = 0;
@@ -1413,7 +1424,7 @@ public class GrepolisBot {
 //                System.out.println("Town data: " +aTownData);
 
                 String importantData[] = aTownData.split(",");
-//                System.out.println("Important data: " + Arrays.toString(importantData));
+                System.out.println("Important data: " + Arrays.toString(importantData));
                 int townID = Integer.parseInt(importantData[0].replaceAll(":", ""));
                 townHasFarms.put(townID, true);
             }
@@ -1461,14 +1472,26 @@ public class GrepolisBot {
                                                         String expiresAt = string.split(":")[1];
                                                         if (isStringDigit(expiresAt)) {
                                                             long expires = Long.parseLong(expiresAt);
+                                                            Farming.setCaptainExpiresAt(expires);
                                                             //100 is the gold cost of the captain
                                                             if (expires != 100 && getServerUnixTime() >= expires) {
                                                                 Farming.setCaptainEnabled(false);
                                                                 log(Level.SEVERE, "--------Captain detected as expired!-----");
+                                                            } else if (getServerUnixTime() <= expires && botIsRunning) {
+                                                                Farming.setCaptainEnabled(true);
+                                                                new Thread(new Startup()).start();                     log(Level.FINE, "--------Captain detected as enabled!-----");
+//                                                                new Thread(new Startup()).start();
                                                             }
                                                         }
                                                     }
                                                 }
+                                            }
+                                            if (string.contains("player_timezone")) {
+                                                String timezone = string.split(":")[1].replaceAll("\\\\", "").replaceAll("\"", "");
+//                                                log("Timezone detected: " +timezone);
+                                                TimeZone tz = TimeZone.getTimeZone(timezone);
+                                                Calendar c = Calendar.getInstance(tz);
+                                                log("Verify server time is: " +c.get(java.util.Calendar.HOUR_OF_DAY)+":"+c.get(java.util.Calendar.MINUTE)+":"+c.get(java.util.Calendar.SECOND));
                                             }
                                             if (string.contains("\"battlepoint_villages\":true")) {
                                                 log("Battle point villages have been detected. Setting all loot mood to 100!");

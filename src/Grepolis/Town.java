@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -379,6 +380,8 @@ public class Town {
 //        System.out.println("jObject: " +jObject.toString());
         JsonObject json = jObject.getAsJsonObject("json");
         JsonArray notifications = json.getAsJsonArray("notifications");
+
+
 
 
         int order_param_id = -1;

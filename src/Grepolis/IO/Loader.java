@@ -2,6 +2,7 @@ package Grepolis.IO;
 
 import Grepolis.*;
 import Grepolis.GUI.QueuePanel;
+import Grepolis.GUI.QueuePanel_V2;
 import Grepolis.GUI.SettingsPanel;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.scene.control.PasswordField;
@@ -270,6 +271,7 @@ public class Loader {
                 }
             } else {
                 QueuePanel.setTemplateTowns(towns);
+                QueuePanel_V2.setTemplateTowns(towns);
             }
         }
     }
