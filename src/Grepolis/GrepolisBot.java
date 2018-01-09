@@ -801,7 +801,7 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!researchedTheTown[currentTownIndex]);
 
-                log("Checking for culture event step 1.");
+//                log("Checking for culture event step 1.");
 
                 if (SettingsPanel.hasAutomaticFestivals() && town.getCulture().canStartParty()) {
                     log("Checking for culture event step 2.");
