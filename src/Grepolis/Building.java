@@ -13,6 +13,7 @@ public class Building {
     private int currentLevel;
     private int nextLevel;
     private int buildTo = 0;
+    private int populationRequired = 0;
     private boolean enough_resources;
     private boolean enough_storage;
     private boolean can_upgrade;
@@ -123,6 +124,14 @@ public class Building {
 
     public void setBuildTo(int buildTo) {
         this.buildTo = buildTo;
+    }
+
+    public int getPopulationRequired() {
+        return populationRequired;
+    }
+
+    public void setPopulationRequired(int populationRequired) {
+        this.populationRequired = populationRequired;
     }
 
     public enum BuildingType {

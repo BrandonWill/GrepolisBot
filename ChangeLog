@@ -5,6 +5,9 @@ Version 0.22
 * Can now refresh for the bot to detect if captain was re-enabled rather than restart the whole bot
 * Bot will now switch to the old farming style if captain is near expiration rather than crashing
 * Bot now detects current time zone
+* Bugfix: bot now successfully checks if it's possible to start a festival in city before opening up place.
+* Bot now lists your current town's population in the queue panel
+* Last 0.22 build. Last Java 8 build
 
 Version 0.21
 * Bot rework is starting -- GSON library is now being used

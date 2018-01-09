@@ -5,6 +5,7 @@ import Grepolis.GUI.SettingsPanel;
 import Grepolis.IO.Loader;
 import Grepolis.util.BrowserExtension;
 import Grepolis.util.MyLogger;
+import com.sun.deploy.util.SystemUtils;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -25,9 +26,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import org.w3c.dom.Document;
-import org.w3c.dom.html.HTMLCollection;
 import org.w3c.dom.html.HTMLFormElement;
-import org.w3c.dom.html.HTMLInputElement;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -84,6 +83,7 @@ public class GrepolisBot {
     }
 
     public static void main(String... args) {
+//        System.out.println("Java version: " +System.getProperty("java.version"));
         double javaVersion = Double.parseDouble(Runtime.class.getPackage().getSpecificationVersion());
         //Checks to see if Java version is higher than 8.
         if (javaVersion >= 1.8) {
@@ -287,7 +287,7 @@ public class GrepolisBot {
                                 "    return realXHR;\n" +
                                 "}\n" +
                                 "window.XMLHttpRequest = newXHR;");
-                        if (doc != null && !loginAttempted.get()) {
+                        if (doc != null && !loginAttempted.get() && !botIsPaused) {
                             //Checks the page to see if the login form is there.
                             //Will function if a user accidentally right clicks "go back"
                             if (doc.getElementsByTagName("form").getLength() > 0) {
@@ -801,7 +801,10 @@ public class GrepolisBot {
                     Thread.sleep(randInt(250, 500));
                 } while (!researchedTheTown[currentTownIndex]);
 
-                if (SettingsPanel.hasAutomaticFestivals()) {
+                log("Checking for culture event step 1.");
+
+                if (SettingsPanel.hasAutomaticFestivals() && town.getCulture().canStartParty()) {
+                    log("Checking for culture event step 2.");
                     Thread.sleep(randInt(1250, 2500));
 
                     Platform.runLater(new Runnable() {
@@ -1125,10 +1128,10 @@ public class GrepolisBot {
                             if (!researchedTheTown[i]) {
                                 (new Thread(new Researcher(towns.get(i)))).start();
                             }
-                            culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
-                            culture[0].start();
                             builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
                             builder[0].start();
+                            culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
+                            culture[0].start();
                             barrackQueue[0] = (new Thread(new BuildBarracksTroops(towns.get(i))));
                             barrackQueue[0].start();
                             docksQueue[0] = (new Thread(new BuildDocksTroops(towns.get(i))));
@@ -1441,9 +1444,6 @@ public class GrepolisBot {
                     public void handle(WebEvent<String> event) {
                         String data = event.getData();
                         String URL = null;
-                        if (data.contains("URL:")) {
-                            URL = data.split("URL:")[1];
-                        }
                         //Reads all XHR events
                         if (data.contains("XHR Reader:")) {
                             if (data.contains("\"TownGroupTowns\":{\"data\":")) {
@@ -1519,6 +1519,35 @@ public class GrepolisBot {
 //                            }
 
                         }
+                        //Test
+                        if (data.contains("available_population")) {
+//                            System.out.println("Pop: " +data);
+                            Town town = null;
+                            int townID = 0;
+                            int availablePopulation = 0;
+                            String fixingData = data.replaceAll("\\\\", "");
+                            fixingData = fixingData.replaceAll("\"", "");
+
+                            String[] splitData = fixingData.split(",");
+                            String townLocation = fixingData.contains("param_id") ? "param_id" : "id";
+
+                            for (String fixedData : splitData) {
+                                if (town == null && fixedData.contains(townLocation) && !fixedData.contains("player")) {
+                                    townID = Integer.parseInt(fixedData.split(":")[1]);
+                                    town = getTownFromID(townID);
+                                }
+                                if (fixedData.contains("available_population")) {
+                                    availablePopulation = Integer.parseInt(fixedData.split(":")[1]);
+                                }
+                            }
+
+                            if (town != null) {
+                                town.setAvailablePopulation(availablePopulation);
+//                                System.out.println(town.getName() + " has available population: " + town.getAvailablePopulation());
+                            }
+
+//                            URL = data.split("URL:")[1];
+                        }
                         //checks the farming village return data.
                         if (data.contains("FarmedTheVillage:")) {
                             if (data.contains("FarmedTheVillage:200")) {
@@ -1554,7 +1583,7 @@ public class GrepolisBot {
 //                                }
 
                                 if (townID > 0 && battlePointID > 0 && farmingVillage > 0 && data.contains("error")) {
-                                    Town town = getLostTown(townID);
+                                    Town town = getTownFromID(townID);
                                     if (town != null) {
                                         town.getFarming().getNotMyVillages().put(battlePointID, farmingVillage);
                                         log(Level.SEVERE, "Detected a farming village in the wrong location. Will fix on next run through!");
@@ -1827,7 +1856,7 @@ public class GrepolisBot {
                 }
 
                 for (Town lostTown : lostTowns) {
-                    Town townToRemove = getLostTown(lostTown.getId());
+                    Town townToRemove = getTownFromID(lostTown.getId());
                     if (townToRemove != null) {
                         towns.remove(townToRemove);
                         log(Level.WARNING, townToRemove.getName() + " wasn't found! Bot is removing it from the list of current towns.");
@@ -1862,7 +1891,7 @@ public class GrepolisBot {
         return false;
     }
 
-    private Town getLostTown(int townID) {
+    private Town getTownFromID(int townID) {
         for (Town town : towns) {
             if (town.getId() == townID) {
                 return town;

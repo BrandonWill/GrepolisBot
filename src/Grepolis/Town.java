@@ -47,6 +47,7 @@ public class Town {
     private int last_stone;
     private int last_iron;
     private int storage;
+    private int availablePopulation;
     private HashMap<Integer, Long> buildingFinishingTimes = new HashMap<>();
     private ArrayList<BuildingInQueue> buildingInQueues = new ArrayList<>();
 
@@ -167,6 +168,10 @@ public class Town {
                                     if (data.startsWith("can_upgrade:")) {
                                         building.setCan_upgrade(Boolean.parseBoolean(data.split(":")[1]));
 //                                    log("Can upgrade: " +building.canUpgrade());
+                                    }
+                                    if (data.contains("pop:")) {
+                                        building.setPopulationRequired(Integer.parseInt(data.split(":")[1]));
+//                                        System.out.println("Has pop here: " +data);
                                     }
                                     if (data.startsWith("enough_population")) {
                                         building.setEnough_population(Boolean.parseBoolean(data.split(":")[1]));
@@ -634,6 +639,14 @@ public class Town {
 
     public void setStorage(int storage) {
         this.storage = storage;
+    }
+
+    public int getAvailablePopulation() {
+        return availablePopulation;
+    }
+
+    public void setAvailablePopulation(int availablePopulation) {
+        this.availablePopulation = availablePopulation;
     }
 
     private class BuildingInQueue {

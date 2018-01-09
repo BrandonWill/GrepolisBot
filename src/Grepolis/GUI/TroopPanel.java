@@ -37,6 +37,7 @@ import static Grepolis.util.MyLogger.logError;
  * Created by Brandon on 9/28/2016.
  */
 public class TroopPanel extends JFXPanel {
+    private Text troopsLabel = new Text();
     private Label swordPic = new Label();
     private Label slingerPic = new Label();
     private Label archerPic = new Label();
@@ -115,7 +116,7 @@ public class TroopPanel extends JFXPanel {
                 Font defaultFont = Font.font("Arial", 12);
 
                 //Column 1 components
-                Text troopsLabel = new Text("Troops");
+                troopsLabel = new Text("Troops (available population 0)");
                 troopsLabel.setFont(defaultFont);
                 swordPic = new Label("0", new ImageView(getImage(File.separator + "Images" + File.separator + "Troops" + File.separator + "swordx40.png")));
                 swordPic.setFont(Font.font("Tahoma", FontWeight.BOLD, 11));
@@ -1049,5 +1050,13 @@ public class TroopPanel extends JFXPanel {
 
     public void setSea_monsterToBuild(TextField sea_monsterToBuild) {
         this.sea_monsterToBuild = sea_monsterToBuild;
+    }
+
+    public Text getTroopsLabel() {
+        return troopsLabel;
+    }
+
+    public void setTroopsLabel(Text troopsLabel) {
+        this.troopsLabel = troopsLabel;
     }
 }
