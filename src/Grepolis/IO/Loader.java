@@ -4,7 +4,7 @@ import Grepolis.*;
 import Grepolis.GUI.QueuePanel;
 import Grepolis.GUI.QueuePanel_V2;
 import Grepolis.GUI.SettingsPanel;
-import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Platform;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -24,6 +24,7 @@ import static Grepolis.util.MyLogger.log;
 public class Loader {
 
     public static void load() {
+        Platform.startup(() -> {});
         if (loadAccount()) {
             loadBuildings("Saves");
             loadBarrackTroops("Saves");
@@ -69,7 +70,7 @@ public class Loader {
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith("Username:") && line.split(":").length > 1) {
                         final String finalLine = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setUsernameField(new TextField(finalLine.split(":")[1]));
@@ -77,7 +78,7 @@ public class Loader {
                         });
                     } else if (line.startsWith("Password:") && line.split(":").length > 1) {
                         final String finalLine1 = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setPasswordField(new PasswordField(), finalLine1.split(":")[1]);
@@ -86,7 +87,7 @@ public class Loader {
 
                     } else if (line.startsWith("Server:") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setWorldField(new TextField(finalLine2.split(":")[1]));
@@ -94,7 +95,7 @@ public class Loader {
                         });
                     } else if (line.startsWith("RefreshTime") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setBotUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
@@ -102,7 +103,7 @@ public class Loader {
                         });
                     } else if (line.startsWith("TroopRefreshTime") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setTroopUpdateTimeField(new TextField((finalLine2.split(":")[1].replaceAll("-", ":"))));
@@ -110,7 +111,7 @@ public class Loader {
                         });
                     } else if (line.startsWith("Automatic City Festivals:") && line.split(":").length > 1) {
                         final String finalLine2 = line;
-                        PlatformImpl.startup(new Runnable() {
+                        Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 SettingsPanel.setHasAutomaticFestivals(Boolean.parseBoolean(finalLine2.split(":")[1]));

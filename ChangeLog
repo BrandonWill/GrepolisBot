@@ -1,3 +1,6 @@
+Version 0.23
+* Updated all of the backend for Java 9 compatibility
+
 Version 0.22
 * Farming for other times outside of 5 or 10 minutes is now fixed.
 * Fixed troop timers so that they work the way they should.

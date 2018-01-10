@@ -1,7 +1,7 @@
 package Grepolis.GUI;
 
 import Grepolis.GrepolisBot;
-import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
@@ -99,7 +99,7 @@ public class TroopPanel extends JFXPanel {
     }
 
     private void initComponents() {
-        PlatformImpl.startup(new Runnable() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 GridPane grid = new GridPane();

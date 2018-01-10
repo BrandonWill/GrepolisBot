@@ -5,14 +5,11 @@ import Grepolis.GUI.SettingsPanel;
 import Grepolis.IO.Loader;
 import Grepolis.util.BrowserExtension;
 import Grepolis.util.MyLogger;
-import com.sun.deploy.util.SystemUtils;
-import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -22,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
@@ -47,6 +45,8 @@ import static Grepolis.util.MyLogger.log;
 import static Grepolis.util.MyLogger.logError;
 
 public class GrepolisBot {
+
+
 
     private JFXPanel jfxPanel;
     private static BotFrame botFrame;
@@ -83,31 +83,41 @@ public class GrepolisBot {
     }
 
     public static void main(String... args) {
-//        System.out.println("Java version: " +System.getProperty("java.version"));
-        double javaVersion = Double.parseDouble(Runtime.class.getPackage().getSpecificationVersion());
-        //Checks to see if Java version is higher than 8.
-        if (javaVersion >= 1.8) {
-            new MyLogger(); //initiates the logger. This logs into the bot and the console
-            Loader.load(); //Load all the towns, if they exist
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //Uses the system's look and feel. Without this, sometimes Nimbus theme appears for no reason and nothing is aligned.
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } catch (Exception ignored) {
+
+        try {
+            int javaVersion = Runtime.version().major();
+            //Checks to see if Java version is higher than 9.
+            if (javaVersion >= 9) {
+                new MyLogger(); //initiates the logger. This logs into the bot and the console
+                Loader.load(); //Load all the towns, if they exist
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Uses the system's look and feel. Without this, sometimes Nimbus theme appears for no reason and nothing is aligned.
+                            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        } catch (Exception ignored) {
+                        }
+                        botFrame = new BotFrame(towns);
+                        botFrame.setSize(new Dimension(1500, 800));
+                        botFrame.setVisible(true);
                     }
-                    botFrame = new BotFrame(towns);
-                    botFrame.setSize(new Dimension(1500, 800));
-                    botFrame.setVisible(true);
-                }
-            });
-        } else {
-            JOptionPane.showMessageDialog(null, "Your current java version is: " + Runtime.class.getPackage().getSpecificationVersion() + "\n"
-                    + "You need to have Java 8 or higher to run this program. In order to fix this: \n"
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Your current java version is too low! \n"
+                        + "You need to have Java 9 or higher to run this program. In order to fix this: \n"
+                        + "1. Uninstall older versions of Java\n"
+                        + "2. Install the newest version of Java (Google download java)");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Your current java version is too low! \n"
+                    + "You need to have Java 9 or higher to run this program. In order to fix this: \n"
                     + "1. Uninstall older versions of Java\n"
-                    + "2. Install the newest version of Java (Google download java)");
+                    + "2. Install the newest version of Java (Google download java 9)");
         }
+
+
     }
 
     private void initComponents() {
@@ -119,7 +129,7 @@ public class GrepolisBot {
         Action resetZoom = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                PlatformImpl.runLater(new Runnable() {
+                Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if (webView != null) {
@@ -138,7 +148,7 @@ public class GrepolisBot {
         Action zoomIn = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                PlatformImpl.runLater(new Runnable() {
+                Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if (webView != null) {
@@ -157,7 +167,7 @@ public class GrepolisBot {
         Action zoomOut = new AbstractAction() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                PlatformImpl.runLater(new Runnable() {
+                Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if (webView != null) {
@@ -214,7 +224,7 @@ public class GrepolisBot {
 
         //Browser code
 
-        PlatformImpl.startup(new Runnable() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 //adds in the XHRHTMLRequest listener
@@ -225,7 +235,7 @@ public class GrepolisBot {
 
                 webView.setPrefWidth(1000);
                 final WebEngine engine = webView.getEngine();
-                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                webView.getEngine().setUserAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
                 webView.getEngine().setUserDataDirectory(new File("localStorage"));
                 webView.getEngine().setJavaScriptEnabled(true);
                 log("Browser agent changed to latest chrome version. It's now: " + webView.getEngine().getUserAgent());
