@@ -33,7 +33,7 @@ public class Barracks {
             //Don't care about population or research. If they aren't researched or you don't have enough population
             //then their max_build will reflect that.
             for (String string : unitData) {
-                if (string.contains("name:")) {
+                if (string.contains("researchName:")) {
                     String data[] = string.split(",");
                     BarracksUnit barracksUnit = new BarracksUnit();
 //                    log("Unit data: " +Arrays.toString(data));

@@ -1,5 +1,7 @@
 Version 0.23
 * Updated all of the backend for Java 9 compatibility
+* Updated to the new town and farming naming conventions
+* Began working on automatic research again
 
 Version 0.22
 * Farming for other times outside of 5 or 10 minutes is now fixed.
@@ -14,7 +16,7 @@ Version 0.22
 
 Version 0.21
 * Bot rework is starting -- GSON library is now being used
-* Academy is now being accessed by the bot on the first run through. This was done because there wasn't any way to figure out if booty was researched without captain. This also means if you research booty without captain, you have to restart the bot for it to take effect.
+* Academy is now being accessed by the bot on the first run through. This was done because there wasn't any way to figure out if booty was researched without captain. This also means if you academy booty without captain, you have to restart the bot for it to take effect.
 * Farming values now work with decimals! Didn't think I'd see a world with 3.5 speed, but there is one!
 * Farming has been reworked for captain-less farming!
     * Farming villages should now farm all the resources that they can
@@ -23,7 +25,7 @@ Version 0.21
 * Any building that is built by the bot will now be finished automatically if there's less than 5 minutes.
 
 Version 0.20
-* Work began on automatic research.
+* Work began on automatic academy.
 * Fixed a bug that caused the current city to not be the same if you left the queue panel
 * The bot will now rush lumber camp 15 and silver mine 10 so that you can build docks faster. Before, you'd have to wait until the town was almost fully built.
 * Fixed the bug where you'd have to restart after loading a template

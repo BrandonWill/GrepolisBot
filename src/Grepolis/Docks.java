@@ -33,7 +33,7 @@ public class Docks {
             //Don't care about population or research. If they aren't researched or you don't have enough population
             //then their max_build will reflect that.
             for (String string : unitData) {
-                if (string.contains("name:")) {
+                if (string.contains("researchName:")) {
                     String data[] = string.split(",");
                     DocksUnit docksUnit = new DocksUnit();
 //                    log(Arrays.toString(data));

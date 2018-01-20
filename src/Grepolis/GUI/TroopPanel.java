@@ -30,6 +30,7 @@ import java.security.CodeSource;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import static Grepolis.util.Image.getImage;
 import static Grepolis.util.MyLogger.logError;
 
 
@@ -603,21 +604,6 @@ public class TroopPanel extends JFXPanel {
         frame.setVisible(true);
         TroopPanel troopPanel = new TroopPanel();
         frame.add(troopPanel);
-    }
-
-    private String getImage(String imageLocation) {
-        CodeSource codeSource = GrepolisBot.class.getProtectionDomain().getCodeSource();
-        File jarFile = null;
-        try {
-            jarFile = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            logError(e);
-        }
-        String jarDir = null;
-        if (jarFile != null) {
-            jarDir = jarFile.getParentFile().getPath();
-        }
-        return "file:///" + jarDir + imageLocation;
     }
 
     public Label getSwordPic() {

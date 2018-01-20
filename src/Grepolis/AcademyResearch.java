@@ -1,14 +1,11 @@
 package Grepolis;
 
-import javax.swing.*;
-import java.util.Hashtable;
-
 /**
  * @Author Brandon
  * Created by Brandon on 8/1/2016.
  * Time: 6:30 PM
  */
-public class Researches {
+public class AcademyResearch {
     private ResearchType researchType;
     private boolean researched;
 
@@ -45,6 +42,7 @@ public class Researches {
         bireme("Bireme", 13, 8, 2800, 1300, 2200),
         building_crane("Crane", 13, 4, 3000, 1800, 1400),
         shipwright("Shipwright", 13, 6, 5000, 2000, 3900),
+        colonize_ship("Colony ship", 13, 0, 7500, 7500, 9500),
         chariot("Chariots", 16, 8, 3700, 1900, 2800),
         attack_ship("Light ship", 16, 8, 4400, 2000, 2400),
         conscription("Conscription", 16, 4, 3800, 4200, 6000),
@@ -52,7 +50,6 @@ public class Researches {
         catapult("Catapult", 19, 8, 5500, 2900, 3600),
         cryptography("Cryptography", 19, 6, 2500, 3000, 5100),
         democracy("Democracy", 19, 6, 3100, 3100, 4100),
-        colonize_ship("Colony ship", 22, 0, 7500, 7500, 9500),
         small_transporter("Fast transport ship", 22, 8, 6500, 2800, 3200),
         plow("Plow", 22, 4, 3000, 3300, 2100),
         berth("Bunks", 22, 6, 8900, 5200, 7800),
@@ -70,7 +67,7 @@ public class Researches {
         strong_wine("Strong wine", 34, 4, 8000, 6500, 11000),
         set_sail("Set sail", 34, 8, 13000, 9700, 15500);
 
-        String name;
+        String researchName;
         int academyLevelRequired;
         int researchPointsRequired;
         int wood;
@@ -78,8 +75,8 @@ public class Researches {
         int iron;
 
 
-        ResearchType(String name,int academyLevelRequired, int researchPointsRequired, int wood, int stone, int iron) {
-            this.name = name;
+        ResearchType(String researchName, int academyLevelRequired, int researchPointsRequired, int wood, int stone, int iron) {
+            this.researchName = researchName;
             this.academyLevelRequired = academyLevelRequired;
             this.researchPointsRequired = researchPointsRequired;
             this.wood = wood;

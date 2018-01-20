@@ -1027,9 +1027,9 @@ public class GrepolisBot {
     /**
      * Update town names based on their townID.
      *
-     * @param name   town name that was found.
-     * @param townID townID that the name belongs to.
-     * @return <b>true</b> if the town name was updated.
+     * @param name   town researchName that was found.
+     * @param townID townID that the researchName belongs to.
+     * @return <b>true</b> if the town researchName was updated.
      */
     private boolean changeTownName(String name, int townID) {
         for (Town town1 : towns) {
@@ -1578,7 +1578,7 @@ public class GrepolisBot {
                                         battlePointID = Integer.parseInt(dataPoint.split(",")[1]);
                                     }
 //                                    if (dataPoint.contains("farmVillageName,")) {
-//                                        name = dataPoint.split(",")[1];
+//                                        researchName = dataPoint.split(",")[1];
 //                                    }
                                 }
                                 for (FarmingVillage village : currentTown.getFarming().getFarmingVillages()) {
@@ -1589,7 +1589,7 @@ public class GrepolisBot {
 
 //                                if (data.contains("error")) {
 //                                    log("inside of error log:townID," +townID + ":farmingVillageID," +farmingVillage +
-//                                            ":battlePointID," + battlePointID + ":name," +name + ":" + data);
+//                                            ":battlePointID," + battlePointID + ":researchName," +researchName + ":" + data);
 //                                }
 
                                 if (townID > 0 && battlePointID > 0 && farmingVillage > 0 && data.contains("error")) {
@@ -1632,7 +1632,7 @@ public class GrepolisBot {
                         }
                         if (data.contains("AcademyData:")) {
                             if (data.contains("AcademyData:200")) {
-                                currentTown.getResearch().parseHTML(data);
+                                currentTown.getAcademy().parseHTML(data);
                                 researchedTheTown[currentTownIndex] = true;
                             } else {
                                 researchedTheTown[currentTownIndex] = true;
@@ -1829,7 +1829,7 @@ public class GrepolisBot {
                 town.setServer(server);
                 town.setCsrftoken(csrfToken);
 //                System.out.println("Town id: " +town.getFarm_town_id());
-//                System.out.println("Town name: " +town.getName());
+//                System.out.println("Town researchName: " +town.getName());
 //                System.out.println("island_x: " + town.getFarming().getIsland_x());
 //                System.out.println("island_y: " + town.getFarming().getIsland_y());
 //                System.out.println("Wood: " + wood);
