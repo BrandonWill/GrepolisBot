@@ -71,14 +71,14 @@ public class Town {
                                 building.setBuildingType(buildingType);
                                 building.setName(buildingType.name());
                                 building.setDescription(buildingType.description);
-//                            log("Found " + buildingType.researchName() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
-//                            log("Building researchName: " +building.getName());
+//                            log("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
+//                            log("Building name: " +building.getName());
 //                            String buildingData[] = buildings[i].substring(0, buildings[i].indexOf("controller")).replaceAll("\\\\\"", "").split(",");
 
                                 String buildingData[] = buildings[i].replaceAll("\"", "").replaceAll("\\\\", "").split(",");
 //                                System.out.println(Arrays.toString(buildingData));
                                 //Example data: :trade_office}}});\n\tBuildingMain.buildings =
-                                // {main:{researchName:Senate,description:In the Senate you can have new buildings erected or existing buildings upgraded.
+                                // {main:{name:Senate,description:In the Senate you can have new buildings erected or existing buildings upgraded.
                                 // The higher the Senate level, the more quickly the construction work is done.,level:17,current_level:17,next_level:18,get_dependencies:[],
                                 // can_upgrade:true,can_upgrade_reduced:true,enough_population:true,max_level:false,can_tear_down:true,needed_resources:{wood:2999,stone:2998,
                                 // iron:1542},needed_resources_reduced:{wood:2250,stone:2249,iron:1157},enough_resources:true,enough_storage:true,pop:6,pop_tear_down:6,
@@ -130,13 +130,13 @@ public class Town {
                                 Building building = getBuilding(buildingType);
                                 building.setName(buildingType.name());
                                 building.setDescription(buildingType.description);
-//                            log("Found " + buildingType.researchName() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
-//                            log("Building researchName: " +building.getName());
+//                            log("Found " + buildingType.name() + ": " + buildings[i].substring(0, buildings[i].indexOf("resourcesForLevelReduceFactor")).replaceAll("\"", ""));
+//                            log("Building name: " +building.getName());
 //                            String buildingData[] = buildings[i].substring(0, buildings[i].indexOf("controller")).replaceAll("\\\\\"", "").split(",");
 
                                 String buildingData[] = buildings[i].replaceAll("\"", "").replaceAll("\\\\", "").split(",");
                                 //Example data: :trade_office}}});\n\tBuildingMain.buildings =
-                                // {main:{researchName:Senate,description:In the Senate you can have new buildings erected or existing buildings upgraded.
+                                // {main:{name:Senate,description:In the Senate you can have new buildings erected or existing buildings upgraded.
                                 // The higher the Senate level, the more quickly the construction work is done.,level:17,current_level:17,next_level:18,get_dependencies:[],
                                 // can_upgrade:true,can_upgrade_reduced:true,enough_population:true,max_level:false,can_tear_down:true,needed_resources:{wood:2999,stone:2998,
                                 // iron:1542},needed_resources_reduced:{wood:2250,stone:2249,iron:1157},enough_resources:true,enough_storage:true,pop:6,pop_tear_down:6,
@@ -446,7 +446,7 @@ public class Town {
     private boolean canBuild(Building.BuildingType building) {
         Building actualBuilding = getBuilding(building);
 //        if (actualBuilding != null) {
-//            log("Building researchName: " + actualBuilding.getName() +
+//            log("Building name: " + actualBuilding.getName() +
 //                    " is building queue full: " + isBuildingQueueFull +
 //                    " can building be upgraded: " + actualBuilding.canUpgrade() +
 //                    " current level: " + actualBuilding.getLevel() +

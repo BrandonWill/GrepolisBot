@@ -451,7 +451,7 @@ public class Farming {
     //
 
     public boolean parseVillagesFromMap(String villageData) {
-        //"id":????,"researchName":"Rosta","dir":"n","expansion_stage":1,"x":???,"y":???,"ox":???,"oy":???,"offer":"iron",
+        //"id":????,"name":"Rosta","dir":"n","expansion_stage":1,"x":???,"y":???,"ox":???,"oy":???,"offer":"iron",
         // "demand":"stone","mood":84,"relation_status":1,"ratio":1.25,"loot":1469053323,
         // "lootable_human":"on 2016-07-20 at 23:22 ","looted":1469053023},"80":
 //        System.out.println("VillageData: " +villageData);
@@ -479,7 +479,7 @@ public class Farming {
                         int island_y = villageObject.get("y").getAsInt();
                         //If we own the village, then it will be 1
                         if (relationStatus == 1 && island_x == requiredVillageX && island_y == requiredVillageY) {
-                            System.out.println("Village object: " +villageObject.toString());
+//                            System.out.println("Village object: " +villageObject.toString());
                             FarmingVillage farmingVillage = new FarmingVillage(booty, intervalToFarm);
                             farmingVillage.setFarm_town_id(villageObject.get("id").getAsInt());
                             farmingVillage.setIsland_x(island_x);
@@ -521,7 +521,7 @@ public class Farming {
                     farmingVillage.setStage(farmingVillageObject.get("expansion_stage").getAsInt());
 //                    log("Lootable at: " +timeToFarm);
 //                    log("can farm: " +farmingVillage.canFarm());
-//                    log("Farming village found in " +town.getName() + " with the researchName of: " +farmingVillage.getName());
+//                    log("Farming village found in " +town.getName() + " with the name of: " +farmingVillage.getName());
 
                 }
             }
@@ -567,7 +567,7 @@ public class Farming {
 //                        }
 ////                        System.out.println("id:" + farmingVillage.getFarm_town_id());
 //                    }
-//                    if (data.contains("researchName")) {
+//                    if (data.contains("name")) {
 //                        if (farmingVillage != null) {
 //                            farmingVillage.setName(data.split(":")[1]);
 //                        }
