@@ -3,6 +3,7 @@ Version 0.24
 * Fixed saving file bug
 * Fixed memory leak
 * Automatic Academy researching
+* New Building Panel
 
 Version 0.23
 * Updated all of the backend for Java 9 compatibility

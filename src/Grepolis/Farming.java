@@ -76,7 +76,7 @@ public class Farming {
         }
 
         if (currentTown != null) {
-            System.out.println("Current Town Data: " +currentTown.toString());
+//            System.out.println("Current Town Data: " +currentTown.toString());
             storage = currentTown.get("storage_volume").getAsInt();
             booty = currentTown.get("booty").getAsBoolean();
             diplomacy = currentTown.get("diplomacy_researched").getAsBoolean();
@@ -243,7 +243,7 @@ public class Farming {
 
 
 
-        log("In village data! " +villagesData);
+//        log("In village data! " +villagesData);
         if (villagesData.contains("[{")) {
             String allData = villagesData;
             farmingVillages.clear();
