@@ -1,3 +1,9 @@
+Version 0.24
+* Fixed Automatic culture events
+* Fixed saving file bug
+* Fixed memory leak
+* Automatic Academy researching
+
 Version 0.23
 * Updated all of the backend for Java 9 compatibility
 * Updated to the new town and farming naming conventions

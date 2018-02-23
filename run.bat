@@ -1,1 +1,1 @@
-java -jar GrepolisBot_0.23.jar
+java -jar GrepolisBot_0.24.jar

@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="GrepolisBot_0.23">
+  <artifact type="jar" build-on-make="true" name="GrepolisBot_0.24">
     <output-path>$PROJECT_DIR$/</output-path>
     <properties id="ant-postprocessing">
       <options enabled="true" />
@@ -7,7 +7,7 @@
     <properties id="ant-preprocessing">
       <options enabled="true" />
     </properties>
-    <root id="archive" name="GrepolisBot_0.23.jar">
+    <root id="archive" name="GrepolisBot_0.24.jar">
       <element id="module-output" name="Grepolis" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
