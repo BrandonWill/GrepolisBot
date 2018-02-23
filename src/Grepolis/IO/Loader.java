@@ -2,7 +2,6 @@ package Grepolis.IO;
 
 import Grepolis.*;
 import Grepolis.GUI.QueuePanel;
-import Grepolis.GUI.QueuePanel_V2;
 import Grepolis.GUI.SettingsPanel;
 import javafx.application.Platform;
 import javafx.scene.control.PasswordField;
@@ -30,6 +29,7 @@ public class Loader {
             loadBarrackTroops("Saves");
             loadDocksTroops("Saves");
             loadFarmers("Saves");
+            loadAcademyResearches("Saves");
             loadTemplateTowns();
         }
     }
@@ -272,7 +272,6 @@ public class Loader {
                 }
             } else {
                 QueuePanel.setTemplateTowns(towns);
-                QueuePanel_V2.setTemplateTowns(towns);
             }
         }
     }
@@ -291,7 +290,7 @@ public class Loader {
                     } else {
                         towns = QueuePanel.getTemplateTowns();
                     }
-                    Town town;
+                    Town town = null;
                     Barracks barracks = null;
                     for (String string : text) {
                         if (string.startsWith("townID:")) {
@@ -308,9 +307,69 @@ public class Loader {
                                 BarracksUnit barracksUnit = new BarracksUnit();
                                 barracksUnit.setUnitType(BarracksUnit.UnitType.valueOf(unitData[0]));
                                 barracksUnit.setBuildTo(Integer.parseInt(unitData[1]));
-                                barracks.getBarracksUnits().add(barracksUnit);
+                                if (barracks.getUnit(barracksUnit.getUnitType()) == null) {
+                                    barracks.getBarracksUnits().add(barracksUnit);
+                                } else {
+                                    barracks.getUnit(barracksUnit.getUnitType()).setBuildTo(Integer.parseInt(unitData[1]));
+                                }
                             }
                         }
+                    }
+//                    if (town != null) {
+//                        System.out.println("Town: " +town.getName());
+//                        System.out.println("Barracks size: " + town.getBarracks().getBarracksUnits().size());
+////                        System.out.println("Researches: " + town.getAcademy().getResearches().toString());
+//                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadAcademyResearches(String directory) {
+        BufferedReader reader = getBufferedReader(directory, "AcademySave.txt");
+        String line;
+
+        try {
+            if (reader != null) {
+                while ((line = reader.readLine()) != null) {
+                    String text[] = line.split(",");
+                    ArrayList<Town> towns;
+                    if (directory.equals("Saves")) {
+                        towns = Grepolis.GrepolisBot.getTowns();
+                    } else {
+                        towns = QueuePanel.getTemplateTowns();
+                    }
+                    Town town = null;
+                    Academy academy = null;
+                    for (String string : text) {
+                        if (string.startsWith("townID:")) {
+                            int townID = Integer.parseInt(string.split(":")[1]);
+                            for (Town townSearcher : towns) {
+                                if (townSearcher.getId() == townID) {
+                                    town = townSearcher;
+                                    academy = town.getAcademy();
+                                }
+                            }
+                        } else {
+                            if (academy != null) {
+                                String academyData[] = string.split(":");
+                                AcademyResearch academyResearch = new AcademyResearch();
+                                academyResearch.setResearchType(AcademyResearch.ResearchType.valueOf(academyData[0]));
+                                academyResearch.setShouldResearch(Boolean.parseBoolean(academyData[1]));
+                                if (academy.getResearch(academyResearch.getResearchType()) == null) {
+                                    academy.getResearches().add(academyResearch);
+                                } else {
+                                    academy.getResearch(academyResearch.getResearchType()).setShouldResearch(Boolean.parseBoolean(academyData[1]));
+                                }
+                            }
+                        }
+                    }
+                    if (town != null) {
+//                        System.out.println("Town: " +town.getName());
+//                        System.out.println("Research size: " + town.getAcademy().getResearches().size());
+//                        System.out.println("Researches: " + town.getAcademy().getResearches().toString());
                     }
                 }
             }
@@ -350,7 +409,12 @@ public class Loader {
                                 DocksUnit docksUnit = new DocksUnit();
                                 docksUnit.setUnitType(DocksUnit.UnitType.valueOf(unitData[0]));
                                 docksUnit.setBuildTo(Integer.parseInt(unitData[1]));
-                                docks.getDocksUnits().add(docksUnit);
+                                if (docks.hasUnit(docksUnit.getUnitType())) {
+                                    docks.getUnit(docksUnit.getUnitType()).setBuildTo(Integer.parseInt(unitData[1]));
+                                } else {
+                                    docks.getDocksUnits().add(docksUnit);
+                                }
+
                             }
                         }
                     }
@@ -454,6 +518,7 @@ public class Loader {
                     loadBarrackTroops(path);
                     loadDocksTroops(path);
                     loadFarmers(path);
+                    loadAcademyResearches(path);
                 }
             }
         }

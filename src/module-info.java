@@ -1,4 +1,5 @@
 module Grepolis {
+    requires javafx.graphics;
     requires javafx.controls;
     requires javafx.web;
     requires jdk.xml.dom;
@@ -6,5 +7,5 @@ module Grepolis {
     requires java.logging;
     requires gson;
     requires javafx.swing;
-    requires javafx.graphics;
+
 }

@@ -592,15 +592,6 @@ public class Town {
         this.academy = academy;
     }
 
-    public boolean isResearched(AcademyResearch research) {
-        for (AcademyResearch academyResearch : this.academy.getResearch()) {
-            if (academyResearch.equals(research)) {
-                return academyResearch.isResearched();
-            }
-        }
-        return false;
-    }
-
     public int getLast_wood() {
         return last_wood;
     }

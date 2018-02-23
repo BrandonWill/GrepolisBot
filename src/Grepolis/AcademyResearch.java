@@ -8,6 +8,15 @@ package Grepolis;
 public class AcademyResearch {
     private ResearchType researchType;
     private boolean researched;
+    private boolean shouldResearch = false;
+
+    public boolean shouldResearch() {
+        return shouldResearch;
+    }
+
+    public void setShouldResearch(boolean shouldResearch) {
+        this.shouldResearch = shouldResearch;
+    }
 
     public boolean isResearched() {
         return researched;
@@ -25,6 +34,13 @@ public class AcademyResearch {
         this.researchType = researchType;
     }
 
+    @Override
+    public String toString() {
+        return "AcademyResearch{" +
+                "researchType=" + researchType.name() +
+                ", researched=" + researched +
+                '}';
+    }
 
     public enum ResearchType {
         diplomacy("Diplomacy", 4, 3, 100, 400, 200), //Don't remove. Isn't in current research list, but it is checked!
@@ -59,7 +75,7 @@ public class AcademyResearch {
         mathematics("Mathematics", 25, 6, 7100, 4400, 8600),
         ram("Battering ram", 28, 10, 7900, 9200, 14000),
         cartography("Cartography", 28, 8, 10000, 6700, 12500),
-        take_over("Conquest", 28, 0, 12000, 120000, 16000),
+        take_over("Conquest", 28, 0, 12000, 12000, 16000),
         stone_storm("Stone Hail", 31, 4, 8500, 5900, 6600),
         temple_looting("Temple looting", 31, 6, 9200, 5300, 10000),
         divine_selection("Divine selection", 31, 10, 10000, 8000, 12000),

@@ -60,6 +60,8 @@ public class Farming {
     public void parseHTML(String townData) {
         townData = townData.replaceAll("FarmData:200", "");
 
+//        System.out.println("Farm Data: " +townData);
+
         JsonElement jElement = new JsonParser().parse(townData);
         JsonObject jObject = jElement.getAsJsonObject();
         JsonObject json = jObject.getAsJsonObject("json");
@@ -74,6 +76,7 @@ public class Farming {
         }
 
         if (currentTown != null) {
+            System.out.println("Current Town Data: " +currentTown.toString());
             storage = currentTown.get("storage_volume").getAsInt();
             booty = currentTown.get("booty").getAsBoolean();
             diplomacy = currentTown.get("diplomacy_researched").getAsBoolean();
@@ -84,7 +87,6 @@ public class Farming {
             stone = resources.get("stone").getAsInt();
             iron = resources.get("iron").getAsInt();
             town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
-
         }
 ////        log("Town Data: " + townData);
 //        String townString = townData.substring(townData.indexOf(town.getId() + ""));
@@ -241,7 +243,7 @@ public class Farming {
 
 
 
-//        log("In village data! " +villagesData);
+        log("In village data! " +villagesData);
         if (villagesData.contains("[{")) {
             String allData = villagesData;
             farmingVillages.clear();

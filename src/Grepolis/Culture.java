@@ -23,7 +23,7 @@ public class Culture {
         if (html.contains("place_box")) {
             String events[] = html.substring(html.indexOf("place_box")).split("place_box");
             for (String string : events) {
-                log("Event: " +string);
+//                log("Event: " +string);
                 if (string.contains("place_party") && string.contains("data-enabled=")) {
                     CultureEvent cultureEvent = getCultureEvent(CultureEvent.CultureEventType.party);
                     cultureEvent.setEnabled(true);
@@ -77,11 +77,11 @@ public class Culture {
 
     public boolean canStartParty() {
         Farming farmData = town.getFarming();
-        //log("farmData.getStorage(): " +farmData.getStorage());
-        //log("town.getBuilding(Building.BuildingType.academy).getCurrentLevel(): " + town.getBuilding(Building.BuildingType.academy).getCurrentLevel());
-        //log("farmData.getWood() >= 15000: " +(farmData.getWood()));
-        //log("farmData.getStone(): " +farmData.getStone());
-        //log("farmData.getIron(): " +farmData.getIron());
+//        log("farmData.getStorage(): " +farmData.getStorage());
+//        log("town.getBuilding(Building.BuildingType.academy).getCurrentLevel(): " + town.getBuilding(Building.BuildingType.academy).getCurrentLevel());
+//        log("farmData.getWood() >= 15000: " +(farmData.getWood()));
+//        log("farmData.getStone(): " +farmData.getStone());
+//        log("farmData.getIron(): " +farmData.getIron());
         return farmData.getStorage() >= 18000 && town.getBuilding(Building.BuildingType.academy).getCurrentLevel() >= 30 &&
                 farmData.getWood() >= 15000 && farmData.getStone() >= 18000 && farmData.getIron() >= 15000;
     }

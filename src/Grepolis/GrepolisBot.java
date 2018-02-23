@@ -515,27 +515,27 @@ public class GrepolisBot {
         return rand.nextInt((max - min) + 1) + min;
     }
 
-    /**
-     * This was used for printing enums before using strings
-     *
-     * @param word Text to capitalize.
-     * @return Text with the first letter capitalized.
-     */
-    private String capitalize(String word) {
-        if (word.contains("_")) {
-            String[] holder = word.split("_");
-            word = "";
-            for (String string : holder) {
-                word += string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase() + " ";
-            }
-            if (word.endsWith(" ")) {
-                word = word.substring(0, word.length() - 1);
-            }
-        } else {
-            word = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
-        }
-        return word;
-    }
+//    /**
+//     * This was used for printing enums before using strings
+//     *
+//     * @param word Text to capitalize.
+//     * @return Text with the first letter capitalized.
+//     */
+//    private String capitalize(String word) {
+//        if (word.contains("_")) {
+//            String[] holder = word.split("_");
+//            word = "";
+//            for (String string : holder) {
+//                word += string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase() + " ";
+//            }
+//            if (word.endsWith(" ")) {
+//                word = word.substring(0, word.length() - 1);
+//            }
+//        } else {
+//            word = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+//        }
+//        return word;
+//    }
 
     private boolean builtBarracksTroops = false;
 
@@ -667,7 +667,7 @@ public class GrepolisBot {
         }
     }
 
-    private static boolean[] researchedTheTown;
+    private static boolean researchedTheTown;
 
     public class Researcher implements Runnable {
         Town town;
@@ -715,7 +715,7 @@ public class GrepolisBot {
                         }
                     });
                 } else {
-                    researchedTheTown[currentTownIndex] = true;
+                    researchedTheTown = true;
                 }
 
             } catch (InterruptedException e) {
@@ -809,12 +809,14 @@ public class GrepolisBot {
 
                 do {
                     Thread.sleep(randInt(250, 500));
-                } while (!researchedTheTown[currentTownIndex]);
+                } while (!researchedTheTown);
 
 //                log("Checking for culture event step 1.");
+//                log("Settings Panel : " +SettingsPanel.hasAutomaticFestivals());
+//                log("Can start party: " + town.getCulture().canStartParty());
 
                 if (SettingsPanel.hasAutomaticFestivals() && town.getCulture().canStartParty()) {
-                    log("Checking for culture event step 2.");
+//                    log("Checking for culture event step 2.");
                     Thread.sleep(randInt(1250, 2500));
 
                     Platform.runLater(new Runnable() {
@@ -862,7 +864,7 @@ public class GrepolisBot {
                 }
 
 
-                Thread.sleep(3000);
+                Thread.sleep(randInt(100, 3000));
 
                 currentTime = getServerUnixTime();
 
@@ -1018,6 +1020,7 @@ public class GrepolisBot {
                 town1.setLast_wood(town.getLast_wood());
                 town1.setLast_stone(town.getLast_stone());
                 town1.setLast_iron(town.getLast_iron());
+                town1.setStorage(town.getStorage());
                 return true;
             }
         }
@@ -1080,6 +1083,7 @@ public class GrepolisBot {
                     Thread[] builder = new Thread[1];
                     Thread[] barrackQueue = new Thread[1];
                     Thread[] docksQueue = new Thread[1];
+                    Thread[] researchQueue = new Thread[1];
                     for (int i = 0; i < towns.size(); i++) {
                         checkForCaptcha();
 
@@ -1105,6 +1109,10 @@ public class GrepolisBot {
                             farmedTheTown = false;
                             builtBarracksTroops = false;
                             builtDocksTroops = false;
+                            researchedTheTown = false;
+                            if (researchQueue[0] != null && researchQueue[0].isAlive() && !researchQueue[0].isInterrupted()) {
+                                researchQueue[0].interrupt();
+                            }
                             if (farmer[0] != null && farmer[0].isAlive() && !farmer[0].isInterrupted()) {
                                 farmer[0].interrupt();
                             }
@@ -1135,9 +1143,8 @@ public class GrepolisBot {
                             }
 //                            researchedTheTown[i] = true;
                             currentTownIndex = i;
-                            if (!researchedTheTown[i]) {
-                                (new Thread(new Researcher(towns.get(i)))).start();
-                            }
+                            researchQueue[0] = (new Thread(new Researcher(towns.get(i))));
+                            researchQueue[0].start();
                             builder[0] = (new Thread(new BuildTheBuildings(towns.get(i))));
                             builder[0].start();
                             culture[0] = (new Thread(new StartCultureEvents(towns.get(i))));
@@ -1633,9 +1640,10 @@ public class GrepolisBot {
                         if (data.contains("AcademyData:")) {
                             if (data.contains("AcademyData:200")) {
                                 currentTown.getAcademy().parseHTML(data);
-                                researchedTheTown[currentTownIndex] = true;
+                                currentTown.getAcademy().researchAnItem();
+                                researchedTheTown = true;
                             } else {
-                                researchedTheTown[currentTownIndex] = true;
+                                researchedTheTown = true;
                                 log(Level.SEVERE, "Error! Can't find the Academy data! Error log: " + event.getData());
                                 restartBot = true;
                             }
@@ -1774,7 +1782,7 @@ public class GrepolisBot {
         for (String aTownData : townData) {
             if (aTownData.contains("last_wood")) {
                 aTownData = aTownData.replaceAll("\"", "");
-                //System.out.println("Town data: " +aTownData);
+//                System.out.println("Town data: " +aTownData);
                 Town town = new Town();
 
                 int storage = 0;
@@ -1817,7 +1825,7 @@ public class GrepolisBot {
                 }
 
                 town.setLast_wood(wood);
-                town.setLast_stone(iron);
+                town.setLast_iron(iron);
                 town.setLast_stone(stone);
                 town.setStorage(storage);
                 town.setFullStorage(((wood == storage) && (stone == storage) && (iron == storage)));
@@ -1828,10 +1836,10 @@ public class GrepolisBot {
 //                town.setName(importantData[1].split(":")[1].replaceAll("\"", ""));
                 town.setServer(server);
                 town.setCsrftoken(csrfToken);
-//                System.out.println("Town id: " +town.getFarm_town_id());
+//                System.out.println("Town id: " +town.getId());
 //                System.out.println("Town name: " +town.getName());
-//                System.out.println("island_x: " + town.getFarming().getIsland_x());
-//                System.out.println("island_y: " + town.getFarming().getIsland_y());
+//                System.out.println("island_x: " + town.getIsland_x());
+//                System.out.println("island_y: " + town.getIsland_y());
 //                System.out.println("Wood: " + wood);
 //                System.out.println("Stone: " + stone);
 //                System.out.println("Iron: " + iron);
@@ -1885,7 +1893,6 @@ public class GrepolisBot {
         });
         if (!saidonce) {
             log("Towns found: " + towns.size());
-            researchedTheTown = new boolean[towns.size()];
             saidonce = true;
         }
 
@@ -1931,6 +1938,15 @@ public class GrepolisBot {
             }
         }
         return true;
+    }
+
+    public static Town getTownByID(int id) {
+        for (Town town : getTowns()) {
+            if (town.getId() == id) {
+                return town;
+            }
+        }
+        return null;
     }
 
     public static String getCookie() {

@@ -22,6 +22,7 @@ public class Saver {
         saveBuildings(towns, "Saves");
         saveTroops(towns, "Saves");
         saveDocks(towns, "Saves");
+        saveResearch(towns, "Saves");
         saveFarmers(towns, "Saves");
     }
 
@@ -143,6 +144,25 @@ public class Saver {
         }
     }
 
+    public static void saveResearch(ArrayList<Town> towns, String directory) {
+        PrintWriter writer = getPrintWriter(directory, "AcademySave.txt");
+        if (writer != null) {
+            for (Town town : towns) {
+                writer.print("townID:");
+                writer.print(town.getId());
+                writer.print(",");
+                for (AcademyResearch academyResearch : town.getAcademy().getResearches()) {
+                    writer.print(academyResearch.getResearchType().name());
+                    writer.print(":");
+                    writer.print(academyResearch.shouldResearch());
+                    writer.print(",");
+                }
+                writer.println();
+            }
+            writer.close();
+        }
+    }
+
     public static void saveDocks(ArrayList<Town> towns, String directory) {
         PrintWriter writer = getPrintWriter(directory, "DocksSave.txt");
         if (writer != null) {
@@ -188,16 +208,22 @@ public class Saver {
 
     public static void saveTemplate(Town town, String fileName) {
         ArrayList<Town> towns = new ArrayList<>();
+        String nameHolder = town.getName();
+        int currentTownID = town.getId();
+        int fakeTownID = GrepolisBot.randInt(0, 9999999);
         towns.add(town);
-        String nameHolder = towns.get(0).getName();
+
         towns.get(0).setName(fileName);
+        towns.get(0).setId(fakeTownID);
         String directory = "Saves" + File.separator + "Templates" + File.separator + fileName;
         saveBuildings(towns, directory);
         saveTroops(towns, directory);
         saveDocks(towns, directory);
         saveFarmers(towns, directory);
+        saveResearch(towns, directory);
 
-        towns.get(0).setName(nameHolder);
+        town.setName(nameHolder);
+        town.setId(currentTownID);
     }
 
     private static PrintWriter getPrintWriter(String fileName) {
